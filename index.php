@@ -48,7 +48,9 @@ try {
     }
 
     // Loads and registers all application routes
+    include Path::systemIncludes() . '/router_init.php';
     include Path::app() . '/routes.php';
+    include Path::systemIncludes() . '/router_dispatch.php';
 } catch (NotFoundException $e) {
     // Handles route not found (404) with a basic HTML response
     $response = Response::html('<h1>404 - Page Not Found</h1>', 404);
