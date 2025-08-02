@@ -1,0 +1,25 @@
+# ✅ Enable URL rewriting
+RewriteEngine On
+
+# 🔒 Deny access to hidden or sensitive dotfiles
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+# 🔒 Deny access to sensitive file extensions
+<FilesMatch "\.(env|ini|log|sh|bak|sql|dist|pem|crt|key|tpl|lock|json|yml)$">
+  Require all denied
+</FilesMatch>
+
+# 🔒 Disable directory listing
+Options -Indexes
+
+# ✅ Allow direct access to index.php and public assets
+RewriteCond %{REQUEST_URI} ^/index\.php$ [OR]
+RewriteCond %{REQUEST_URI} ^/public/
+RewriteRule .* - [L]
+
+# 🔁 Redirect all other requests to index.php (required for routing)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
