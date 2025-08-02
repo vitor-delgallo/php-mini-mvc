@@ -126,3 +126,9 @@ yarn-error.log
 /writable
 !*.gitignore
 !*.gitkeep
+
+# Storage logs and sessions
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/sessions/*
+!/storage/sessions/.gitkeep

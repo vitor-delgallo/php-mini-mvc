@@ -125,15 +125,16 @@ class View {
     }
 
     /**
-     * Render a view file within the main layout template.
+     * Render a view file or html within the main layout template.
      *
      * Variables passed through `$data` and shared globals will be extracted.
      *
-     * @param string $page The relative view path (without extension).
+     * @param string|null $page The relative view path (without extension).
+     * @param string|null $html HTML content to be included
      * @param array  $data The data to be extracted into the view.
      * @return string Rendered HTML content.
      */
-    public static function render(string $page, array $data = []): string {
+    private static function render(?string $page = null, ?string $html = null, array $data = []): string {
         // Merge shared global variables with the local data passed to the view
         // Then extract them into the local scope (e.g. $data['user'] → $user)
         extract(array_merge(self::getGlobals(), $data));
@@ -146,6 +147,32 @@ class View {
 
         // Return the rendered HTML as a string
         return ob_get_clean();
+    }
+
+    /**
+     * Render a view file within the main layout template.
+     *
+     * Variables passed through `$data` and shared globals will be extracted.
+     *
+     * @param string $page The relative view path (without extension).
+     * @param array  $data The data to be extracted into the view.
+     * @return string Rendered HTML content.
+     */
+    public static function render_page(string $page, array $data = []): string {
+        return self::render($page, null, $data);
+    }
+
+    /**
+     * Render a html within the main layout template.
+     *
+     * Variables passed through `$data` and shared globals will be extracted.
+     *
+     * @param string $html HTML content to be included
+     * @param array  $data The data to be extracted into the view.
+     * @return string Rendered HTML content.
+     */
+    public static function render_html(string $html, array $data = []): string {
+        return self::render(null, $html, $data);
     }
 
     /**

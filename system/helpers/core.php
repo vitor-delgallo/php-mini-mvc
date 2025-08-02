@@ -226,8 +226,12 @@ function view_get_template(): string {
     return View::getTemplate();
 }
 
-function view_render(string $page, array $data = []): string {
-    return View::render($page, $data);
+function view_render_page(string $page, array $data = []): string {
+    return View::render_page($page, $data);
+}
+
+function view_render_html(string $html, array $data = []): string {
+    return View::render_html($html, $data);
 }
 
 function view_globals(): array {

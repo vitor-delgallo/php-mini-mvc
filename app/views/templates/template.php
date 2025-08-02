@@ -33,6 +33,8 @@
     <?php
         if (!empty($page)) {
             include \System\Core\Path::viewsPages() . '/' . $page . '.php';
+        } else if(!empty($html)) {
+            echo $html;
         }
     ?>
 </main>
