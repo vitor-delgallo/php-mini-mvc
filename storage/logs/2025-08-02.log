@@ -1,1 +1,0 @@
-[2025-08-02 06:12:06] [EXCEPTION] Missing required database parameters: DB_HOST, DB_NAME, DB_USER in E:\xampp\htdocs\php-mini-mvc\system\Core\Database.php:79

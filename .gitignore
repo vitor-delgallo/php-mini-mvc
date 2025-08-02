@@ -128,7 +128,7 @@ yarn-error.log
 !*.gitkeep
 
 # Storage logs and sessions
-/storage/logs/*
-!/storage/logs/.gitkeep
-/storage/sessions/*
-!/storage/sessions/.gitkeep
+storage/logs/*
+!storage/logs/.gitkeep
+storage/sessions/*
+!storage/sessions/.gitkeep
