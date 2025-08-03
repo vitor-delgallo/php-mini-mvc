@@ -143,7 +143,7 @@ class View {
         ob_start();
 
         // Include the layout template, which is expected to use the extracted variables
-        include Path::viewsTemplates() . self::getTemplate();
+        include Path::appViewsTemplates() . self::getTemplate();
 
         // Return the rendered HTML as a string
         return ob_get_clean();

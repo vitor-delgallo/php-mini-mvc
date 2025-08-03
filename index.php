@@ -12,6 +12,7 @@ use System\Core\Autoload;
 use System\Core\Path;
 use System\Core\Response;
 use System\Core\Database;
+use System\Core\Language;
 
 // Includes custom error handlers (e.g. set_error_handler, shutdown_function)
 include Path::systemIncludes() . '/error_handlers.php';
@@ -53,14 +54,14 @@ try {
     include Path::systemIncludes() . '/router_dispatch.php';
 } catch (NotFoundException $e) {
     // Handles route not found (404) with a basic HTML response
-    $response = Response::html('<h1>404 - Page Not Found</h1>', 404);
+    $response = Response::html('<h1>' . Language::get("http.404.title") . '</h1>', 404);
 } catch (\Throwable $e) {
     // Handles any uncaught exception (500 Internal Server Error)
-    $response = Response::html('<h1>Internal Server Error</h1>', 500);
+    $response = Response::html('<h1>' . Language::get("http.500.title") . '</h1>', 500);
 
     // In non-production environments, show detailed error information
     if (!ConfigEnvironment::isProduction()) {
-        $response = Response::html("<h1>Internal Error</h1><pre>" . htmlspecialchars($e) . "</pre>", 500);
+        $response = Response::html('<h1>' . Language::get("http.500.title") . '</h1><pre>'. htmlspecialchars($e) . '</pre>', 500);
 
         // Also log the error to a daily log file
         $logName = date('Y-m-d') . ".log";
@@ -75,6 +76,4 @@ try {
 // Sends the final HTTP response to the client
 (new SapiEmitter())->emit($response);
 
-// TODO: Optimize the .htaccess file
-// TODO: Use the Language class to define error messages in Portuguese (pt-BR)
-// TODO: Add examples of different route usage scenarios
+// TODO: Create form validation class (???)

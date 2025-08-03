@@ -29,8 +29,8 @@ if (ConfigSession::isFiles()) {
     // Instantiate the session handler with optional prefix and encryption key
     $handler = new DBHandler(
         $pdo,
-        Globals::get('SESSION_PREFIX'), // opcional
-        Globals::get('SESSION_ENCRYPT_KEY') // opcional (32 caracteres)
+        Globals::env('SESSION_PREFIX'), // opcional
+        Globals::env('SESSION_ENCRYPT_KEY') // opcional (32 caracteres)
     );
 
     // Register the custom session handler

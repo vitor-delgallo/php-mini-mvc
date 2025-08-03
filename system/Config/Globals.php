@@ -21,6 +21,13 @@ class Globals {
     private static array $config = [];
 
     /**
+     * Internal key-value store for all env configuration.
+     *
+     * @var null|array<string, mixed>
+     */
+    private static ?array $env = null;
+
+    /**
      * Retrieve a config value by key, or get the full array.
      *
      * @param string|null $key Optional key to retrieve. If null, returns all config.
@@ -78,27 +85,45 @@ class Globals {
     }
 
     /**
-     * Load environment variables from a `.env` file and add them to the config store.
-     *
-     * Uses the `vlucas/phpdotenv` package to load values into $_ENV,
-     * and then merges them into the internal config array.
-     *
-     * @return void
-     */
-    public static function loadEnv(): void {
-        $dotenv = Dotenv::createImmutable(Path::root());
-        $dotenv->load();
-
-        self::merge($_ENV);
-    }
-
-    /**
      * Reset the entire configuration store and reload .env variables.
      *
      * @return void
      */
     public static function reset(): void {
         self::$config = [];
+    }
+
+    /**
+     * Load environment variables from a `.env` file and add them to the env store.
+     *
+     * Uses the `vlucas/phpdotenv` package to load values into $_ENV,
+     * and then merges them into the internal env array.
+     *
+     * @return void
+     */
+    public static function loadEnv(): void {
+        if(self::$env !== null) {
+            return;
+        }
+
+        $dotenv = Dotenv::createImmutable(Path::root());
+        $dotenv->load();
+
+        self::$env = array_merge([], $_ENV);
+    }
+
+    /**
+     * Retrieve an env value by key, or get the full array.
+     *
+     * @param string|null $key Optional key to retrieve. If null, returns all env.
+     * @return array|string|null
+     */
+    public static function env(?string $key = null): array|string|null {
         self::loadEnv();
+
+        if ($key === null) {
+            return self::$env;
+        }
+        return self::$env[$key] ?? null;
     }
 }

@@ -33,7 +33,7 @@ Projetado para flexibilidade, legibilidade e estruturação rápida de projetos,
 │       ├── pages/
 │       └── templates/
 │   └── routes.php
-├── langs/
+├── languages/
 ├── public/
 │   ├── assets/
 │   │   ├── css/
@@ -58,6 +58,7 @@ Projetado para flexibilidade, legibilidade e estruturação rápida de projetos,
 ├── composer.lock
 ├── index.php
 └── README.md
+└── README.pt-br.md
 ```
 
 ---
@@ -80,7 +81,7 @@ Renomeie `.env.example` para `.env` e configure conforme seu ambiente!
 
 ## 🌍 Suporte a Idiomas
 
-As traduções ficam na pasta `/langs` em arquivos JSON.
+As traduções ficam na pasta `/languages` em arquivos JSON.
 O sistema detecta automaticamente o idioma do navegador ou usa o idioma padrão definido.
 
 ---
@@ -96,8 +97,8 @@ $router->map('POST', '/login', [AuthController::class, 'login']);
 
 ## 🔧 Utilitários Disponíveis
 
-* `Path::viewsTemplates()` – retorna o caminho absoluto para templates
-* `Globals::get('CHAVE')` – acessa variáveis de ambiente/config
+* `Path::appViewsTemplates()` – retorna o caminho absoluto para templates
+* `Globals::env('CHAVE')` – acessa variáveis de ambiente/config
 * `Session::set('chave', 'valor')` – armazena dados em sessão
 * `Language::get('bem_vindo')` – recupera termos traduzidos
 

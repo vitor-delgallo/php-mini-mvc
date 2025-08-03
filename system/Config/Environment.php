@@ -20,7 +20,7 @@ class Environment {
     /**
      * Get the current environment name.
      *
-     * Reads from Globals::get('APP_ENV'), normalizes the value, and
+     * Reads from Globals::env('APP_ENV'), normalizes the value, and
      * falls back to 'production' if the value is missing or invalid.
      *
      * @return string One of: 'production', 'development', 'testing'.
@@ -38,8 +38,8 @@ class Environment {
         ];
 
         // Read and normalize from config
-        self::$env = !empty(Globals::get('APP_ENV'))
-            ? strtolower(Globals::get('APP_ENV'))
+        self::$env = !empty(Globals::env('APP_ENV'))
+            ? strtolower(Globals::env('APP_ENV'))
             : "";
 
         // Fallback to "production" if invalid

@@ -7,7 +7,7 @@ use System\Config\Globals;
 /**
  * Language handler and translator for the application.
  *
- * Loads JSON-based translation files from the /langs directory,
+ * Loads JSON-based translation files from the /languages directory,
  * detects or uses a specified language code (e.g., "pt-br", "en"),
  * and provides translated strings on demand.
  */
@@ -65,7 +65,7 @@ class Language {
      * @return void
      */
     public static function load(?string $lang = null): void {
-        $available = glob(Path::langs() . '/*.json');
+        $available = glob(Path::languages() . '/*.json');
         if (!$available) {
             return;
         }
@@ -82,7 +82,7 @@ class Language {
 
         if (!empty($lang)) {
             // Try full code (e.g., pt-br.json)
-            $fullPath = Path::langs() . "/{$lang}.json";
+            $fullPath = Path::languages() . "/{$lang}.json";
             if (file_exists($fullPath)) {
                 self::$langCode = $lang;
                 self::$translations = json_decode(file_get_contents($fullPath), true);
@@ -92,7 +92,7 @@ class Language {
             // Try prefix fallback (e.g., pt.json)
             if (str_contains($lang, '-')) {
                 $prefix = explode('-', $lang)[0];
-                $shortPath = Path::langs() . "/{$prefix}.json";
+                $shortPath = Path::languages() . "/{$prefix}.json";
                 if (file_exists($shortPath)) {
                     self::$langCode = $prefix;
                     self::$translations = json_decode(file_get_contents($shortPath), true);
@@ -104,7 +104,7 @@ class Language {
         // Fallback to default language (from config)
         $fallback = self::defaultLang();
         if (!empty($fallback)) {
-            $fallbackPath = Path::langs() . "/{$fallback}.json";
+            $fallbackPath = Path::languages() . "/{$fallback}.json";
             if (file_exists($fallbackPath)) {
                 self::$langCode = $fallback;
                 self::$translations = json_decode(file_get_contents($fallbackPath), true);
@@ -123,7 +123,7 @@ class Language {
      * @return string|null
      */
     public static function defaultLang(): ?string {
-        $ret = Globals::get('DEFAULT_LANGUAGE');
+        $ret = Globals::env('DEFAULT_LANGUAGE');
         return empty($ret) ? null : strtolower(trim($ret));
     }
 

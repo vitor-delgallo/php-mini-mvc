@@ -38,17 +38,17 @@ class Database {
 
         // Ensure a driver is configured
         if(ConfigDatabase::isNone()) {
-            throw new \RuntimeException('Dados de conexão não definidos');
+            throw new \RuntimeException(Language::get("database.driver.not-found"));
         }
 
         // Load connection settings from environment
         $driver = ConfigDatabase::env();
-        $host   = Globals::get('DB_HOST');
-        $port   = Globals::get('DB_PORT');
-        $name   = Globals::get('DB_NAME');
-        $user   = Globals::get('DB_USER');
-        $pass   = Globals::get('DB_PASS');
-        $charset = Globals::get('DB_CHARSET') ?? 'utf8';
+        $host   = Globals::env('DB_HOST');
+        $port   = Globals::env('DB_PORT');
+        $name   = Globals::env('DB_NAME');
+        $user   = Globals::env('DB_USER');
+        $pass   = Globals::env('DB_PASS');
+        $charset = Globals::env('DB_CHARSET') ?? 'utf8';
 
         // Fallback to default ports if not defined
         if (empty($port)) {
@@ -77,7 +77,7 @@ class Database {
 
         if (!empty($missing)) {
             throw new \RuntimeException(
-                'Missing required database parameters: ' . implode(', ', $missing)
+                Language::get("database.parameters.required.info") . implode(', ', $missing)
             );
         }
 
@@ -85,7 +85,7 @@ class Database {
         $dsn = match ($driver) {
             'pgsql' => "pgsql:host={$host};port={$port};dbname={$name}",
             'mysql' => "mysql:host={$host};port={$port};dbname={$name};charset={$charset}",
-            default => throw new \RuntimeException("Driver de banco não suportado: $driver"),
+            default => throw new \RuntimeException(Language::get("database.driver.not-supported.info") . $driver),
         };
 
         // Attempt to create PDO connection
@@ -98,7 +98,7 @@ class Database {
 
             return self::$connection;
         } catch (PDOException $e) {
-            throw new \RuntimeException('Database connection error: ' . $e->getMessage());
+            throw new \RuntimeException(Language::get("database.connection.error.info") . $e->getMessage());
         }
     }
 

@@ -33,7 +33,7 @@ Built for flexibility, readability, and quick project scaffolding without extern
 │   │   ├── pages/
 │   │   └── templates/
 │   └── routes.php
-├── langs/
+├── languages/
 ├── public/
 │   ├── assets/
 │   │   ├── css/
@@ -81,7 +81,7 @@ Rename `.env.example` to `.env` and configure your environment!
 
 ## 🌍 Language Support
 
-All translations are stored in `/langs` using JSON format.
+All translations are stored in `/languages` using JSON format.
 The system auto-detects the browser language or uses the default language.
 
 ---
@@ -97,8 +97,8 @@ $router->map('POST', '/login', [AuthController::class, 'login']);
 
 ## 🔧 Available Utilities
 
-* `Path::viewsTemplates()` – resolves absolute path to template views
-* `Globals::get('KEY')` – reads environment/config values
+* `Path::appViewsTemplates()` – resolves absolute path to template views
+* `Globals::env('KEY')` – reads environment/config values
 * `Session::set('key', 'value')` – stores data in session
 * `Language::get('welcome')` – fetches translated term
 

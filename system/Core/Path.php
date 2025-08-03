@@ -1,6 +1,8 @@
 <?php
 namespace System\Core;
 
+use \System\Config\Globals;
+
 /**
  * Path helper utility.
  *
@@ -13,7 +15,7 @@ class Path {
      * Cached result of the base path, computed only once.
      *
      * Used to avoid recalculating the base path logic on every call to basePath().
-     * It is derived from Globals::get('BASE_PATH') and normalized.
+     * It is derived from Globals::env('BASE_PATH') and normalized.
      *
      * Example: if BASE_PATH = "myapp/", the final result will be "/myapp"
      *
@@ -54,7 +56,7 @@ class Path {
      *
      * @return string
      */
-    public static function controllers(): string {
+    public static function appControllers(): string {
         return self::app() . '/Controllers';
     }
 
@@ -63,7 +65,7 @@ class Path {
      *
      * @return string
      */
-    public static function models(): string {
+    public static function appModels(): string {
         return self::app() . '/Models';
     }
 
@@ -72,7 +74,7 @@ class Path {
      *
      * @return string
      */
-    public static function views(): string {
+    public static function appViews(): string {
         return self::app() . '/views';
     }
 
@@ -81,8 +83,8 @@ class Path {
      *
      * @return string
      */
-    public static function viewsPages(): string {
-        return self::views() . '/pages';
+    public static function appViewsPages(): string {
+        return self::appViews() . '/pages';
     }
 
     /**
@@ -90,8 +92,8 @@ class Path {
      *
      * @return string
      */
-    public static function viewsTemplates(): string {
-        return self::views() . '/templates';
+    public static function appViewsTemplates(): string {
+        return self::appViews() . '/templates';
     }
 
     /**
@@ -158,12 +160,12 @@ class Path {
     }
 
     /**
-     * Get the /langs directory path.
+     * Get the /languages directory path.
      *
      * @return string
      */
-    public static function langs(): string {
-        return self::root() . '/langs';
+    public static function languages(): string {
+        return self::root() . '/languages';
     }
 
     /**
@@ -177,7 +179,7 @@ class Path {
             return self::$basePathCache;
         }
 
-        self::$basePathCache = \System\Config\Globals::get('BASE_PATH') ?? "";
+        self::$basePathCache = Globals::env('BASE_PATH') ?? "";
 
         // Remove trailing slashes
         self::$basePathCache = rtrim(self::$basePathCache, "/");

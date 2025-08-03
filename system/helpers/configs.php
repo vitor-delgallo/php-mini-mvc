@@ -109,3 +109,7 @@ function globals_forget_many(array $config): void {
 function globals_load_env(): void {
     Globals::loadEnv();
 }
+
+function globals_env(?string $key = null): array|string|null {
+    return Globals::env($key);
+}

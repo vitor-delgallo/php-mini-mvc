@@ -58,8 +58,16 @@ function language_get(?string $key = null, ?string $lang = null): string|array|n
     return Language::get($key, $lang);
 }
 
+function lg(?string $key = null, ?string $lang = null): string|array|null {
+    return language_get($key, $lang);
+}
+
 function language_load(?string $lang = null): void {
     Language::load($lang);
+}
+
+function ld(?string $lang = null): void {
+    language_load($lang);
 }
 
 function language_detect(): string {
@@ -86,24 +94,24 @@ function path_app_helpers(): string {
     return Path::appHelpers();
 }
 
-function path_controllers(): string {
-    return Path::controllers();
+function path_app_controllers(): string {
+    return Path::appControllers();
 }
 
-function path_models(): string {
-    return Path::models();
+function path_app_models(): string {
+    return Path::appModels();
 }
 
-function path_views(): string {
-    return Path::views();
+function path_app_views(): string {
+    return Path::appViews();
 }
 
-function path_views_pages(): string {
-    return Path::viewsPages();
+function path_app_views_pages(): string {
+    return Path::appViewsPages();
 }
 
-function path_views_templates(): string {
-    return Path::viewsTemplates();
+function path_app_views_templates(): string {
+    return Path::appViewsTemplates();
 }
 
 function path_system(): string {
@@ -134,8 +142,8 @@ function path_storage_logs(): string {
     return Path::storageLogs();
 }
 
-function path_langs(): string {
-    return Path::langs();
+function path_languages(): string {
+    return Path::languages();
 }
 
 function path_base(): string {

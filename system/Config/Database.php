@@ -8,7 +8,7 @@ namespace System\Config;
  * (e.g., MySQL or PostgreSQL), and provides helper methods to check
  * the active driver.
  *
- * Reads the value from Globals::get('DB_DRIVER') and validates it.
+ * Reads the value from Globals::env('DB_DRIVER') and validates it.
  * If invalid or missing, defaults to "none".
  */
 class Database {
@@ -41,8 +41,8 @@ class Database {
         ];
 
         // Load and normalize driver name from environment
-        self::$env = !empty(Globals::get('DB_DRIVER'))
-            ? strtolower(Globals::get('DB_DRIVER'))
+        self::$env = !empty(Globals::env('DB_DRIVER'))
+            ? strtolower(Globals::env('DB_DRIVER'))
             : "";
 
         // Fallback to "none" if not valid

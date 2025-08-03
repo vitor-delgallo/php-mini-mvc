@@ -39,8 +39,8 @@ class Session {
         ];
 
         // Fetch and normalize SESSION_DRIVER from environment
-        self::$env = !empty(Globals::get('SESSION_DRIVER'))
-            ? strtolower(Globals::get('SESSION_DRIVER'))
+        self::$env = !empty(Globals::env('SESSION_DRIVER'))
+            ? strtolower(Globals::env('SESSION_DRIVER'))
             : "";
 
         // Fallback to "none" if invalid
