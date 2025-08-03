@@ -160,6 +160,13 @@
   "doc.view.renderHtml.desc": "Embeds a direct HTML string inside the layout, useful for dynamic or pre-rendered content.",
   "doc.view.code.comment.getGlobals": "Gets all shared global variables.",
   "doc.view.getGlobals.desc": "Returns all variables set using `share()` to be available in templates.",
+  "user.not-found": "User not found!",
+  "user.profile": "User Profile",
+  "user.profile.id": "ID:",
+  "user.profile.name": "Name:",
+  "user.profile.email": "Email:",
+  "back.home": "← Back to Home",
+  
   "session.driver.not-found": "Session driver not defined",
   "database.driver.not-found": "Database connection driver not defined",
   "database.parameters.required.info": "The following required parameters for database connection were not defined: ",
@@ -167,11 +174,5 @@
   "database.connection.error.info": "Error connecting to the database: ",
   "database.tables.error.info": "Error creating tables in the database: ",
   "http.404.title": "404 - Page Not Found",
-  "http.500.title": "Internal Server Error",
-  "user.not-found": "User not found!",
-  "user.profile": "User Profile",
-  "user.profile.id": "ID:",
-  "user.profile.name": "Name:",
-  "user.profile.email": "Email:",
-  "back.home": "← Back to Home"
+  "http.500.title": "Internal Server Error"
 }

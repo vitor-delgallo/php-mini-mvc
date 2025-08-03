@@ -160,6 +160,13 @@
   "doc.view.renderHtml.desc": "Inclui um conteúdo HTML direto no template atual, útil para mensagens dinâmicas ou pré-renderizadas.",
   "doc.view.code.comment.getGlobals": "Obtém todas as variáveis globais compartilhadas.",
   "doc.view.getGlobals.desc": "Retorna todas as variáveis definidas com `share()` para uso em templates.",
+  "user.not-found": "Usuário não encontrado!",
+  "user.profile": "Perfil do Usuário",
+  "user.profile.id": "ID:",
+  "user.profile.name": "Nome:",
+  "user.profile.email": "Email:",
+  "back.home": "← Voltar para a página principal",
+
   "session.driver.not-found": "Driver da sessão não definido",
   "database.driver.not-found": "Driver de conexão com o banco de dados não definido",
   "database.parameters.required.info": "Os seguintes parâmetros obrigatórios para conexão com o banco de dados não foram definidos: ",
@@ -167,11 +174,5 @@
   "database.connection.error.info": "Erro ao conectar no banco de dados: ",
   "database.tables.error.info": "Erro ao criar tabelas no banco de dados: ",
   "http.404.title": "404 - Página não encontrada",
-  "http.500.title": "Erro Interno do Servidor",
-  "user.not-found": "Usuário não encontrado!",
-  "user.profile": "Perfil do Usuário",
-  "user.profile.id": "ID:",
-  "user.profile.name": "Nome:",
-  "user.profile.email": "Email:",
-  "back.home": "← Voltar para a página principal"
+  "http.500.title": "Erro Interno do Servidor"
 }
