@@ -95,15 +95,6 @@ $router->map('POST', '/login', [AuthController::class, 'login']);
 
 ---
 
-## 🔧 Available Utilities
-
-* `Path::appViewsTemplates()` – resolves absolute path to template views
-* `Globals::env('KEY')` – reads environment/config values
-* `Session::set('key', 'value')` – stores data in session
-* `Language::get('welcome')` – fetches translated term
-
----
-
 ## 📜 License
 
 This project is open-source and available under the [MIT License](LICENSE).

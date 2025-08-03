@@ -95,15 +95,6 @@ $router->map('POST', '/login', [AuthController::class, 'login']);
 
 ---
 
-## 🔧 Utilitários Disponíveis
-
-* `Path::appViewsTemplates()` – retorna o caminho absoluto para templates
-* `Globals::env('CHAVE')` – acessa variáveis de ambiente/config
-* `Session::set('chave', 'valor')` – armazena dados em sessão
-* `Language::get('bem_vindo')` – recupera termos traduzidos
-
----
-
 ## 📜 Licença
 
 Este projeto é open-source e está sob a [Licença MIT](LICENSE).
