@@ -68,7 +68,7 @@ Projetado para flexibilidade, legibilidade e estruturação rápida de projetos,
 ### 1. Clone o Projeto e Instale as Dependências
 
 ```bash
-git clone https://github.com/seu-usuario/php-mini-mvc.git
+git clone https://github.com/vitor-delgallo/php-mini-mvc.git
 cd php-mini-mvc
 composer install
 ```
