@@ -68,7 +68,7 @@ Built for flexibility, readability, and quick project scaffolding without extern
 ### 1. Clone and Install Dependencies
 
 ```bash
-git clone https://github.com/your-username/php-mini-mvc.git
+git clone https://github.com/vitor-delgallo/php-mini-mvc.git
 cd php-mini-mvc
 composer install
 ```
