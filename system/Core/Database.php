@@ -38,7 +38,7 @@ class Database {
 
         // Ensure a driver is configured
         if(ConfigDatabase::isNone()) {
-            throw new \RuntimeException(Language::get("database.driver.not-found"));
+            throw new \RuntimeException(Language::get("system.database.driver.not-found"));
         }
 
         // Load connection settings from environment
@@ -77,7 +77,7 @@ class Database {
 
         if (!empty($missing)) {
             throw new \RuntimeException(
-                Language::get("database.parameters.required.info") . implode(', ', $missing)
+                Language::get("system.database.parameters.required.info") . implode(', ', $missing)
             );
         }
 
@@ -85,7 +85,7 @@ class Database {
         $dsn = match ($driver) {
             'pgsql' => "pgsql:host={$host};port={$port};dbname={$name}",
             'mysql' => "mysql:host={$host};port={$port};dbname={$name};charset={$charset}",
-            default => throw new \RuntimeException(Language::get("database.driver.not-supported.info") . $driver),
+            default => throw new \RuntimeException(Language::get("system.database.driver.not-supported.info") . $driver),
         };
 
         // Attempt to create PDO connection
@@ -98,7 +98,7 @@ class Database {
 
             return self::$connection;
         } catch (PDOException $e) {
-            throw new \RuntimeException(Language::get("database.connection.error.info") . $e->getMessage());
+            throw new \RuntimeException(Language::get("system.database.connection.error.info") . $e->getMessage());
         }
     }
 

@@ -1,16 +1,16 @@
 <section>
-    <p><strong><?= lg("framework.name") ?></strong> <?= lg("framework.body.details") ?></p>
+    <p><strong><?= lg("template.framework.name") ?></strong> <?= lg("doc.body.details") ?></p>
 
     <ul>
-        <li>✅ <?= lg("framework.features.routes") ?></li>
-        <li>✅ <?= lg("framework.features.templates") ?></li>
-        <li>✅ <?= lg("framework.features.helpers") ?></li>
-        <li>✅ <?= lg("framework.features.simple") ?></li>
+        <li>✅ <?= lg("doc.features.routes") ?></li>
+        <li>✅ <?= lg("doc.features.templates") ?></li>
+        <li>✅ <?= lg("doc.features.helpers") ?></li>
+        <li>✅ <?= lg("doc.features.simple") ?></li>
     </ul>
 
-    <p><?= lg("framework.description.purpose") ?></p>
+    <p><?= lg("doc.description.purpose") ?></p>
 
-    <p><?= lg("calltoaction.create.landingpage") ?></p>
+    <p><?= lg("doc.create.landingpage") ?></p>
 </section>
 
 <section>
@@ -511,12 +511,12 @@ database_disconnect();
 use System\Core\Language;
 
 $all = Language::get(); // <?= lg("doc.language.code.comment.get.all") ?>
-$title = Language::get("framework.name"); // <?= lg("doc.language.code.comment.get.key") ?>
+$title = Language::get("template.framework.name"); // <?= lg("doc.language.code.comment.get.key") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$title = lg("framework.name");
-$title = language_get("framework.name");
+$title = lg("template.framework.name");
+$title = language_get("template.framework.name");
             </code></pre>
             <footer><em><?= lg("doc.language.get.desc") ?></em></footer>
         </article>

@@ -1,0 +1,10 @@
+{
+  "system.session.driver.not-found": "Session driver not defined!",
+  "system.database.driver.not-found": "Database connection driver not defined!",
+  "system.database.parameters.required.info": "The following required parameters for database connection were not defined: ",
+  "system.database.driver.not-supported.info": "Unsupported DB driver: ",
+  "system.database.connection.error.info": "Error connecting to the database: ",
+  "system.database.tables.error.info": "Error creating tables in the database: ",
+  "system.http.404.title": "404 - Page Not Found!",
+  "system.http.500.title": "Internal Server Error!"
+}

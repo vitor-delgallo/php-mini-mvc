@@ -1,0 +1,10 @@
+{
+  "system.session.driver.not-found": "Driver da sessão não definido!",
+  "system.database.driver.not-found": "Driver de conexão com o banco de dados não definido!",
+  "system.database.parameters.required.info": "Os seguintes parâmetros obrigatórios para conexão com o banco de dados não foram definidos: ",
+  "system.database.driver.not-supported.info": "DB Driver não suportado: ",
+  "system.database.connection.error.info": "Erro ao conectar no banco de dados: ",
+  "system.database.tables.error.info": "Erro ao criar tabelas no banco de dados: ",
+  "system.http.404.title": "404 - Página não encontrada!",
+  "system.http.500.title": "Erro Interno do Servidor!"
+}

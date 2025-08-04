@@ -18,7 +18,7 @@ class Session {
      */
     public static function start(): void {
         if(ConfigSession::isNone()) {
-            throw new \RuntimeException(Language::get("session.driver.not-found"));
+            throw new \RuntimeException(Language::get("system.session.driver.not-found"));
         }
 
         if (session_status() === PHP_SESSION_NONE) {

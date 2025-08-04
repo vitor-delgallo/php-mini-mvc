@@ -118,7 +118,7 @@ class DBHandler implements SessionHandlerInterface {
         $sql = match ($this->driver) {
             'pgsql' => "DELETE FROM sessions WHERE updated_at < NOW() - INTERVAL ':max seconds'",
             'mysql' => "DELETE FROM sessions WHERE updated_at < NOW() - INTERVAL :max SECOND",
-            default => throw new \RuntimeException(Language::get("database.driver.not-found"))
+            default => throw new \RuntimeException(Language::get("system.database.driver.not-found"))
         };
 
         $stmt = $this->pdo->prepare($sql);
@@ -155,7 +155,7 @@ class DBHandler implements SessionHandlerInterface {
 
             $this->pdo->exec($sql);
         } catch (PDOException $e) {
-            throw new \RuntimeException(Language::get("database.tables.error.info") . $e->getMessage());
+            throw new \RuntimeException(Language::get("system.database.tables.error.info") . $e->getMessage());
         }
     }
 
