@@ -23,6 +23,13 @@ class Database {
     private static ?PDO $connection = null;
 
     /**
+     * Whether database is in transaction
+     *
+     * @var bool
+     */
+    private static bool $inTransaction = false;
+
+    /**
      * Establish and return the PDO database connection.
      *
      * Loads credentials and configuration from Globals.
@@ -100,6 +107,51 @@ class Database {
         } catch (PDOException $e) {
             throw new \RuntimeException(Language::get("system.database.connection.error.info") . $e->getMessage());
         }
+    }
+
+    /**
+     * Checks whether a transaction is currently active.
+     *
+     * @return bool True if a transaction is in progress, false otherwise.
+     */
+    public static function isInTransaction(): bool {
+        return self::$inTransaction;
+    }
+
+    /**
+     * Starts a new database transaction if none is currently active.
+     *
+     * @return bool True if the transaction was successfully started or is already active, false on failure.
+     */
+    public static function startTransaction(): bool {
+        if(self::isInTransaction()) {
+            return true;
+        }
+        return self::statement("START TRANSACTION");
+    }
+
+    /**
+     * Commits the current database transaction if one is active.
+     *
+     * @return bool True if the transaction was committed or none was active, false on failure.
+     */
+    public static function commitTransaction(): bool {
+        if(!self::isInTransaction()) {
+            return true;
+        }
+        return self::statement("COMMIT");
+    }
+
+    /**
+     * Rolls back the current database transaction if one is active.
+     *
+     * @return bool True if the transaction was rolled back or none was active, false on failure.
+     */
+    public static function rollbackTransaction(): bool {
+        if(!self::isInTransaction()) {
+            return true;
+        }
+        return self::statement("ROLLBACK");
     }
 
     /**

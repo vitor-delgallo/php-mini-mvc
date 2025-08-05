@@ -29,7 +29,6 @@ class Path {
      * @return string Absolute path to the project root.
      */
     public static function root(): string {
-        // volta até a raiz do projeto
         return dirname(__DIR__, 2);
     }
 

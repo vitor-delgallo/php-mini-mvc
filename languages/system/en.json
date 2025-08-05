@@ -6,5 +6,6 @@
   "system.database.connection.error.info": "Error connecting to the database: ",
   "system.database.tables.error.info": "Error creating tables in the database: ",
   "system.http.404.title": "404 - Page Not Found!",
-  "system.http.500.title": "Internal Server Error!"
+  "system.http.500.title": "Internal Server Error!",
+  "system.invalid.directory.info": "Invalid directory: "
 }

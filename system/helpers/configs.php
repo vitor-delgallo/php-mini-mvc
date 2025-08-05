@@ -82,8 +82,8 @@ function environment_is_testing(): bool {
     return Environment::isTesting();
 }
 
-function globals_get(?string $key = null): array|string|null {
-    return Globals::get($key);
+function globals_get(?string $key = null, mixed $default = null): mixed {
+    return Globals::get($key, $default);
 }
 
 function globals_reset(): void {

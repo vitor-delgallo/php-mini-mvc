@@ -1,7 +1,7 @@
 <?php
 
 // Loads Composer's autoloader (includes all dependencies)
-require 'vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use League\Route\Http\Exception\NotFoundException;
@@ -15,7 +15,7 @@ use System\Core\Database;
 use System\Core\Language;
 
 // Includes custom error handlers (e.g. set_error_handler, shutdown_function)
-include Path::systemIncludes() . '/error_handlers.php';
+include_once Path::systemIncludes() . '/error_handlers.php';
 
 // Initializes the response variable
 $response = null;
@@ -41,7 +41,7 @@ try {
     Autoload::from(Path::appHelpers());
 
     // Initializes session handling based on configured driver (files, db, or none)
-    include Path::systemIncludes() . '/session_handlers.php';
+    include_once Path::systemIncludes() . '/session_handlers.php';
 
     // Establish a database connection if a valid driver is configured
     if(!ConfigDatabase::isNone()) {
@@ -49,9 +49,9 @@ try {
     }
 
     // Loads and registers all application routes
-    include Path::systemIncludes() . '/router_init.php';
-    include Path::app() . '/routes.php';
-    include Path::systemIncludes() . '/router_dispatch.php';
+    include_once Path::systemIncludes() . '/router_init.php';
+    include_once Path::app() . '/routes.php';
+    include_once Path::systemIncludes() . '/router_dispatch.php';
 } catch (NotFoundException $e) {
     // Handles route not found (404) with a basic HTML response
     $response = Response::html('<h1>' . Language::get("system.http.404.title") . '</h1>', 404);
@@ -77,4 +77,3 @@ try {
 (new SapiEmitter())->emit($response);
 
 // TODO: Create form validation class (???)
-// TODO: Optional language per path (???)

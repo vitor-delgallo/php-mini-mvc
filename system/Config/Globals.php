@@ -31,14 +31,15 @@ class Globals {
      * Retrieve a config value by key, or get the full array.
      *
      * @param string|null $key Optional key to retrieve. If null, returns all config.
-     * @return array|string|null
+     * @param mixed $default Default value for retrieve the key.
+     * @return mixed
      */
-    public static function get(?string $key = null): array|string|null {
+    public static function get(?string $key = null, mixed $default = null): mixed {
         if ($key === null) {
             return self::$config;
         }
 
-        return self::$config[$key] ?? null;
+        return self::$config[$key] ?? $default;
     }
 
     /**
@@ -106,10 +107,12 @@ class Globals {
             return;
         }
 
-        $dotenv = Dotenv::createImmutable(Path::root());
-        $dotenv->load();
+        try {
+            $dotenv = Dotenv::createImmutable(Path::root());
+            $dotenv->load();
 
-        self::$env = array_merge([], $_ENV);
+            self::$env = array_merge([], $_ENV);
+        } catch (\Throwable $ex) {}
     }
 
     /**

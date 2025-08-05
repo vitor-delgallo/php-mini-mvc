@@ -17,7 +17,7 @@ class Autoload {
      */
     public static function from(string $directory): void {
         if (!is_dir($directory)) {
-            throw new \InvalidArgumentException("Invalid directory: {$directory}");
+            throw new \InvalidArgumentException(Language::get("system.invalid.directory.info") . $directory);
         }
 
         // Use RecursiveDirectoryIterator to scan all files/subdirectories
