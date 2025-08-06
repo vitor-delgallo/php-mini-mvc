@@ -30,6 +30,13 @@ class Database {
     private static bool $inTransaction = false;
 
     /**
+     * Sets the status of executed statements. The status remains true if all statements execute successfully.
+     *
+     * @var bool
+     */
+    private static bool $transactionStillOk = true;
+
+    /**
      * Establish and return the PDO database connection.
      *
      * Loads credentials and configuration from Globals.
@@ -119,6 +126,18 @@ class Database {
     }
 
     /**
+     * Checks whether the current transaction is still in a valid state.
+     *
+     * This indicates that no errors have occurred so far and the transaction
+     * can continue to execute statements successfully.
+     *
+     * @return bool True if the transaction is still valid, false otherwise.
+     */
+    public static function isTransactionStillOk(): bool {
+        return self::$transactionStillOk;
+    }
+
+    /**
      * Starts a new database transaction if none is currently active.
      *
      * @return bool True if the transaction was successfully started or is already active, false on failure.
@@ -127,6 +146,8 @@ class Database {
         if(self::isInTransaction()) {
             return true;
         }
+
+        self::$transactionStillOk = true;
         return self::statement("START TRANSACTION");
     }
 
@@ -139,6 +160,8 @@ class Database {
         if(!self::isInTransaction()) {
             return true;
         }
+
+        self::$transactionStillOk = true;
         return self::statement("COMMIT");
     }
 
@@ -151,6 +174,8 @@ class Database {
         if(!self::isInTransaction()) {
             return true;
         }
+
+        self::$transactionStillOk = true;
         return self::statement("ROLLBACK");
     }
 
@@ -164,7 +189,27 @@ class Database {
     public static function statement(string $sql, array $params = []): bool {
         $pdo = self::connect();
         $stmt = $pdo->prepare($sql);
-        return $stmt->execute($params);
+        $ret = $stmt->execute($params);
+
+        if(self::isInTransaction() && !$ret) {
+            self::$transactionStillOk = false;
+        }
+        return $ret;
+    }
+
+    /**
+     * Retrieves the ID of the last inserted row or sequence value.
+     *
+     * This method wraps PDO::lastInsertId() and returns the value generated
+     * by the database for an auto-increment column or sequence in the current session.
+     *
+     * The returned value is driver-dependent and will be a string if supported,
+     * or false if no value is available.
+     *
+     * @return string|false The last inserted ID as a string, or false if not supported.
+     */
+    public static function getLastInsertedID(): string|false {
+        return self::connect()->lastInsertId();
     }
 
     /**

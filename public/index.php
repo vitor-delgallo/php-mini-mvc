@@ -1,7 +1,7 @@
 <?php
 
 // Loads Composer's autoloader (includes all dependencies)
-require_once 'vendor/autoload.php';
+require_once '../vendor/autoload.php';
 
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use League\Route\Http\Exception\NotFoundException;

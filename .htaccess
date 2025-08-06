@@ -23,9 +23,8 @@ RewriteEngine On
 Options -Indexes
 
 ###############################################
-# ✅ Allow direct access to index.php and /public assets
+# ✅ Allow direct access to /public assets
 ###############################################
-RewriteCond %{REQUEST_URI} ^/index\.php$ [OR]
 RewriteCond %{REQUEST_URI} ^/public/
 RewriteRule .* - [L]
 
@@ -39,8 +38,7 @@ RewriteRule ^(.+)/$ /$1 [R=301,L]
 # 🔁 Route all other requests to index.php (for central routing)
 ###############################################
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.php [QSA,L]
+RewriteRule ^ public/index.php [QSA,L]
 
 ###############################################
 # 🧠 Enable GZIP compression (faster page loads). You can enable it in production.

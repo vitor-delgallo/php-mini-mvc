@@ -17,7 +17,7 @@ class User {
         $user = UserModel::find((int) $request->getAttribute('id'));
 
         if (empty($user)) {
-            return Response::html(view_render_html("<h4>" . Language::get("pages.user.not-found") . "</h4>"), 404);
+            return Response::html(view_render_html("<h4>" . Language::get("pages.users.not-found") . "</h4>"), 404);
         }
         return Response::html(view_render_page('user-profile', ['user' => $user]));
     }
