@@ -2,12 +2,12 @@
 namespace System\Core;
 
 /**
- * Autoload utility for loading PHP files dynamically.
+ * Autoload utility for loading PHP file dynamically.
  *
  * Recursively scans a given directory and includes all `.php` files found within it.
  * Useful for loading helpers, components, or additional logic during bootstrap.
  */
-class Autoload {
+class PHPAutoload {
     /**
      * Recursively loads all `.php` files from the specified directory.
      *

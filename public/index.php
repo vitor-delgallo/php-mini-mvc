@@ -8,17 +8,19 @@ use League\Route\Http\Exception\NotFoundException;
 use System\Config\Environment AS ConfigEnvironment;
 use System\Config\Database AS ConfigDatabase;
 use System\Config\Globals;
-use System\Core\Autoload;
+use System\Core\PHPAutoload;
+use System\Core\RouterLoader;
 use System\Core\Path;
 use System\Core\Response;
 use System\Core\Database;
 use System\Core\Language;
+use System\Session\NULLHandler;
 
 // Includes custom error handlers (e.g. set_error_handler, shutdown_function)
 include_once Path::systemIncludes() . '/error_handlers.php';
 
-// Initializes the response variable
 $response = null;
+$apiPrefix = "/api";
 try {
     // Loads .env environment variables into memory
     Globals::loadEnv();
@@ -35,13 +37,31 @@ try {
     }
 
     // Autoloads all system helper files
-    Autoload::from(Path::systemHelpers());
+    PHPAutoload::from(Path::systemHelpers());
 
     // Autoloads all application-specific helper files
-    Autoload::from(Path::appHelpers());
+    PHPAutoload::from(Path::appHelpers());
 
-    // Initializes session handling based on configured driver (files, db, or none)
-    include_once Path::systemIncludes() . '/session_handlers.php';
+    // Detect which route file to load
+    $uri = $_SERVER['REQUEST_URI'] ?? '/';
+    $base = Globals::env('BASE_PATH') ?? '';
+    $cleanUri = str_replace($base, '', $uri);
+    $useSession = true;
+
+    // If the route starts with api prefix, disable session
+    if (preg_match('#^' . preg_quote($apiPrefix) . '(/|$)#', $cleanUri)) {
+        $useSession = false;
+    }
+
+    // Init session only if needed
+    if ($useSession) {
+        // Initializes session handling based on configured driver (files, db, or none)
+        include_once Path::systemIncludes() . '/session_handlers.php';
+    } else {
+        ini_set('session.use_cookies', 0);
+        ini_set('session.use_trans_sid', 0);
+        session_set_save_handler((new NULLHandler()), true);
+    }
 
     // Establish a database connection if a valid driver is configured
     if(!ConfigDatabase::isNone()) {
@@ -49,9 +69,9 @@ try {
     }
 
     // Loads and registers all application routes
-    include_once Path::systemIncludes() . '/router_init.php';
-    include_once Path::app() . '/routes.php';
-    include_once Path::systemIncludes() . '/router_dispatch.php';
+    RouterLoader::load('web');
+    RouterLoader::loadWithPrefix($apiPrefix, 'api');
+    $response = RouterLoader::dispatch();
 } catch (NotFoundException $e) {
     // Handles route not found (404) with a basic HTML response
     $response = Response::html('<h1>' . Language::get("system.http.404.title") . '</h1>', 404);
@@ -76,4 +96,6 @@ try {
 // Sends the final HTTP response to the client
 (new SapiEmitter())->emit($response);
 
-// TODO: Create form validation class (???)
+// TODO: Test form validation class & create docs & create helpers
+// TODO: Create Router Tree class
+// TODO: Create DB ORM class (???)

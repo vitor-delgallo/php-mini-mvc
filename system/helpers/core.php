@@ -8,7 +8,6 @@
  * This file provides a collection of global helper functions
  * that simplify access to the core system components, including:
  *
- * - Autoloading
  * - Database operations (connect, select, statement, etc.)
  * - Language management (i18n)
  * - Path resolution helpers
@@ -21,7 +20,6 @@
  * experience and reducing boilerplate throughout the application.
  */
 
-use \System\Core\Autoload;
 use \System\Core\Database;
 use \System\Core\Language;
 use \System\Core\Path;
@@ -29,10 +27,6 @@ use \System\Core\Response;
 use \System\Core\Session;
 use \System\Core\View;
 use \Psr\Http\Message\ResponseInterface;
-
-function autoload_from(string $directory): void {
-    Autoload::from($directory);
-}
 
 function database_connect(): PDO {
     return Database::connect();
@@ -112,6 +106,10 @@ function path_app(): string {
 
 function path_app_helpers(): string {
     return Path::appHelpers();
+}
+
+function path_app_routes(): string {
+    return Path::appRoutes();
 }
 
 function path_app_controllers(): string {

@@ -12,7 +12,6 @@ $router->map('GET', '/', static function () {
     return response_html($html);
 });
 $router->group('/admin', function (RouteGroup $group) {
-    $group->map('GET', '/users', [\App\Controllers\User::class, 'index']);
     $group->map('GET', '/users/{id}', [\App\Controllers\User::class, 'showPage']);
     $group->map('GET', '/go-to-users', [\App\Controllers\User::class, 'redirectToList']);
 })->middleware(new \App\Middlewares\Example());

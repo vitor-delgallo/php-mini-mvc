@@ -163,6 +163,9 @@ class DBHandler implements SessionHandlerInterface {
      * Encrypts session data using AES-256-CBC and base64 encoding.
      */
     private function encrypt(string $data): string {
+        if(empty($data)) {
+            return "";
+        }
         return base64_encode(openssl_encrypt($data, 'aes-256-cbc', $this->encryptionKey, 0, substr($this->encryptionKey, 0, 16)));
     }
 
@@ -170,6 +173,9 @@ class DBHandler implements SessionHandlerInterface {
      * Decrypts previously encrypted session data.
      */
     private function decrypt(string $data): string {
+        if(empty($data)) {
+            return "";
+        }
         return openssl_decrypt(base64_decode($data), 'aes-256-cbc', $this->encryptionKey, 0, substr($this->encryptionKey, 0, 16)) ?: '';
     }
 }

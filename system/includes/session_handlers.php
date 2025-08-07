@@ -6,6 +6,7 @@ use System\Core\Database;
 use System\Core\Session;
 use System\Core\Path;
 use System\Session\DBHandler;
+use System\Session\NULLHandler;
 
 /**
  * Initializes session handling based on the configured driver.
@@ -29,8 +30,8 @@ if (ConfigSession::isFiles()) {
     // Instantiate the session handler with optional prefix and encryption key
     $handler = new DBHandler(
         $pdo,
-        Globals::env('SESSION_PREFIX'), // opcional
-        Globals::env('SESSION_ENCRYPT_KEY') // opcional (32 caracteres)
+        Globals::env('SESSION_PREFIX'), // optional
+        Globals::env('SESSION_ENCRYPT_KEY') // optional (32 chars)
     );
 
     // Register the custom session handler
@@ -38,4 +39,6 @@ if (ConfigSession::isFiles()) {
 
     // Start the session
     Session::start();
+} else {
+    session_set_save_handler((new NULLHandler()), true);
 }

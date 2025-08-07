@@ -23,6 +23,6 @@ class User {
     }
 
     public function redirectToList(): ResponseInterface {
-        return Response::redirect('/users');
+        return Response::redirect('/api/admin/users');
     }
 }

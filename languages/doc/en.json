@@ -80,6 +80,8 @@
   "doc.path.app.desc": "Returns the full path to the /app folder inside the project.",
   "doc.path.code.comment.appHelpers": "Gets the /app/helpers directory path.",
   "doc.path.appHelpers.desc": "Returns the full path to the helpers folder inside the application.",
+  "doc.path.code.comment.appRoutes": "Gets the /app/routes directory path.",
+  "doc.path.appRoutes.desc": "Returns the full path to the routes folder inside the application.",
   "doc.path.code.comment.appControllers": "Gets the /app/Controllers directory path.",
   "doc.path.appControllers.desc": "Returns the path where the application's controllers are located.",
   "doc.path.code.comment.appModels": "Gets the /app/Models directory path.",

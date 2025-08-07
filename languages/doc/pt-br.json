@@ -80,6 +80,8 @@
   "doc.path.app.desc": "Retorna o caminho completo até a pasta /app dentro da raiz do projeto.",
   "doc.path.code.comment.appHelpers": "Obtém o caminho da pasta /app/helpers.",
   "doc.path.appHelpers.desc": "Retorna o caminho completo da pasta de helpers dentro da aplicação.",
+  "doc.path.code.comment.appRoutes": "Obtém o caminho da pasta /app/routes.",
+  "doc.path.appRoutes.desc": "Retorna o caminho completo da pasta de routes dentro da aplicação.",
   "doc.path.code.comment.appControllers": "Obtém o caminho da pasta /app/Controllers.",
   "doc.path.appControllers.desc": "Retorna o caminho onde estão os controllers da aplicação.",
   "doc.path.code.comment.appModels": "Obtém o caminho da pasta /app/Models.",

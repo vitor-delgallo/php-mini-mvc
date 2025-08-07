@@ -51,6 +51,15 @@ class Path {
     }
 
     /**
+     * Get the /app/routes directory path.
+     *
+     * @return string
+     */
+    public static function appRoutes(): string {
+        return self::app() . '/routes';
+    }
+
+    /**
      * Get the /app/Controllers directory path.
      *
      * @return string

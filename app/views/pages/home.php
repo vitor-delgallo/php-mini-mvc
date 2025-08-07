@@ -627,6 +627,20 @@ $helpers = path_app_helpers();
         </article>
 
         <article>
+            <h4>appRoutes()</h4>
+            <pre><code>
+use System\Core\Path;
+
+$helpers = Path::appRoutes(); // <?= lg("doc.path.code.comment.appRoutes") ?>
+            </code></pre>
+            <?= lg("doc.alternatively") ?>
+            <pre><code>
+$helpers = path_app_routes();
+            </code></pre>
+            <footer><em><?= lg("doc.path.appRoutes.desc") ?></em></footer>
+        </article>
+
+        <article>
             <h4>appControllers()</h4>
             <pre><code>
 use System\Core\Path;
