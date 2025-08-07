@@ -2,10 +2,9 @@
 
 namespace System\Core;
 
-use League\Route\Router;
-use League\Route\RouteGroup;
+use MiladRahimi\PhpRouter\Router;
 use Laminas\Diactoros\ServerRequestFactory;
-use Psr\Http\Message\ResponseInterface;
+use \Throwable;
 
 /**
  * Class RouterLoader
@@ -32,7 +31,7 @@ class RouterLoader {
             return;
         }
 
-        self::$router = new Router();
+        self::$router = Router::create();
     }
 
     /**
@@ -52,18 +51,23 @@ class RouterLoader {
         }
 
         // Makes $router available inside the route file
-        include_once Path::appRoutes() . "/" . $file . ".php";
+        if(!empty(Path::basePath())) {
+            $router->group(['prefix' => Path::basePath()], function (Router $group) use ($file) {
+                $router = $group; // shadow $router inside scope
+                include_once Path::appRoutes() . "/" . $file . ".php";
+            });
+        } else {
+            include_once Path::appRoutes() . "/" . $file . ".php";
+        }
 
         self::$router = $router;
     }
 
     /**
-     * Carrega um arquivo de rotas dentro de um grupo com prefixo.
+     * Loads a route file inside a group with access to the global router ($router).
      *
-     * O arquivo de rota continua usando $router normalmente.
-     *
-     * @param string $prefix Prefixo de grupo (ex: /api)
-     * @param string $file Caminho do arquivo de rota
+     * @param string $prefix Group prefix (e.g. /api)
+     * @param string $file Path relative to the routes directory (e.g. 'web' or 'api.php')
      */
     public static function loadWithPrefix(string $prefix, string $file): void {
         self::startRouter();
@@ -77,8 +81,12 @@ class RouterLoader {
 
         $router = self::$router;
 
+        $prefix = rtrim($prefix, "/");
+        $prefix = ltrim($prefix, "/");
+        $prefix .= "/";
+
         // Creates a group with prefix and exposes it as $router
-        $router->group($prefix, function (RouteGroup $group) use ($file) {
+        $router->group(['prefix' => Path::basePath() . $prefix], function (Router $group) use ($file) {
             $router = $group; // shadow $router inside scope
             include_once Path::appRoutes() . "/" . $file . ".php";
         });
@@ -93,34 +101,10 @@ class RouterLoader {
      * - Removes base path from URI if configured
      * - Resolves the route and returns a PSR-7 Response
      *
-     * @return ResponseInterface The HTTP response from the matched route handler
+     * @throws Throwable
      */
-    public static function dispatch(): ResponseInterface {
+    public static function dispatch(): void {
         self::startRouter();
-
-        // Build a PSR-7 request from PHP superglobals
-        $request = ServerRequestFactory::fromGlobals();
-
-        /**
-         * Normalize the request URI path by removing the base path prefix (if defined).
-         *
-         * Useful when the app is hosted in a subdirectory and routes should be matched
-         * relative to the application root.
-         */
-        if (!empty(Path::basePath())) {
-            $uri = $request->getUri();
-
-            // Remove the base path from the beginning of the URI path
-            $cleanedPath = preg_replace('#^' . preg_quote(Path::basePath(), '#') . '#', '', $uri->getPath());
-
-            // Update the request with the cleaned URI
-            $uri = $uri->withPath($cleanedPath);
-            $request = $request->withUri($uri);
-        }
-
-        // Dispatch the incoming request using the configured router.
-        // This resolves the matched route and executes the corresponding handler,
-        // returning a PSR-7 compliant response object.
-        return self::$router->dispatch($request);
+        self::$router->dispatch();
     }
 }

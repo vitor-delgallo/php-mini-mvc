@@ -4,7 +4,9 @@
 require_once '../vendor/autoload.php';
 
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
-use League\Route\Http\Exception\NotFoundException;
+use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
+use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
+use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use System\Config\Environment AS ConfigEnvironment;
 use System\Config\Database AS ConfigDatabase;
 use System\Config\Globals;
@@ -71,8 +73,9 @@ try {
     // Loads and registers all application routes
     RouterLoader::load('web');
     RouterLoader::loadWithPrefix($apiPrefix, 'api');
-    $response = RouterLoader::dispatch();
-} catch (NotFoundException $e) {
+
+    RouterLoader::dispatch();
+} catch (RouteNotFoundException $e) {
     // Handles route not found (404) with a basic HTML response
     $response = Response::html('<h1>' . Language::get("system.http.404.title") . '</h1>', 404);
 } catch (\Throwable $e) {
@@ -93,9 +96,26 @@ try {
     }
 }
 
-// Sends the final HTTP response to the client
-(new SapiEmitter())->emit($response);
+/*
+    Example exceptions:
 
+    try {
+        $router->dispatch();
+    } catch (RouteNotFoundException $e) {
+        http_response_code(404);
+        echo '404 - Not Found';
+    } catch (InvalidCallableException $e) {
+        http_response_code(500);
+        echo '500 - Invalid Route Handler';
+    } catch (UndefinedRouteException $e) {
+        http_response_code(500);
+        echo '500 - Undefined Named Route';
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo '500 - Internal Server Error';
+    }
+*/
 // TODO: Test form validation class & create docs & create helpers
 // TODO: Create Router Tree class
 // TODO: Create DB ORM class (???)
+// TODO: Routes not loading

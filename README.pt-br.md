@@ -13,7 +13,7 @@ Projetado para flexibilidade, legibilidade e estruturação rápida de projetos,
 * 🧠 Manipulador de sessão personalizado (`files` ou `database`)
 * 🌐 Detecção de idioma e traduções via arquivos JSON
 * 💃 Abstração de banco de dados com PDO (e métodos auxiliares)
-* 🧱 Dispatcher de rotas (League\Route)
+* 🧱 Dispatcher de rotas (MiladRahimi\PhpRouter)
 * 📂 Estrutura de projeto limpa com autoloading
 * 🔐 Configuração baseada em ambiente
 * 📑 Renderização de views com variáveis globais e suporte a layouts
@@ -28,11 +28,12 @@ Projetado para flexibilidade, legibilidade e estruturação rápida de projetos,
 ├── app/
 │   ├── Controllers/
 │   ├── Models/
+│   ├── Middlewares/
 │   ├── helpers/
-│   └── views/
-│       ├── pages/
-│       └── templates/
-│   └── routes.php
+│   ├── views/
+│   │   ├── pages/
+│   │   └── templates/
+│   └── routes/
 ├── languages/
 ├── public/
 │   ├── assets/
@@ -40,6 +41,7 @@ Projetado para flexibilidade, legibilidade e estruturação rápida de projetos,
 │   │   ├── img/
 │   │   ├── js/
 │   │   └── libs/
+│   └── index.php
 ├── storage/
 │   ├── logs/
 │   └── sessions/
@@ -56,7 +58,7 @@ Projetado para flexibilidade, legibilidade e estruturação rápida de projetos,
 ├── .htaccess
 ├── composer.json
 ├── composer.lock
-├── index.php
+└── LICENSE
 └── README.md
 └── README.pt-br.md
 ```

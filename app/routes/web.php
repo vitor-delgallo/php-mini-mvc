@@ -1,17 +1,17 @@
 <?php
 
-use League\Route\RouteGroup;
+use MiladRahimi\PhpRouter\Router;
 
 /**
- * @var League\Route\Router $router
+ * @var MiladRahimi\PhpRouter\Router $router
  * The application's main router instance.
  * Responsible for dispatching HTTP requests to the appropriate route handler.
  */
-$router->map('GET', '/', static function () {
+$router->get('/', function () {
     $html = view_render_page('home');
     return response_html($html);
 });
-$router->group('/admin', function (RouteGroup $group) {
-    $group->map('GET', '/users/{id}', [\App\Controllers\User::class, 'showPage']);
-    $group->map('GET', '/go-to-users', [\App\Controllers\User::class, 'redirectToList']);
-})->middleware(new \App\Middlewares\Example());
+$router->group(['middleware' => [\App\Middlewares\Example::class], 'prefix' => '/admin'], function(Router $router) {
+    $router->get('/users/{id}', [\App\Controllers\User::class, 'showPage']);
+    $router->get('/go-to-users', [\App\Controllers\User::class, 'redirectToList']);
+});

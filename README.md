@@ -13,7 +13,7 @@ Built for flexibility, readability, and quick project scaffolding without extern
 * 🧠 Custom session handler (`files` or `database`)
 * 🌐 Language detection and translation via JSON files
 * 💃 Database abstraction (PDO with helper methods)
-* 🧱 Route dispatcher (League\Route)
+* 🧱 Route dispatcher (MiladRahimi\PhpRouter)
 * 📂 Clean project structure with autoloading
 * 🔐 Environment-based configuration
 * 📑 View rendering with shared variables and layout support
@@ -28,11 +28,12 @@ Built for flexibility, readability, and quick project scaffolding without extern
 ├── app/
 │   ├── Controllers/
 │   ├── Models/
+│   ├── Middlewares/
 │   ├── helpers/
 │   ├── views/
 │   │   ├── pages/
 │   │   └── templates/
-│   └── routes.php
+│   └── routes/
 ├── languages/
 ├── public/
 │   ├── assets/
@@ -40,6 +41,7 @@ Built for flexibility, readability, and quick project scaffolding without extern
 │   │   ├── img/
 │   │   ├── js/
 │   │   └── libs/
+│   └── index.php
 ├── storage/
 │   ├── logs/
 │   └── sessions/
@@ -56,7 +58,7 @@ Built for flexibility, readability, and quick project scaffolding without extern
 ├── .htaccess
 ├── composer.json
 ├── composer.lock
-├── index.php
+└── LICENSE
 └── README.md
 └── README.pt-br.md
 ```

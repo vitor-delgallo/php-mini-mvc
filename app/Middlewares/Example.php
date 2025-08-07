@@ -2,18 +2,13 @@
 namespace App\Middlewares;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Server\MiddlewareInterface;
 
-class Example implements MiddlewareInterface
-{
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
+class Example {
+    public function handle(ServerRequestInterface $request, \Closure $next) {
         if (1 === 0) {
-            return response_redirect('/login');
+            return response_redirect('/');
         }
 
-        return $handler->handle($request);
+        return $next($request);
     }
 }

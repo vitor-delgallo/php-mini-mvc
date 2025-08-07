@@ -5,7 +5,6 @@ use App\Models\User AS UserModel;
 use System\Core\Response;
 use System\Core\Language;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 
 class User {
     public function index(): ResponseInterface {
@@ -13,8 +12,8 @@ class User {
         return Response::json($users);
     }
 
-    public function showPage(ServerRequestInterface $request): ResponseInterface {
-        $user = UserModel::find((int) $request->getAttribute('id'));
+    public function showPage(int $id): ResponseInterface {
+        $user = UserModel::find($id);
 
         if (empty($user)) {
             return Response::html(view_render_html("<h4>" . Language::get("pages.users.not-found") . "</h4>"), 404);
