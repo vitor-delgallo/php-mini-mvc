@@ -5,82 +5,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title ?? lg("template.framework.name")) ?></title>
     <style>
+        :root {
+            --bg-color: #f9f9f9;
+            --primary-color: #333;
+            --secondary-color: #666;
+            --accent-color: #007bff;
+            --border-radius: 5px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 2rem;
-            background-color: #f9f9f9;
-            color: #333;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            line-height: 1.6;
         }
 
         header {
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 2rem;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 1rem 0;
+            margin-bottom: 1rem;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        main {
+            padding: 1rem 0;
         }
 
         footer {
-            border-top: 1px solid #ddd;
+            background: #fff;
+            border-top: 1px solid #eee;
+            padding: 1rem 0;
             margin-top: 2rem;
-            padding-top: 1rem;
             font-size: 0.9rem;
-            color: #777;
+            color: var(--secondary-color);
         }
 
         details {
-            margin-bottom: 1.5rem;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f3f3f3; /* leve cinza de fundo para collapse */
+            border-radius: var(--border-radius);
             padding: 1rem;
+            margin-bottom: 1rem;
+            background: #f5f5f5;
         }
 
         summary {
-            font-weight: bold;
             cursor: pointer;
-            margin-bottom: .5rem;
+            font-weight: bold;
+            position: relative;
+            padding-right: 1rem;
         }
 
-        article {
-            background-color: #f6f6f6; /* fundo para separar cada artigo */
-            padding: 1rem;
-            border-radius: 4px;
+        /* Remove default triangle marker */
+        summary::marker {
+            display: none;
+        }
+
+        /* Custom arrow indicator */
+        summary::after {
+            content: '\25BC';
+            position: absolute;
+            right: 0;
+            transform: rotate(0deg);
+            transition: transform 0.2s ease;
+        }
+
+        /* Rotate arrow when open */
+        details[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        /* Nested details spacing */
+        details details {
             margin-top: 1rem;
         }
 
         code {
             display: block;
-            background-color: #eaeaea; /* cinza levemente mais escuro */
+            background: #eaeaea;
             padding: 0.75rem;
-            border-radius: 4px;
+            border-radius: var(--border-radius);
+            overflow-x: auto;
+            white-space: pre-wrap;
             margin: 0.5rem 0;
             font-family: Consolas, monospace;
-            white-space: pre-wrap;
+            font-size: 0.9rem;
         }
 
         small {
             display: block;
+            color: var(--secondary-color);
             margin-top: 0.5rem;
-            color: #555;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
-
 </head>
 <body>
-<header>
-    <h1><?= htmlspecialchars($title ?? lg("template.framework.name")) ?></h1>
-</header>
-
-<main>
-    <?php
-        if (!empty($page)) {
-            include \System\Core\Path::appViewsPages() . '/' . $page . '.php';
-        } else if(!empty($html)) {
-            echo $html;
-        }
-    ?>
-</main>
-
-<footer>
-    &copy; <?= date('Y') . " - " . lg("template.framework.name") . " - " . lg("template.framework.simple.description") ?>
-</footer>
+    <header>
+        <div class="container">
+            <h1><?= htmlspecialchars($title ?? lg("template.framework.name")) ?></h1>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <?php
+            if (!empty($page)) {
+                include path_app_views_pages() . '/' . $page . '.php';
+            } elseif (!empty($html)) {
+                echo $html;
+            }
+            ?>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            &copy; <?= date('Y') . " - " . lg("template.framework.name") . " - " . lg("template.framework.simple.description") ?>
+        </div>
+    </footer>
 </body>
 </html>

@@ -79,19 +79,18 @@ class RouterLoader {
             $file = substr($file, 0, -4);
         }
 
-        $router = self::$router;
+        $main = self::$router;
 
         $prefix = rtrim($prefix, "/");
         $prefix = ltrim($prefix, "/");
-        $prefix .= "/";
+        $prefix = "/" . $prefix;
 
         // Creates a group with prefix and exposes it as $router
-        $router->group(['prefix' => Path::basePath() . $prefix], function (Router $group) use ($file) {
-            $router = $group; // shadow $router inside scope
+        $main->group(['prefix' => Path::basePath() . $prefix], function (Router $router) use ($file) {
             include_once Path::appRoutes() . "/" . $file . ".php";
         });
 
-        self::$router = $router;
+        self::$router = $main;
     }
 
     /**

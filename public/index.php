@@ -95,4 +95,18 @@ try {
     }
 }
 
+// If a response object was generated in the exception handler, emit it to the client
+if ($response instanceof \Psr\Http\Message\ResponseInterface) {
+    http_response_code($response->getStatusCode());
+    foreach ($response->getHeaders() as $name => $values) {
+        foreach ($values as $value) {
+            header("{$name}: {$value}", false);
+        }
+    }
+
+    // Output the response body
+    echo $response->getBody();
+    exit;
+}
+
 // TODO: Create DB ORM class (???)
