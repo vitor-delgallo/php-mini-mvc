@@ -69,12 +69,12 @@ function database_disconnect(): void {
     Database::disconnect();
 }
 
-function language_get(?string $key = null, ?string $lang = null): string|array|null {
-    return Language::get($key, $lang);
+function language_get(?string $key = null, array $replacements = null, ?string $lang = null): string|array|null {
+    return Language::get($key, $replacements, $lang);
 }
 
-function lg(?string $key = null, ?string $lang = null): string|array|null {
-    return language_get($key, $lang);
+function lg(?string $key = null, array $replacements = null, ?string $lang = null): string|array|null {
+    return language_get($key, $replacements, $lang);
 }
 
 function language_load(?string $lang = null): void {
@@ -105,12 +105,20 @@ function path_app(): string {
     return Path::app();
 }
 
+function path_app_bootable(): string {
+    return Path::appBootable();
+}
+
 function path_app_helpers(): string {
     return Path::appHelpers();
 }
 
 function path_app_routes(): string {
     return Path::appRoutes();
+}
+
+function path_app_middlewares(): string {
+    return Path::appMiddlewares();
 }
 
 function path_app_controllers(): string {
@@ -135,6 +143,10 @@ function path_app_views_templates(): string {
 
 function path_system(): string {
     return Path::system();
+}
+
+function path_system_interfaces(): string {
+    return Path::systemInterfaces();
 }
 
 function path_system_helpers(): string {

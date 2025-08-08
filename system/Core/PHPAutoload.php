@@ -16,7 +16,7 @@ use \System\Interfaces\IBootable;
 class PHPAutoload {
     private static function getFiles(string $directory): RegexIterator {
         if (!is_dir($directory)) {
-            throw new InvalidArgumentException(Language::get("system.invalid.directory.info") . $directory);
+            throw new InvalidArgumentException(Language::get("system.invalid.directory.info", ["path" => $directory]));
         }
 
         // Use RecursiveDirectoryIterator to scan all files/subdirectories

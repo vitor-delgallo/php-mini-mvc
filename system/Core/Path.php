@@ -42,7 +42,6 @@ class Path {
     }
 
     /**
-     * TODO: Create Helpers and docs on home
      * Get the /app/Bootable directory path.
      *
      * @return string
@@ -70,7 +69,6 @@ class Path {
     }
 
     /**
-     * TODO: Create Helpers and docs on home
      * Get the /app/Middlewares directory path.
      *
      * @return string
@@ -134,13 +132,12 @@ class Path {
     }
 
     /**
-     * TODO: Create Helpers and docs on home
      * Get the /system/Bootable directory path.
      *
      * @return string
      */
-    public static function systemBootable(): string {
-        return self::system() . '\\Bootable';
+    public static function systemInterfaces(): string {
+        return self::system() . '\\Interfaces';
     }
 
     /**

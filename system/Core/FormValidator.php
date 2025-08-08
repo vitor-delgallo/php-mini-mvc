@@ -203,7 +203,6 @@ class FormValidator
      *  - 'user.addresses..city' => 'required|min:2'
      *  - 'user.emails..' => 'required|email'
      *
-     * TODO: Create Language for all errors, test it and docs on home
      * @param array $rules Associative array where the key is the input field path and the value is a pipe-separated rule list.
      * @return bool Returns true if all fields are valid, false otherwise.
      */
@@ -224,25 +223,25 @@ class FormValidator
                     switch ($ruleName) {
                         case 'required':
                             if (is_null($value) || trim((string)$value) === '') {
-                                $this->addError($path, 'This field is required.');
+                                $this->addError($path, lg('form_validator.error.required'));
                             }
                             break;
 
                         case 'email':
                             if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                                $this->addError($path, 'Invalid email address.');
+                                $this->addError($path, lg('form_validator.error.email'));
                             }
                             break;
 
                         case 'min':
                             if (strlen((string)$value) < (int)$param) {
-                                $this->addError($path, "Minimum length is $param characters.");
+                                $this->addError($path, lg('form_validator.error.min', ['param' => $param]));
                             }
                             break;
 
                         case 'max':
                             if (strlen((string)$value) > (int)$param) {
-                                $this->addError($path, "Maximum length is $param characters.");
+                                $this->addError($path, lg('form_validator.error.max', ['param' => $param]));
                             }
                             break;
 
@@ -250,38 +249,38 @@ class FormValidator
                             $other = $this->resolveFieldPath($source, $param);
                             $otherValue = reset($other);
                             if ($otherValue !== $value) {
-                                $this->addError($path, "This field must match '$param'.");
+                                $this->addError($path, lg('form_validator.error.same', ['param' => $param]));
                             }
                             break;
 
                         case 'numeric':
                             if (!is_numeric($value)) {
-                                $this->addError($path, 'This field must be numeric.');
+                                $this->addError($path, lg('form_validator.error.numeric'));
                             }
                             break;
 
                         case 'integer':
                             if (filter_var($value, FILTER_VALIDATE_INT) === false) {
-                                $this->addError($path, 'This field must be an integer.');
+                                $this->addError($path, lg('form_validator.error.integer'));
                             }
                             break;
 
                         case 'date':
                             if (strtotime((string)$value) === false) {
-                                $this->addError($path, 'This field must be a valid date.');
+                                $this->addError($path, lg('form_validator.error.date'));
                             }
                             break;
 
                         case 'regex':
                             if (!preg_match($param, (string)$value)) {
-                                $this->addError($path, 'Invalid format.');
+                                $this->addError($path, lg('form_validator.error.regex'));
                             }
                             break;
 
                         case 'in':
                             $allowed = explode(',', $param);
                             if (!in_array((string)$value, $allowed, true)) {
-                                $this->addError($path, 'Invalid value.');
+                                $this->addError($path, lg('form_validator.error.in'));
                             }
                             break;
 
@@ -291,12 +290,12 @@ class FormValidator
                                 $result = $fn($value, $param, $path, $source);
 
                                 if ($result === false) {
-                                    $this->addError($path, "The field is invalid.");
+                                    $this->addError($path, lg('form_validator.error.invalid'));
                                 } elseif (is_string($result)) {
                                     $this->addError($path, $result);
                                 }
                             } else {
-                                $this->addError($path, "Unknown rule: $ruleName");
+                                $this->addError($path, lg('form_validator.error.unknown', ['rule' => $ruleName]));
                             }
                             break;
                     }

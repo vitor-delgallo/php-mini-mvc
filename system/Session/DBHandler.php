@@ -155,7 +155,7 @@ class DBHandler implements SessionHandlerInterface {
 
             $this->pdo->exec($sql);
         } catch (PDOException $e) {
-            throw new \RuntimeException(Language::get("system.database.tables.error.info") . $e->getMessage());
+            throw new \RuntimeException(Language::get("system.database.tables.error.info", ["error" => $e->getMessage()]));
         }
     }
 

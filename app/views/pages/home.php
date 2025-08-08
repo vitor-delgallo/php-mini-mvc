@@ -506,7 +506,7 @@ database_disconnect();
         <summary><strong>System\Core\Language</strong></summary>
 
         <article>
-            <h4>get(?string $key = null, ?string $lang = null)</h4>
+            <h4>get(?string $key = null, ?array $replacements = null, ?string $lang = null)</h4>
             <pre><code>
 use System\Core\Language;
 
@@ -603,13 +603,27 @@ $root = path_root();
             <pre><code>
 use System\Core\Path;
 
-$appPath = Path::app(); // <?= lg("doc.path.code.comment.app") ?>
+$path = Path::app(); // <?= lg("doc.path.code.comment.app") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$appPath = path_app();
+$path = path_app();
             </code></pre>
             <footer><em><?= lg("doc.path.app.desc") ?></em></footer>
+        </article>
+
+        <article>
+            <h4>appBootable()</h4>
+            <pre><code>
+use System\Core\Path;
+
+$path = Path::appBootable(); // <?= lg("doc.path.code.comment.appBootable") ?>
+            </code></pre>
+            <?= lg("doc.alternatively") ?>
+            <pre><code>
+$path = path_app_bootable();
+            </code></pre>
+            <footer><em><?= lg("doc.path.appBootable.desc") ?></em></footer>
         </article>
 
         <article>
@@ -617,11 +631,11 @@ $appPath = path_app();
             <pre><code>
 use System\Core\Path;
 
-$helpers = Path::appHelpers(); // <?= lg("doc.path.code.comment.appHelpers") ?>
+$path = Path::appHelpers(); // <?= lg("doc.path.code.comment.appHelpers") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$helpers = path_app_helpers();
+$path = path_app_helpers();
             </code></pre>
             <footer><em><?= lg("doc.path.appHelpers.desc") ?></em></footer>
         </article>
@@ -631,13 +645,27 @@ $helpers = path_app_helpers();
             <pre><code>
 use System\Core\Path;
 
-$helpers = Path::appRoutes(); // <?= lg("doc.path.code.comment.appRoutes") ?>
+$path = Path::appRoutes(); // <?= lg("doc.path.code.comment.appRoutes") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$helpers = path_app_routes();
+$path = path_app_routes();
             </code></pre>
             <footer><em><?= lg("doc.path.appRoutes.desc") ?></em></footer>
+        </article>
+
+        <article>
+            <h4>appMiddlewares()</h4>
+            <pre><code>
+use System\Core\Path;
+
+$path = Path::appMiddlewares(); // <?= lg("doc.path.code.comment.appMiddlewares") ?>
+            </code></pre>
+            <?= lg("doc.alternatively") ?>
+            <pre><code>
+$path = path_app_middlewares();
+            </code></pre>
+            <footer><em><?= lg("doc.path.appMiddlewares.desc") ?></em></footer>
         </article>
 
         <article>
@@ -645,11 +673,11 @@ $helpers = path_app_routes();
             <pre><code>
 use System\Core\Path;
 
-$controllers = Path::appControllers(); // <?= lg("doc.path.code.comment.appControllers") ?>
+$path = Path::appControllers(); // <?= lg("doc.path.code.comment.appControllers") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$controllers = path_app_controllers();
+$path = path_app_controllers();
             </code></pre>
             <footer><em><?= lg("doc.path.appControllers.desc") ?></em></footer>
         </article>
@@ -659,11 +687,11 @@ $controllers = path_app_controllers();
             <pre><code>
 use System\Core\Path;
 
-$models = Path::appModels(); // <?= lg("doc.path.code.comment.appModels") ?>
+$path = Path::appModels(); // <?= lg("doc.path.code.comment.appModels") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$models = path_app_models();
+$path = path_app_models();
             </code></pre>
             <footer><em><?= lg("doc.path.appModels.desc") ?></em></footer>
         </article>
@@ -673,11 +701,11 @@ $models = path_app_models();
             <pre><code>
 use System\Core\Path;
 
-$views = Path::appViews(); // <?= lg("doc.path.code.comment.appViews") ?>
+$path = Path::appViews(); // <?= lg("doc.path.code.comment.appViews") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$views = path_app_views();
+$path = path_app_views();
             </code></pre>
             <footer><em><?= lg("doc.path.appViews.desc") ?></em></footer>
         </article>
@@ -687,11 +715,11 @@ $views = path_app_views();
             <pre><code>
 use System\Core\Path;
 
-$pages = Path::appViewsPages(); // <?= lg("doc.path.code.comment.appViewsPages") ?>
+$path = Path::appViewsPages(); // <?= lg("doc.path.code.comment.appViewsPages") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$pages = path_app_views_pages();
+$path = path_app_views_pages();
             </code></pre>
             <footer><em><?= lg("doc.path.appViewsPages.desc") ?></em></footer>
         </article>
@@ -701,11 +729,11 @@ $pages = path_app_views_pages();
             <pre><code>
 use System\Core\Path;
 
-$templates = Path::appViewsTemplates(); // <?= lg("doc.path.code.comment.appViewsTemplates") ?>
+$path = Path::appViewsTemplates(); // <?= lg("doc.path.code.comment.appViewsTemplates") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$templates = path_app_views_templates();
+$path = path_app_views_templates();
             </code></pre>
             <footer><em><?= lg("doc.path.appViewsTemplates.desc") ?></em></footer>
         </article>
@@ -715,13 +743,27 @@ $templates = path_app_views_templates();
             <pre><code>
 use System\Core\Path;
 
-$system = Path::system(); // <?= lg("doc.path.code.comment.system") ?>
+$path = Path::system(); // <?= lg("doc.path.code.comment.system") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$system = path_system();
+$path = path_system();
             </code></pre>
             <footer><em><?= lg("doc.path.system.desc") ?></em></footer>
+        </article>
+
+        <article>
+            <h4>systemInterfaces()</h4>
+            <pre><code>
+use System\Core\Path;
+
+$path = Path::systemInterfaces(); // <?= lg("doc.path.code.comment.systemInterfaces") ?>
+            </code></pre>
+            <?= lg("doc.alternatively") ?>
+            <pre><code>
+$path = path_system_interfaces();
+            </code></pre>
+            <footer><em><?= lg("doc.path.systemInterfaces.desc") ?></em></footer>
         </article>
 
         <article>
@@ -729,11 +771,11 @@ $system = path_system();
             <pre><code>
 use System\Core\Path;
 
-$helpers = Path::systemHelpers(); // <?= lg("doc.path.code.comment.systemHelpers") ?>
+$path = Path::systemHelpers(); // <?= lg("doc.path.code.comment.systemHelpers") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$helpers = path_system_helpers();
+$path = path_system_helpers();
             </code></pre>
             <footer><em><?= lg("doc.path.systemHelpers.desc") ?></em></footer>
         </article>
@@ -743,11 +785,11 @@ $helpers = path_system_helpers();
             <pre><code>
 use System\Core\Path;
 
-$includes = Path::systemIncludes(); // <?= lg("doc.path.code.comment.systemIncludes") ?>
+$path = Path::systemIncludes(); // <?= lg("doc.path.code.comment.systemIncludes") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$includes = path_system_includes();
+$path = path_system_includes();
             </code></pre>
             <footer><em><?= lg("doc.path.systemIncludes.desc") ?></em></footer>
         </article>
@@ -757,11 +799,11 @@ $includes = path_system_includes();
             <pre><code>
 use System\Core\Path;
 
-$public = Path::public(); // <?= lg("doc.path.code.comment.public") ?>
+$path = Path::public(); // <?= lg("doc.path.code.comment.public") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$public = path_public();
+$path = path_public();
             </code></pre>
             <footer><em><?= lg("doc.path.public.desc") ?></em></footer>
         </article>
@@ -771,11 +813,11 @@ $public = path_public();
             <pre><code>
 use System\Core\Path;
 
-$storage = Path::storage(); // <?= lg("doc.path.code.comment.storage") ?>
+$path = Path::storage(); // <?= lg("doc.path.code.comment.storage") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$storage = path_storage();
+$path = path_storage();
             </code></pre>
             <footer><em><?= lg("doc.path.storage.desc") ?></em></footer>
         </article>
@@ -785,11 +827,11 @@ $storage = path_storage();
             <pre><code>
 use System\Core\Path;
 
-$sessions = Path::storageSessions(); // <?= lg("doc.path.code.comment.storageSessions") ?>
+$path = Path::storageSessions(); // <?= lg("doc.path.code.comment.storageSessions") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$sessions = path_storage_sessions();
+$path = path_storage_sessions();
             </code></pre>
             <footer><em><?= lg("doc.path.storageSessions.desc") ?></em></footer>
         </article>
@@ -799,11 +841,11 @@ $sessions = path_storage_sessions();
             <pre><code>
 use System\Core\Path;
 
-$logs = Path::storageLogs(); // <?= lg("doc.path.code.comment.storageLogs") ?>
+$path = Path::storageLogs(); // <?= lg("doc.path.code.comment.storageLogs") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$logs = path_storage_logs();
+$path = path_storage_logs();
             </code></pre>
             <footer><em><?= lg("doc.path.storageLogs.desc") ?></em></footer>
         </article>
@@ -813,11 +855,11 @@ $logs = path_storage_logs();
             <pre><code>
 use System\Core\Path;
 
-$langs = Path::languages(); // <?= lg("doc.path.code.comment.languages") ?>
+$path = Path::languages(); // <?= lg("doc.path.code.comment.languages") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$langs = path_languages();
+$path = path_languages();
             </code></pre>
             <footer><em><?= lg("doc.path.languages.desc") ?></em></footer>
         </article>
@@ -827,11 +869,11 @@ $langs = path_languages();
             <pre><code>
 use System\Core\Path;
 
-$base = Path::basePath(); // <?= lg("doc.path.code.comment.basePath") ?>
+$path = Path::basePath(); // <?= lg("doc.path.code.comment.basePath") ?>
             </code></pre>
             <?= lg("doc.alternatively") ?>
             <pre><code>
-$base = path_base();
+$path = path_base();
             </code></pre>
             <footer><em><?= lg("doc.path.basePath.desc") ?></em></footer>
         </article>
@@ -1219,5 +1261,149 @@ $globals = view_globals();
             <footer><em><?= lg("doc.view.getGlobals.desc") ?></em></footer>
         </article>
 
+    </details>
+</section>
+
+<section>
+    <details>
+        <summary><strong>System\Core\FormValidator</strong></summary>
+
+        <article>
+            <h4>validate(array $rules)</h4>
+            <pre><code>
+use System\Core\FormValidator;
+
+// Using the class directly
+$form = new FormValidator();
+$form->setForm($_POST);
+$isValid = $form->validate([
+    "email" => "required|email",
+    "password" => "required|min:8"
+]);
+
+if (!$isValid) {
+    $errors = $form->errors();
+}
+            </code></pre>
+            <?= lg("doc.alternatively") ?>
+            <pre><code>
+$form = form_validator($_POST);
+
+if (!$form->validate([
+    "email" => "required|email",
+    "password" => "required|min:8"
+])) {
+    $errors = $form->errors();
+}
+            </code></pre>
+            <footer><em><?= lg("doc.form_validator.validate.desc") ?></em></footer>
+        </article>
+
+        <article>
+            <h4>registerRule(string $name, callable $callback)</h4>
+            <pre><code>
+use System\Core\FormValidator;
+
+// Using the class directly
+FormValidator::registerRule("cpf", function($value) {
+    return preg_match('/^\d{11}$/', $value)
+        ? true
+        : "<?= lg("doc.form_validator.code.comment.cpf.error") ?>";
+});
+            </code></pre>
+            <?= lg("doc.alternatively") ?>
+            <pre><code>
+form_validator_register_rule("cpf", function($value) {
+    return preg_match('/^\d{11}$/', $value)
+        ? true
+        : "<?= lg("doc.form_validator.code.comment.cpf.error") ?>";
+});
+            </code></pre>
+            <footer><em><?= lg("doc.form_validator.register_rule.desc") ?></em></footer>
+        </article>
+
+        <article>
+            <h4>setForm(array $data)</h4>
+            <pre><code>
+use System\Core\FormValidator;
+
+$form = new FormValidator();
+$form->setForm(["name" => "Vitor", "email" => "vitor@email.com"]);
+            </code></pre>
+            <?= lg("doc.alternatively") ?>
+            <pre><code>
+form_validator(["name" => "Vitor", "email" => "vitor@email.com"]);
+            </code></pre>
+            <footer><em><?= lg("doc.form_validator.setForm.desc") ?></em></footer>
+        </article>
+
+        <article>
+            <h4>resetErrors()</h4>
+            <pre><code>
+use System\Core\FormValidator;
+
+$form = new FormValidator();
+$form->resetErrors();
+            </code></pre>
+            <?= lg("doc.alternatively") ?>
+            <pre><code>
+form_validator()->resetErrors();
+            </code></pre>
+            <footer><em><?= lg("doc.form_validator.resetErrors.desc") ?></em></footer>
+        </article>
+
+        <article>
+            <h4>errors()</h4>
+            <pre><code>
+use System\Core\FormValidator;
+
+$form = new FormValidator();
+$errors = $form->errors();
+            </code></pre>
+            <?= lg("doc.alternatively") ?>
+            <pre><code>
+$errors = form_validator()->errors();
+            </code></pre>
+            <footer><em><?= lg("doc.form_validator.errors.desc") ?></em></footer>
+        </article>
+
+        <article>
+            <h4>get(string $key, mixed $default = null)</h4>
+            <pre><code>
+use System\Core\FormValidator;
+
+$form = new FormValidator();
+$form->setForm(["age" => 25]);
+$age = $form->get("age"); // <?= lg("doc.form_validator.code.comment.get") ?>
+
+            </code></pre>
+            <?= lg("doc.alternatively") ?>
+            <pre><code>
+$age = form_validator(["age" => 25])->get("age");
+            </code></pre>
+            <footer><em><?= lg("doc.form_validator.get.desc") ?></em></footer>
+        </article>
+
+        <article>
+            <h4>has(string $key)</h4>
+            <pre><code>
+use System\Core\FormValidator;
+
+$form = new FormValidator();
+$form->setForm(["token" => "abc"]);
+if ($form->has("token")) {
+    // <?= lg("doc.form_validator.code.comment.has") ?>
+
+}
+            </code></pre>
+            <?= lg("doc.alternatively") ?>
+            <pre><code>
+if (form_validator(["token" => "abc"])->has("token")) {
+    // <?= lg("doc.form_validator.code.comment.has") ?>
+
+}
+            </code></pre>
+            <footer><em><?= lg("doc.form_validator.has.desc") ?></em></footer>
+        </article>
     </details>
 </section>

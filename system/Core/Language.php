@@ -27,21 +27,35 @@ class Language {
     private static ?string $langCode = null;
 
     /**
-     * Retrieve a translated string by key, or return all translations.
+     * Retrieve a translated string by key, replacing dynamic parameters if needed.
      *
      * If no language is loaded yet, or a different one is requested,
      * the appropriate language will be (re)loaded.
      *
      * @param string|null $key  Translation key to retrieve (optional).
+     * @param array|null  $replacements Associative array of placeholders to replace (optional).
      * @param string|null $lang Language code to force reload (optional).
      * @return string|array|null
      */
-    public static function get(?string $key = null, ?string $lang = null): string|array|null {
+    public static function get(?string $key = null, ?array $replacements = null, ?string $lang = null): string|array|null {
         if (empty(self::$translations) || (!empty($lang) && self::currentLang() !== $lang)) {
-            self::load();
+            self::load($lang);
         }
 
-        return $key ? (self::$translations[$key] ?? null) : self::$translations;
+        if (!$key) {
+            return self::$translations;
+        }
+
+        $text = self::$translations[$key] ?? null;
+
+        // Replace placeholders like {param} with actual values
+        if (is_string($text) && !empty($replacements)) {
+            foreach ($replacements as $k => $v) {
+                $text = str_replace('{' . $k . '}', (string) $v, $text);
+            }
+        }
+
+        return $text;
     }
 
     /**
