@@ -1,17 +1,51 @@
 <?php
 namespace System\Core;
 
-// ##################################################
-// CLASS IN DEVELOPMENT, NOT TESTED!!!
-// ##################################################
+/**
+ * Class FormValidator
+ *
+ * Utility class for validating form input with support for nested structures and custom rules.
+ *
+ * Supports dot notation (`field.subfield`) and double-dot notation (`field..subfield`) for deep array traversal.
+ *
+ * @note This class is still under development and has not been fully tested.
+ */
 class FormValidator
 {
+    /**
+     * The input data to be validated.
+     *
+     * Can be set manually via setForm(), or defaults to $_POST/$_GET if not set.
+     *
+     * @var array<string, mixed>
+     */
     private array $data = [];
+
+    /**
+     * Accumulated validation errors after running validate().
+     *
+     * The array is structured as [field_path => list of error messages].
+     *
+     * @var array<string, string[]>
+     */
     private array $errors = [];
+
+    /**
+     * Custom validation rules registered by the user.
+     *
+     * Each rule is a callable with the signature:
+     * fn(mixed $value, ?string $param, string $fieldPath, array $source): bool|string|null
+     *
+     * @var array<string, callable>
+     */
     private static array $customRules = [];
 
     /**
-     * Resolve data source: use setForm, otherwise POST, then GET.
+     * Resolves the form data source:
+     * - If manually set via setForm(), uses that.
+     * - Otherwise falls back to $_POST, then $_GET.
+     *
+     * @return array The resolved input data.
      */
     private function resolveSource(): array {
         if (!empty($this->data)) return $this->data;
@@ -19,15 +53,33 @@ class FormValidator
         return $_GET;
     }
 
+    /**
+     * Manually sets the form data to be validated.
+     *
+     * @param array $data The input form data.
+     */
     public function setForm(array $data): void {
         $this->data = $data;
     }
 
+    /**
+     * Gets a value from the input data using a key.
+     *
+     * @param string $key The field name.
+     * @param mixed $default Default value if not found.
+     * @return mixed The value or default.
+     */
     public function get(string $key, mixed $default = null): mixed {
         $source = $this->resolveSource();
         return $source[$key] ?? $default;
     }
 
+    /**
+     * Checks whether a field exists in the input data.
+     *
+     * @param string $key The field name.
+     * @return bool True if the field exists, false otherwise.
+     */
     public function has(string $key): bool {
         $source = $this->resolveSource();
         return isset($source[$key]);
@@ -90,18 +142,38 @@ class FormValidator
         }
     }
 
+    /**
+     * Registers a custom validation rule.
+     *
+     * @param string $name The name of the rule (used in the rules string).
+     * @param callable $fn The validation function with signature fn($value, $param, $fieldPath, $fullSource).
+     */
     public static function registerRule(string $name, callable $fn): void {
         self::$customRules[$name] = $fn;
     }
 
+    /**
+     * Adds an error message for a specific field.
+     *
+     * @param string $field Field path where the error occurred.
+     * @param string $message Error message to add.
+     */
     private function addError(string $field, string $message): void {
         $this->errors[$field][] = $message;
     }
 
+    /**
+     * Clears all accumulated validation errors.
+     */
     public function resetErrors(): void {
         $this->errors = [];
     }
 
+    /**
+     * Returns the list of validation errors.
+     *
+     * @return array Associative array of errors keyed by field path.
+     */
     public function errors(): array {
         return $this->errors;
     }
@@ -128,9 +200,10 @@ class FormValidator
      * Examples:
      *  - 'email' => 'required|email'
      *  - 'users..email' => 'required|email'
-     *   - 'user.addresses..city' => 'required|min:2'
-     *   - 'user.emails..' => 'required|email'
+     *  - 'user.addresses..city' => 'required|min:2'
+     *  - 'user.emails..' => 'required|email'
      *
+     * TODO: Create Language for all errors, test it and docs on home
      * @param array $rules Associative array where the key is the input field path and the value is a pipe-separated rule list.
      * @return bool Returns true if all fields are valid, false otherwise.
      */
@@ -138,13 +211,13 @@ class FormValidator
         $this->errors = [];
         $source = $this->resolveSource();
 
-        foreach ($rules as $fieldPath => $ruleStr) {
+        foreach ($rules AS $fieldPath => $ruleStr) {
             $rulesArray = explode('|', $ruleStr);
 
             // Resolve values based on dot or double-dot notation
             $values = $this->resolveFieldPath($source, $fieldPath);
 
-            foreach ($values as $path => $value) {
+            foreach ($values AS $path => $value) {
                 foreach ($rulesArray as $rule) {
                     [$ruleName, $param] = array_pad(explode(':', $rule, 2), 2, null);
 

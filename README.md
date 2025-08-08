@@ -29,6 +29,7 @@ Built for flexibility, readability, and quick project scaffolding without extern
 │   ├── Controllers/
 │   ├── Models/
 │   ├── Middlewares/
+│   ├── Bootable/
 │   ├── helpers/
 │   ├── views/
 │   │   ├── pages/
@@ -49,6 +50,7 @@ Built for flexibility, readability, and quick project scaffolding without extern
 │   ├── Config/
 │   ├── Core/
 │   ├── Session/
+│   ├── Interfaces/
 │   ├── helpers/
 │   └── includes/
 ├── vendor/

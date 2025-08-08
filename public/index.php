@@ -3,10 +3,7 @@
 // Loads Composer's autoloader (includes all dependencies)
 require_once '../vendor/autoload.php';
 
-use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
-use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
-use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use System\Config\Environment AS ConfigEnvironment;
 use System\Config\Database AS ConfigDatabase;
 use System\Config\Globals;
@@ -70,10 +67,12 @@ try {
         Database::connect();
     }
 
+    // Starts all bootable classes
+    PHPAutoload::boot();
+
     // Loads and registers all application routes
     RouterLoader::load('web');
     RouterLoader::loadWithPrefix($apiPrefix, 'api');
-
     RouterLoader::dispatch();
 } catch (RouteNotFoundException $e) {
     // Handles route not found (404) with a basic HTML response
@@ -96,26 +95,4 @@ try {
     }
 }
 
-/*
-    Example exceptions:
-
-    try {
-        $router->dispatch();
-    } catch (RouteNotFoundException $e) {
-        http_response_code(404);
-        echo '404 - Not Found';
-    } catch (InvalidCallableException $e) {
-        http_response_code(500);
-        echo '500 - Invalid Route Handler';
-    } catch (UndefinedRouteException $e) {
-        http_response_code(500);
-        echo '500 - Undefined Named Route';
-    } catch (Throwable $e) {
-        http_response_code(500);
-        echo '500 - Internal Server Error';
-    }
-*/
-// TODO: Test form validation class & create docs & create helpers
-// TODO: Create Router Tree class
 // TODO: Create DB ORM class (???)
-// TODO: Routes not loading

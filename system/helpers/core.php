@@ -26,6 +26,7 @@ use \System\Core\Path;
 use \System\Core\Response;
 use \System\Core\Session;
 use \System\Core\View;
+use \System\Core\FormValidator;
 use \Psr\Http\Message\ResponseInterface;
 
 function database_connect(): PDO {
@@ -262,4 +263,30 @@ function view_render_html(string $html, array $data = []): string {
 
 function view_globals(): array {
     return View::getGlobals();
+}
+
+function form_validator_register_rule(string $name, callable $callback): void {
+    FormValidator::registerRule($name, $callback);
+}
+
+/**
+ * TODO: Create docs on home
+ * Singleton-style accessor for the current FormValidator instance.
+ *
+ * @param array|null $data Optional: set form data (only on first call).
+ * @param bool $reset Whether to reset the instance.
+ * @return FormValidator
+ */
+function form_validator(?array $data = null, bool $reset = false): FormValidator {
+    static $instance = null;
+
+    if ($reset || $instance === null) {
+        $instance = new FormValidator();
+    }
+
+    if ($data !== null) {
+        $instance->setForm($data);
+    }
+
+    return $instance;
 }

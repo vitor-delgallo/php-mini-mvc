@@ -29,6 +29,7 @@ Projetado para flexibilidade, legibilidade e estruturação rápida de projetos,
 │   ├── Controllers/
 │   ├── Models/
 │   ├── Middlewares/
+│   ├── Bootable/
 │   ├── helpers/
 │   ├── views/
 │   │   ├── pages/
@@ -49,6 +50,7 @@ Projetado para flexibilidade, legibilidade e estruturação rápida de projetos,
 │   ├── Config/
 │   ├── Core/
 │   ├── Session/
+│   ├── Interfaces/
 │   ├── helpers/
 │   └── includes/
 ├── vendor/

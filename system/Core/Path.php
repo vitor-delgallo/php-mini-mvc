@@ -38,7 +38,17 @@ class Path {
      * @return string
      */
     public static function app(): string {
-        return self::root() . '/app';
+        return self::root() . '\\app';
+    }
+
+    /**
+     * TODO: Create Helpers and docs on home
+     * Get the /app/Bootable directory path.
+     *
+     * @return string
+     */
+    public static function appBootable(): string {
+        return self::app() . '\\Bootable';
     }
 
     /**
@@ -47,7 +57,7 @@ class Path {
      * @return string
      */
     public static function appHelpers(): string {
-        return self::app() . '/helpers';
+        return self::app() . '\\helpers';
     }
 
     /**
@@ -56,7 +66,17 @@ class Path {
      * @return string
      */
     public static function appRoutes(): string {
-        return self::app() . '/routes';
+        return self::app() . '\\routes';
+    }
+
+    /**
+     * TODO: Create Helpers and docs on home
+     * Get the /app/Middlewares directory path.
+     *
+     * @return string
+     */
+    public static function appMiddlewares(): string {
+        return self::app() . '\\Middlewares';
     }
 
     /**
@@ -65,7 +85,7 @@ class Path {
      * @return string
      */
     public static function appControllers(): string {
-        return self::app() . '/Controllers';
+        return self::app() . '\\Controllers';
     }
 
     /**
@@ -74,7 +94,7 @@ class Path {
      * @return string
      */
     public static function appModels(): string {
-        return self::app() . '/Models';
+        return self::app() . '\\Models';
     }
 
     /**
@@ -83,7 +103,7 @@ class Path {
      * @return string
      */
     public static function appViews(): string {
-        return self::app() . '/views';
+        return self::app() . '\\views';
     }
 
     /**
@@ -92,7 +112,7 @@ class Path {
      * @return string
      */
     public static function appViewsPages(): string {
-        return self::appViews() . '/pages';
+        return self::appViews() . '\\pages';
     }
 
     /**
@@ -101,7 +121,7 @@ class Path {
      * @return string
      */
     public static function appViewsTemplates(): string {
-        return self::appViews() . '/templates';
+        return self::appViews() . '\\templates';
     }
 
     /**
@@ -110,7 +130,17 @@ class Path {
      * @return string
      */
     public static function system(): string {
-        return self::root() . '/system';
+        return self::root() . '\\system';
+    }
+
+    /**
+     * TODO: Create Helpers and docs on home
+     * Get the /system/Bootable directory path.
+     *
+     * @return string
+     */
+    public static function systemBootable(): string {
+        return self::system() . '\\Bootable';
     }
 
     /**
@@ -119,7 +149,7 @@ class Path {
      * @return string
      */
     public static function systemHelpers(): string {
-        return self::system() . '/helpers';
+        return self::system() . '\\helpers';
     }
 
     /**
@@ -128,7 +158,7 @@ class Path {
      * @return string
      */
     public static function systemIncludes(): string {
-        return self::system() . '/includes';
+        return self::system() . '\\includes';
     }
 
     /**
@@ -137,7 +167,7 @@ class Path {
      * @return string
      */
     public static function public(): string {
-        return self::root() . '/public';
+        return self::root() . '\\public';
     }
 
     /**
@@ -146,7 +176,7 @@ class Path {
      * @return string
      */
     public static function storage(): string {
-        return self::root() . '/storage';
+        return self::root() . '\\storage';
     }
 
     /**
@@ -155,7 +185,7 @@ class Path {
      * @return string
      */
     public static function storageSessions(): string {
-        return self::storage() . '/sessions';
+        return self::storage() . '\\sessions';
     }
 
     /**
@@ -164,7 +194,7 @@ class Path {
      * @return string
      */
     public static function storageLogs(): string {
-        return self::storage() . '/logs';
+        return self::storage() . '\\logs';
     }
 
     /**
@@ -173,7 +203,7 @@ class Path {
      * @return string
      */
     public static function languages(): string {
-        return self::root() . '/languages';
+        return self::root() . '\\languages';
     }
 
     /**
