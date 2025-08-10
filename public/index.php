@@ -108,5 +108,3 @@ if ($response instanceof \Psr\Http\Message\ResponseInterface) {
     echo $response->getBody();
     exit;
 }
-
-// TODO: Create DB ORM class (???)
