@@ -86,6 +86,10 @@ function path_base(): string {
     return Path::basePath();
 }
 
+function path_base_public(): string {
+    return Path::basePathPublic();
+}
+
 function site_url(?string $final = null): string {
     return Path::siteURL($final);
 }

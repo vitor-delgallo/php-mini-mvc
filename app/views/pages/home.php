@@ -415,6 +415,13 @@ $docs = [
             'desc'    => 'doc.path.basePath.desc'
         ],
         [
+            'name'    => 'basePathPublic()',
+            'code'    => "use System\\Core\\Path;\n\n\$path = Path::basePathPublic();",
+            'comment' => 'doc.path.code.comment.basePathPublic',
+            'alt'    => "\$path = path_base_public();",
+            'desc'    => 'doc.path.basePathPublic.desc'
+        ],
+        [
             'name'    => 'siteURL(?string $final = null)',
             'code'    => "use System\\Core\\Path;\n\n\$url = Path::siteURL('dashboard');",
             'comment' => 'doc.path.code.comment.siteURL',

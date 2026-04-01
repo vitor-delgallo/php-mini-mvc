@@ -110,6 +110,8 @@
   "doc.path.languages.desc": "Returns the path where the system's language files are stored.",
   "doc.path.code.comment.basePath": "Gets the application's configured base path.",
   "doc.path.basePath.desc": "Returns the normalized base path from BASE_PATH environment variable, starting with slash and without trailing slashes.",
+  "doc.path.code.comment.basePathPublic": "Gets the application's configured base path to 'public/' folder.",
+  "doc.path.basePathPublic.desc": "Returns the normalized base path from BASE_PATH environment variable to 'public/' folder, starting with slash and without trailing slashes.",
   "doc.path.code.comment.siteURL": "Generates the full site URL with optional suffix.",
   "doc.path.siteURL.desc": "Generates the full site URL (with basePath) and appends an optional final path (e.g., dashboard → /dashboard).",
   "doc.response.code.comment.redirect": "Creates a redirect response to the given URL.",

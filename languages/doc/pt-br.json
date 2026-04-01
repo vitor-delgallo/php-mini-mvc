@@ -110,6 +110,8 @@
   "doc.path.languages.desc": "Retorna o caminho onde estão armazenados os arquivos de linguagem do sistema.",
   "doc.path.code.comment.basePath": "Obtém o caminho base configurado na aplicação.",
   "doc.path.basePath.desc": "Retorna o caminho base configurado via variável de ambiente BASE_PATH, formatado com barra inicial e sem barras finais.",
+  "doc.path.code.comment.basePathPublic": "Obtém o caminho base configurado na aplicação para a pasta 'public/'.",
+  "doc.path.basePathPublic.desc": "Retorna o caminho base para a pasta 'public/' configurado via variável de ambiente BASE_PATH, formatado com barra inicial e sem barras finais.",
   "doc.path.code.comment.siteURL": "Gera a URL completa do site com sufixo opcional.",
   "doc.path.siteURL.desc": "Gera a URL completa do site (com basePath), adicionando um caminho extra se fornecido (ex: dashboard → /dashboard).",
   "doc.response.code.comment.redirect": "Cria uma resposta de redirecionamento para a URL informada.",

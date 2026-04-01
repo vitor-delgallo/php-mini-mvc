@@ -235,6 +235,16 @@ class Path {
     }
 
     /**
+     * Get the application's base path (subdirectory) to public folder, as defined in environment config.
+     * Normalizes slashes and prepends a single leading slash.
+     * 
+     * @return string Normalized base path with public directory (e.g. "/myapp/public" or "/public").
+     */
+    public static function basePathPublic(): string {
+        return (self::basePath() . "/public");
+    }
+
+    /**
      * Generate the full site URL (e.g. "https://domain.com/base/path/")
      * with optional suffix.
      *
