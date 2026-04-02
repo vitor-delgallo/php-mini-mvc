@@ -5,6 +5,9 @@
   "system.database.driver.not-supported.info": "DB Driver não suportado: {driver}",
   "system.database.connection.error.info": "Erro ao conectar no banco de dados: {error}",
   "system.database.tables.error.info": "Erro ao criar tabelas no banco de dados: {error}",
+  "system.database.transaction.start.error": "Erro desconhecido ao iniciar transaction!",
+  "system.database.transaction.commit.error": "Erro desconhecido ao commitar transaction!",
+  "system.database.transaction.rollback.error": "Erro desconhecido ao realizar rollback na transaction!",
   "system.invalid.directory.info": "Diretório inválido: {path}",
   "system.http.404.title": "404 - Página não encontrada!",
   "system.http.500.title": "Erro Interno do Servidor!"
