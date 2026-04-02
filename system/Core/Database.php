@@ -23,18 +23,32 @@ class Database {
     private static ?PDO $connection = null;
 
     /**
-     * Whether database is in transaction
+     * Nível atual da transação.
+     * 0 = sem transação
+     * 1 = transação principal
+     * 2+ = níveis aninhados via savepoint
      *
-     * @var bool
+     * @var int
      */
-    private static bool $inTransaction = false;
-
+    private static int $transactionLevel = 0;
+    
     /**
-     * Sets the status of executed statements. The status remains true if all statements execute successfully.
+     * Builds a deterministic savepoint name for the given transaction nesting level.
      *
-     * @var bool
+     * Savepoints are used to simulate nested transactions when a transaction is
+     * already active. The generated name is internal to the database layer and
+     * should be unique per nesting level within the current transaction scope.
+     *
+     * Example:
+     * - level 1 => sp_1
+     * - level 2 => sp_2
+     *
+     * @param int $level The transaction nesting level associated with the savepoint.
+     * @return string The generated savepoint name.
      */
-    private static bool $transactionStillOk = true;
+    private static function getSavepointName(int $level): string {
+        return 'sp_' . $level;
+    }
 
     /**
      * Establish and return the PDO database connection.
@@ -109,6 +123,7 @@ class Database {
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES   => false,
             ]);
+            self::$transactionLevel = 0;
 
             return self::$connection;
         } catch (PDOException $e) {
@@ -122,19 +137,7 @@ class Database {
      * @return bool True if a transaction is in progress, false otherwise.
      */
     public static function isInTransaction(): bool {
-        return self::$inTransaction;
-    }
-
-    /**
-     * Checks whether the current transaction is still in a valid state.
-     *
-     * This indicates that no errors have occurred so far and the transaction
-     * can continue to execute statements successfully.
-     *
-     * @return bool True if the transaction is still valid, false otherwise.
-     */
-    public static function isTransactionStillOk(): bool {
-        return self::$transactionStillOk;
+        return self::$transactionLevel > 0;
     }
 
     /**
@@ -143,12 +146,23 @@ class Database {
      * @return bool True if the transaction was successfully started or is already active, false on failure.
      */
     public static function startTransaction(): bool {
-        if(self::isInTransaction()) {
+        $pdo = self::connect();
+
+        if (self::$transactionLevel === 0) {
+            $ret = $pdo->beginTransaction();
+            if (!$ret) {
+                throw new \RuntimeException(Language::get("system.database.transaction.start.error"));
+            }
+
+            self::$transactionLevel = 1;
             return true;
         }
 
-        self::$transactionStillOk = true;
-        return self::statement("START TRANSACTION");
+        $savepoint = self::getSavepointName(self::$transactionLevel);
+        self::statement("SAVEPOINT {$savepoint}");
+        self::$transactionLevel++;
+
+        return true;
     }
 
     /**
@@ -157,12 +171,28 @@ class Database {
      * @return bool True if the transaction was committed or none was active, false on failure.
      */
     public static function commitTransaction(): bool {
-        if(!self::isInTransaction()) {
+        if (self::$transactionLevel === 0) {
             return true;
         }
 
-        self::$transactionStillOk = true;
-        return self::statement("COMMIT");
+        $pdo = self::connect();
+
+        if (self::$transactionLevel === 1) {
+            $ret = $pdo->commit();
+            if (!$ret) {
+                throw new \RuntimeException(Language::get("system.database.transaction.commit.error"));
+            }
+
+            self::$transactionLevel = 0;
+            return true;
+        }
+
+        $savepointLevel = self::$transactionLevel - 1;
+        $savepoint = self::getSavepointName($savepointLevel);
+        self::statement("RELEASE SAVEPOINT {$savepoint}");
+        self::$transactionLevel--;
+
+        return true;
     }
 
     /**
@@ -171,12 +201,30 @@ class Database {
      * @return bool True if the transaction was rolled back or none was active, false on failure.
      */
     public static function rollbackTransaction(): bool {
-        if(!self::isInTransaction()) {
+        if (self::$transactionLevel === 0) {
             return true;
         }
 
-        self::$transactionStillOk = true;
-        return self::statement("ROLLBACK");
+        $pdo = self::connect();
+
+        if (self::$transactionLevel === 1) {
+            $ret = $pdo->rollBack();
+            if (!$ret) {
+                throw new \RuntimeException(Language::get("system.database.transaction.rollback.error"));
+            }
+
+            self::$transactionLevel = 0;
+            return true;
+        }
+
+        $savepointLevel = self::$transactionLevel - 1;
+        $savepoint = self::getSavepointName($savepointLevel);
+
+        self::statement("ROLLBACK TO SAVEPOINT {$savepoint}");
+        self::statement("RELEASE SAVEPOINT {$savepoint}");
+        self::$transactionLevel--;
+
+        return true;
     }
 
     /**
@@ -189,12 +237,7 @@ class Database {
     public static function statement(string $sql, array $params = []): bool {
         $pdo = self::connect();
         $stmt = $pdo->prepare($sql);
-        $ret = $stmt->execute($params);
-
-        if(self::isInTransaction() && !$ret) {
-            self::$transactionStillOk = false;
-        }
-        return $ret;
+        $stmt->execute($params);
     }
 
     /**
@@ -270,5 +313,6 @@ class Database {
      */
     public static function disconnect(): void {
         self::$connection = null;
+        self::$transactionLevel = 0;
     }
 }
