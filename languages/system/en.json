@@ -5,6 +5,9 @@
   "system.database.driver.not-supported.info": "Unsupported DB driver: {driver}",
   "system.database.connection.error.info": "Database connection error: {error}",
   "system.database.tables.error.info": "Error creating database tables: {error}",
+  "system.database.transaction.start.error": "Unable to start the database transaction!",
+  "system.database.transaction.commit.error": "Unable to commit the database transaction!",
+  "system.database.transaction.rollback.error": "Unable to roll back the database transaction!",
   "system.invalid.directory.info": "Invalid directory: {path}",
   "system.http.404.title": "404 - Page Not Found!",
   "system.http.500.title": "Internal Server Error!"
