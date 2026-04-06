@@ -188,7 +188,7 @@ $docs = [
             'comment' => 'doc.globals.code.comment.getapiprefix',
             'alt'    => "globals_get_api_prefix();",
             'desc'    => 'doc.globals.getapiprefix.desc'
-        ],,
+        ],
         [
             'name'    => 'isApiRequest()',
             'code'    => "use System\\Config\\Globals;\n\n\$isApiRequest = Globals::isApiRequest();",
