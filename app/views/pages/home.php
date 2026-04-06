@@ -445,6 +445,13 @@ $docs = [
             'desc'    => 'doc.response.html.desc'
         ],
         [
+            'name'    => 'text(string $text, int $status = 200)',
+            'code'    => "use System\\Core\\Response;\n\nreturn Response::text('Hello');",
+            'comment' => 'doc.response.code.comment.text',
+            'alt'    => "return response_text('Hello');",
+            'desc'    => 'doc.response.text.desc'
+        ],
+        [
             'name'    => 'json(array|string $data, int $status = 200)',
             'code'    => "use System\\Core\\Response;\n\nreturn Response::json(['status' => 'ok']);",
             'comment' => 'doc.response.code.comment.json',
@@ -457,6 +464,13 @@ $docs = [
             'comment' => 'doc.response.code.comment.xml',
             'alt'    => "return response_xml('&lt;message&gt;Hello&lt;/message&gt;');",
             'desc'    => 'doc.response.xml.desc'
+        ],
+        [
+            'name'    => 'file(string $filePath, string $downloadName, string $hashFile, string $contentType = \'application/octet-stream\')',
+            'code'    => "use System\\Core\\Response;\n\nreturn Response::file(\$filePath, \$downloadName, \$hashFile, \$contentType);",
+            'comment' => 'doc.response.code.comment.file',
+            'alt'    => "return response_file(\$filePath, \$downloadName, \$hashFile, \$contentType);",
+            'desc'    => 'doc.response.file.desc'
         ],
     ],
     'System\\Core\\Session' => [

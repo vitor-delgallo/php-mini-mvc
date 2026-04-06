@@ -11,10 +11,18 @@ function response_html(string $html, int $status = 200): ResponseInterface {
     return Response::html($html, $status);
 }
 
+function response_text(string $text, int $status = 200): ResponseInterface {
+    return Response::text($text, $status);
+}
+
 function response_json(array|string $data, int $status = 200): ResponseInterface {
     return Response::json($data, $status);
 }
 
 function response_xml(string $xml, int $status = 200): ResponseInterface {
     return Response::xml($xml, $status);
+}
+
+function response_file(string $filePath, string $downloadName, string $hashFile, string $contentType = 'application/octet-stream'): ResponseInterface {
+    return Response::file($filePath, $downloadName, $hashFile, $contentType);
 }

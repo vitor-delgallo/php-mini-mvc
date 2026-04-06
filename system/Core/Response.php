@@ -5,6 +5,7 @@ use Laminas\Diactoros\Response as ManualResponse;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\Stream;
 use \Psr\Http\Message\ResponseInterface;
 
@@ -79,6 +80,17 @@ class Response {
     }
 
     /**
+     * Create a plain TEXT response.
+     *
+     * @param string $text   Text content to return.
+     * @param int    $status HTTP status code (default: 200).
+     * @return TextResponse
+     */
+    public static function text(string $text, int $status = 200): TextResponse {
+        return new TextResponse($text, $status);
+    }
+
+    /**
      * Create a JSON response.
      *
      * Accepts either an array (automatically encoded) or a raw JSON string.
@@ -117,5 +129,47 @@ class Response {
             ->withBody($body)
             ->withStatus($status)
             ->withHeader('Content-Type', 'application/xml; charset=utf-8');
+    }
+
+    /**
+     * Create an XML response with proper headers.
+     *
+     * @param string $xml    XML content to return.
+     * @param int    $status HTTP status code (default: 200).
+     * @return ManualResponse
+     */
+    public static function file(
+        string $filePath, string $downloadName, 
+        string $hashFile, string $contentType = 'application/octet-stream'
+    ): ResponseInterface {
+        if (!is_file($filePath) || !is_readable($filePath)) {
+            return new TextResponse('Arquivo não encontrado.', 404);
+        }
+
+        // Se quiser garantir o tamanho real do arquivo local:
+        $realSize = filesize($filePath);
+        if ($realSize === false) {
+            return new TextResponse('Não foi possível obter o tamanho do arquivo.', 500);
+        }
+
+        $safeAsciiName = preg_replace('/[^A-Za-z0-9._-]/', '_', $downloadName) ?: 'download.bin';
+        $encodedName   = rawurlencode($downloadName);
+
+        $stream = new Stream($filePath, 'rb');
+
+        return new ManualResponse(
+            $stream,
+            200,
+            [
+                'Content-Type'              => $contentType,
+                'Content-Length'            => (string) $realSize,
+                'Content-Disposition'       => 'attachment; filename="' . $safeAsciiName . '"; filename*=UTF-8\'\'' . $encodedName,
+                'Content-Transfer-Encoding' => 'binary',
+                'Accept-Ranges'             => 'bytes',
+                'Cache-Control'             => 'private, no-transform',
+                'ETag'                      => '"' . $hashFile . '"',
+                'X-File-Hash'               => $hashFile,
+            ]
+        );
     }
 }
