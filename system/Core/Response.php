@@ -132,7 +132,7 @@ class Response {
     }
 
     /**
-     * Create an XML response with proper headers.
+     * Create an FILE response with proper headers.
      *
      * @param string $path         Path to the file to be downloaded.
      * @param string $downloadName Suggested filename for the download.
