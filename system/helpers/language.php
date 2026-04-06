@@ -18,14 +18,14 @@ function ld(?string $lang = null): void {
     language_load($lang);
 }
 
-function language_detect(): string {
+function language_detect(): ?string {
     return Language::detect();
 }
 
-function language_current(): string {
+function language_current(): ?string {
     return Language::currentLang();
 }
 
-function language_default(): string {
+function language_default(): ?string {
     return Language::defaultLang();
 }

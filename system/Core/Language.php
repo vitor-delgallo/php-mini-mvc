@@ -27,6 +27,13 @@ class Language {
     private static ?string $langCode = null;
 
     /**
+     * In-memory cache of discovered language files per language code.
+     *
+     * @var array<string, array<string>>
+     */
+    private static array $langFilesCache = [];
+
+    /**
      * Retrieve a translated string by key, replacing dynamic parameters if needed.
      *
      * If no language is loaded yet, or a different one is requested,
@@ -74,6 +81,10 @@ class Language {
      * @return array<string> List of full paths
      */
     private static function findLangFiles(string $lang): array {
+        if (isset(self::$langFilesCache[$lang])) {
+            return self::$langFilesCache[$lang];
+        }
+
         $directory = Path::languages();
         $target = "{$lang}.json";
         $matches = [];
@@ -92,7 +103,8 @@ class Language {
             }
         }
 
-        return $matches;
+        self::$langFilesCache[$lang] = $matches;
+        return self::$langFilesCache[$lang];
     }
 
     /**

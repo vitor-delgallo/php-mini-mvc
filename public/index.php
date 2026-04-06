@@ -22,6 +22,7 @@ $response = null;
 try {
     // Loads .env environment variables into memory
     Globals::loadEnv();
+    $isApiRequest = Globals::isApiRequest();
 
     // Configures error visibility based on the environment
     if (ConfigEnvironment::isProduction()) {
@@ -37,11 +38,49 @@ try {
     // Autoloads all system helper files
     PHPAutoload::from(Path::systemHelpers());
 
-    // Autoloads all application-specific helper files
-    PHPAutoload::from(Path::appHelpers());
+    // Autoloads application-specific helper files
+    // APP_HELPERS_AUTOLOAD=true loads all helpers (default behavior)
+    // APP_HELPERS_AUTOLOAD=['helper_a','helper_b.php'] loads only selected helpers
+    $appHelpersAutoload = Globals::env('APP_HELPERS_AUTOLOAD') ?? 'true';
+    $appHelpersAutoloadNormalized = strtolower(trim((string) $appHelpersAutoload));
+
+    if (in_array($appHelpersAutoloadNormalized, ['true', '1', 'all', '*'], true)) {
+        PHPAutoload::from(Path::appHelpers());
+    } else {
+        $helpersRaw = trim((string) $appHelpersAutoload);
+        $helpersToLoad = [];
+
+        // Supports: ['my_helper','other_helper.php'] or ["my_helper"]
+        if (str_starts_with($helpersRaw, '[') && str_ends_with($helpersRaw, ']')) {
+            $helpersRaw = trim($helpersRaw, "[] \t\n\r\0\x0B");
+            if (!empty($helpersRaw)) {
+                $helpersToLoad = preg_split('/\s*,\s*/', $helpersRaw) ?: [];
+            }
+        } elseif (!empty($helpersRaw)) {
+            // Supports single helper value
+            $helpersToLoad = [$helpersRaw];
+        }
+
+        foreach ($helpersToLoad as $helper) {
+            $helper = trim((string) $helper);
+            $helper = trim($helper, "\"'");
+            if (empty($helper)) {
+                continue;
+            }
+
+            if (!str_ends_with(strtolower($helper), '.php')) {
+                $helper .= '.php';
+            }
+
+            $helperPath = Path::appHelpers() . '/' . $helper;
+            if (is_file($helperPath)) {
+                include_once $helperPath;
+            }
+        }
+    }
 
     // Init session only if needed
-    if (!Globals::isApiRequest()) {
+    if (!$isApiRequest) {
         // Initializes session handling based on configured driver (files, db, or none)
         include_once Path::systemIncludes() . '/session_handlers.php';
     } else {
@@ -59,8 +98,11 @@ try {
     PHPAutoload::boot();
 
     // Loads and registers all application routes
-    RouterLoader::load('web');
-    RouterLoader::loadWithPrefix(Globals::getApiPrefix(), 'api');
+    if ($isApiRequest) {
+        RouterLoader::loadWithPrefix(Globals::getApiPrefix(), 'api');
+    } else {
+        RouterLoader::load('web');
+    }
     RouterLoader::dispatch();
 } catch (RouteNotFoundException $e) {
     // Handles route not found (404) with a basic HTML response
