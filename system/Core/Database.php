@@ -237,7 +237,7 @@ class Database {
     public static function statement(string $sql, array $params = []): bool {
         $pdo = self::connect();
         $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
+        return $stmt->execute($params);
     }
 
     /**
