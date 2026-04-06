@@ -92,6 +92,9 @@ class Globals {
      */
     public static function reset(): void {
         self::$config = [];
+        self::$env = null;
+        
+        self::loadEnv();
     }
 
     /**
@@ -128,5 +131,29 @@ class Globals {
             return self::$env;
         }
         return self::$env[$key] ?? null;
+    }
+
+    /**
+     * Gets the API prefix used to determine if a request is for an API route.
+     * This is used to conditionally disable session handling for API requests.
+     * 
+     * @return string
+     */
+    public static function getApiPrefix(): string {
+        return "/api";
+    }
+
+    /**
+     * Checks if the current HTTP request is targeting an API route based on the URI and configured API prefix.
+     * This is used to conditionally disable session handling for API requests.
+     * 
+     * @return bool
+     */
+    public static function isApiRequest(): bool {
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+        $base = self::env('BASE_PATH') ?? '';
+        $cleanUri = str_replace($base, '', $uri);
+
+        return !!preg_match('#^' . preg_quote(self::getApiPrefix()) . '(/|$)#', $cleanUri);
     }
 }

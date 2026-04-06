@@ -182,6 +182,20 @@ $docs = [
             'alt'    => "globals_env('DB_USER');",
             'desc'    => 'doc.globals.env.desc'
         ],
+        [
+            'name'    => 'getApiPrefix()',
+            'code'    => "use System\\Config\\Globals;\n\n\$apiPrefix = Globals::getApiPrefix();",
+            'comment' => 'doc.globals.code.comment.getapiprefix',
+            'alt'    => "globals_get_api_prefix();",
+            'desc'    => 'doc.globals.getapiprefix.desc'
+        ],,
+        [
+            'name'    => 'isApiRequest()',
+            'code'    => "use System\\Config\\Globals;\n\n\$isApiRequest = Globals::isApiRequest();",
+            'comment' => 'doc.globals.code.comment.isapirequest',
+            'alt'    => "globals_is_api_request();",
+            'desc'    => 'doc.globals.isapirequest.desc'
+        ],
     ],
     'System\\Core\\Autoload' => [
         [

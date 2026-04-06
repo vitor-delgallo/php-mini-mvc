@@ -19,7 +19,6 @@ use System\Session\NULLHandler;
 include_once Path::systemIncludes() . '/error_handlers.php';
 
 $response = null;
-$apiPrefix = "/api";
 try {
     // Loads .env environment variables into memory
     Globals::loadEnv();
@@ -41,19 +40,8 @@ try {
     // Autoloads all application-specific helper files
     PHPAutoload::from(Path::appHelpers());
 
-    // Detect which route file to load
-    $uri = $_SERVER['REQUEST_URI'] ?? '/';
-    $base = Globals::env('BASE_PATH') ?? '';
-    $cleanUri = str_replace($base, '', $uri);
-    $useSession = true;
-
-    // If the route starts with api prefix, disable session
-    if (preg_match('#^' . preg_quote($apiPrefix) . '(/|$)#', $cleanUri)) {
-        $useSession = false;
-    }
-
     // Init session only if needed
-    if ($useSession) {
+    if (!Globals::isApiRequest()) {
         // Initializes session handling based on configured driver (files, db, or none)
         include_once Path::systemIncludes() . '/session_handlers.php';
     } else {
@@ -72,7 +60,7 @@ try {
 
     // Loads and registers all application routes
     RouterLoader::load('web');
-    RouterLoader::loadWithPrefix($apiPrefix, 'api');
+    RouterLoader::loadWithPrefix(Globals::getApiPrefix(), 'api');
     RouterLoader::dispatch();
 } catch (RouteNotFoundException $e) {
     // Handles route not found (404) with a basic HTML response

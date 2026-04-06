@@ -33,3 +33,11 @@ function globals_load_env(): void {
 function globals_env(?string $key = null): array|string|null {
     return Globals::env($key);
 }
+
+function globals_get_api_prefix(): string {
+    return Globals::getApiPrefix();
+}
+
+function globals_is_api_request(): bool {
+    return Globals::isApiRequest();
+}
