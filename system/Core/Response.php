@@ -134,8 +134,10 @@ class Response {
     /**
      * Create an XML response with proper headers.
      *
-     * @param string $xml    XML content to return.
-     * @param int    $status HTTP status code (default: 200).
+     * @param string $path         Path to the file to be downloaded.
+     * @param string $downloadName Suggested filename for the download.
+     * @param string $hashFile     Hash of the file for ETag and integrity checks.
+     * @param string $contentType  MIME type of the file (default: application/octet-stream).
      * @return ManualResponse
      */
     public static function file(
