@@ -39,6 +39,15 @@ Projetado para flexibilidade, legibilidade e configuração rápida de projetos 
 * **Renderização de Views** – Variáveis globais, layouts e templates.
 * **Variáveis de Ambiente** – Suporte a configuração via `.env`.
 
+## ⚡ Diretrizes de Leveza
+
+Para manter este mini-MVC rápido e enxuto:
+
+* Mantenha middlewares focados e específicos por rota.
+* Prefira helpers nativos antes de adicionar novas dependências.
+* Carregue apenas as chaves de idioma e dados de view necessários por página.
+* Evite rotinas globais de boot com operações pesadas por requisição.
+
 ---
 
 ## 📂 Estrutura do Projeto

@@ -1,6 +1,6 @@
 {
   "doc.body.details": "is a micro PHP framework with a basic layer separation structure, designed for small projects and landing pages.",
-  "doc.features.routes": "Support for simple routing (using `league/route`)",
+  "doc.features.routes": "Support for simple routing (using `miladrahimi/phprouter`)",
   "doc.features.templates": "View system with templates",
   "doc.features.helpers": "Helpers for session, response, database, language, etc.",
   "doc.features.simple": "Perfect for simple hosting environments without the need for large frameworks",
