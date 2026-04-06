@@ -3,6 +3,7 @@
 namespace System\Core;
 
 use \System\Config\Session AS ConfigSession;
+use \System\Config\Globals;
 
 /**
  * Session management utility class.
@@ -17,7 +18,7 @@ class Session {
      * Throws an exception if session driver is explicitly set to "none".
      */
     public static function start(): void {
-        if(ConfigSession::isNone()) {
+        if(ConfigSession::isNone() || Globals::isApiRequest()) {
             throw new \RuntimeException(Language::get("system.session.driver.not-found"));
         }
 
