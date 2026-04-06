@@ -39,6 +39,15 @@ Designed for flexibility, readability, and rapid project setup — without heavy
 * **View Rendering** – Shared variables, layouts, and templates.
 * **Environment Variables** – `.env` configuration support.
 
+## ⚡ Lightweight Guidelines
+
+To keep this mini-MVC fast and minimal:
+
+* Keep middlewares focused and route-specific.
+* Prefer native helpers over adding new dependencies.
+* Load only the language keys and view data needed by each page.
+* Avoid global boot routines that run expensive operations per request.
+
 ---
 
 ## 📂 Project Structure
