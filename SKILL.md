@@ -684,19 +684,19 @@ Exemplo model:
 ```php
 namespace App\Models;
 
-class Product
+class ProductModel
 {
-    public static function all(): array
+    public function all(): array
     {
         return database_select('SELECT id, name FROM products ORDER BY name');
     }
 
-    public static function find(int $id): ?array
+    public function find(int $id): ?array
     {
         return database_select_row('SELECT * FROM products WHERE id = :id', ['id' => $id]);
     }
 
-    public static function create(array $data): bool
+    public function create(array $data): bool
     {
         return database_statement(
             'INSERT INTO products (name, description) VALUES (:name, :description)',
