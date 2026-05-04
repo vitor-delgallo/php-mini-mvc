@@ -219,11 +219,11 @@ view_render_html('<h1>OK</h1>');
 view_globals();
 ```
 
-Ao criar assets em views, prefira `path_base()`:
+Ao criar assets em views, prefira `path_base_public()`:
 
 ```php
-<link rel="stylesheet" href="<?= path_base() ?>/assets/css/app.css">
-<script src="<?= path_base() ?>/assets/js/app.js"></script>
+<link rel="stylesheet" href="<?= path_base_public() ?>/assets/css/app.css">
+<script src="<?= path_base_public() ?>/assets/js/app.js"></script>
 ```
 
 ## Home Como Documentacao Dinamica
