@@ -164,14 +164,15 @@ Padrao recomendado:
 ```php
 namespace App\Controllers;
 
-use App\Models\Product;
+use App\Models\ProductModel;
 use Psr\Http\Message\ResponseInterface;
 
 class Products
 {
     public function show(int $id): ResponseInterface
     {
-        $product = Product::find($id);
+        $model = new ProductMode();
+        $product = $model->find($id);
 
         if (!$product) {
             return response_html(view_render_html('<h1>Not found</h1>'), 404);
