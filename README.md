@@ -25,7 +25,7 @@ Designed for flexibility, readability, and rapid project setup — without heavy
 
 * **Boot System** – Automatically loads any class inside `app/Bootable` on application start.
 * **PSR-7 HTTP Handling** – Powered by [Laminas Diactoros](https://docs.laminas.dev/laminas-diactoros/).
-* **Custom Session Handler** – Supports `files` or `database` drivers.
+* **Custom Session Handler** – Supports `files | db | none` drivers.
 * **Advanced Language System**
 
     * Loads language files from `/languages`.
