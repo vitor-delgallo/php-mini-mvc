@@ -608,51 +608,6 @@ Os helpers internos sao carregados automaticamente antes das rotas. Eles sao a A
 3. Crie o controller em `app/Controllers/Products.php`.
 4. Registre a rota em `app/routes/web.php`.
 
-Exemplo:
-
-```php
-// app/routes/web.php
-$router->get('/products/{id}', [\App\Controllers\Products::class, 'show']);
-```
-
-```php
-// app/Controllers/Products.php
-namespace App\Controllers;
-
-use App\Models\Product;
-use Psr\Http\Message\ResponseInterface;
-
-class Products
-{
-    public function show(int $id): ResponseInterface
-    {
-        $product = Product::find($id);
-
-        if (!$product) {
-            return response_html(view_render_html('<h1>' . lg('pages.products.not-found') . '</h1>'), 404);
-        }
-
-        return response_html(view_render_page('products/show', [
-            'title' => lg('pages.products.show.title'),
-            'product' => $product,
-        ]));
-    }
-}
-```
-
-```php
-<!-- app/views/pages/products/show.php -->
-<h1><?= htmlspecialchars($product['name']) ?></h1>
-<p><?= htmlspecialchars($product['description']) ?></p>
-```
-
-```json
-{
-  "show.title": "Produto",
-  "not-found": "Produto nao encontrado"
-}
-```
-
 Como o arquivo esta em `languages/pages/products/pt-br.json`, as chaves finais sao `pages.products.show.title` e `pages.products.not-found`.
 
 ## Criando Uma Rota API
