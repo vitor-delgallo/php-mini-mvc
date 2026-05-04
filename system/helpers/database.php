@@ -43,8 +43,8 @@ function database_get_last_inserted_id(): string|false {
     return Database::getLastInsertedID();
 }
 
-function database_is_transaction_still_ok(): bool {
-    return Database::isTransactionStillOk();
+function database_is_in_transaction(): bool {
+    return Database::isInTransaction();
 }
 
 function database_start_transaction(): bool {
