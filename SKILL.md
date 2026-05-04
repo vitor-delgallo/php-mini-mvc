@@ -705,7 +705,7 @@ Em `production`, erros nao sao exibidos. Em `development` e `testing`, erros sao
 - Controllers devem retornar `ResponseInterface`.
 - Use helpers procedurais em views para manter sintaxe curta.
 - Use classes do core em logica mais explicita ou quando importar namespace melhorar legibilidade.
-- Use `path_base()` para links relativos ao app e assets.
+- Use `path_base_public()` para links relativos ao app e assets.
 - Use `site_url()` quando precisar de URL absoluta.
 - Adicione textos de interface em `languages/*`, nao hardcode textos que precisam de traducao.
 - Ao criar arquivo de idioma em subpasta, lembre que a pasta vira prefixo da chave.
@@ -717,10 +717,6 @@ Em `production`, erros nao sao exibidos. Em `development` e `testing`, erros sao
 
 ## Pontos De Atencao Do Estado Atual
 
-- O README cita driver de sessao `database`, mas o codigo aceita `db`.
-- `system/helpers/database.php` define `database_is_transaction_still_ok()`, mas `System\Core\Database` nao possui `isTransactionStillOk()`. Use `Database::isInTransaction()` ou adicione o metodo antes de depender desse helper.
-- A documentacao dinamica em `home.php` cita `System\Core\Autoload`, mas a classe real e `System\Core\PHPAutoload`.
-- A documentacao dinamica cita `view_clear()`, mas o helper atual `system/helpers/view.php` nao define essa funcao, embora `System\Core\View::clear()` exista.
 - `View::render_page()` e `template.php` incluem arquivos de view sem validacao explicita de existencia. Nao passe nome de pagina vindo diretamente do usuario.
 - `Language::get()` retorna `null` quando a chave nao existe; ao usar dentro de HTML, garanta que a chave existe.
 - `Response::json()` aceita string como JSON bruto; se a string nao for JSON valido, o framework nao valida automaticamente.
