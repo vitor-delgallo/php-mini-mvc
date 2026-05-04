@@ -171,7 +171,7 @@ class Products
 {
     public function show(int $id): ResponseInterface
     {
-        $model = new ProductMode();
+        $model = new ProductModel();
         $product = $model->find($id);
 
         if (!$product) {
