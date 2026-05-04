@@ -25,7 +25,7 @@ Projetado para flexibilidade, legibilidade e configuração rápida de projetos 
 
 * **Sistema de Boot** – Carrega automaticamente qualquer classe dentro de `app/Bootable` na inicialização da aplicação.
 * **Manipulação HTTP PSR-7** – Alimentado por [Laminas Diactoros](https://docs.laminas.dev/laminas-diactoros/).
-* **Manipulador de Sessão Personalizado** – Suporte aos drivers `files` ou `database`.
+* **Manipulador de Sessão Personalizado** – Suporte aos drivers `files | db | none`.
 * **Sistema de Idiomas Avançado**
 
     * Carrega arquivos de idioma da pasta `/languages`.
