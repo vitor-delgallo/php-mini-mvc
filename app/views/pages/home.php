@@ -197,7 +197,7 @@ $docs = [
             'desc'    => 'doc.globals.isapirequest.desc'
         ],
     ],
-    'System\\Core\\Autoload' => [
+    'System\\Core\\PHPAutoload' => [
         [
             'name'    => 'from(string $directory)',
             'code'    => "use System\\Core\\Autoload;\n\nAutoload::from('/path/to/php/files');",
@@ -587,13 +587,6 @@ $docs = [
             'comment' => 'doc.view.code.comment.forgetMany',
             'alt'    => "view_forget_many(['user', 'language']);",
             'desc'    => 'doc.view.forgetMany.desc'
-        ],
-        [
-            'name'    => 'clear()',
-            'code'    => "use System\\Core\\View;\n\nView::clear();",
-            'comment' => 'doc.view.code.comment.clear',
-            'alt'    => "view_clear();",
-            'desc'    => 'doc.view.clear.desc'
         ],
         [
             'name'    => 'setTemplate(?string $relativePath = null)',
