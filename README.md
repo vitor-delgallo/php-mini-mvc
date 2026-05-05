@@ -1,104 +1,43 @@
-[📄 Leia-me em pt-br](README.pt-br.md)
+[Read in Brazilian Portuguese](README.pt-br.md)
 
-# PHP Mini MVC Framework
+# PHP Mini MVC
 
-A lightweight, modular PHP mini-framework built around the MVC architecture.
-Designed for flexibility, readability, and rapid project setup — without heavy dependencies.
+PHP Mini MVC is a small, direct MVC framework for PHP 8.2+. It is designed for landing pages, institutional websites, small systems, simple APIs, and traditional HTML/CSS/JavaScript applications.
 
----
+The project favors predictable structure, procedural helper functions, PSR-7 responses, JSON-based translations, PDO database access, and a minimal dependency set.
 
-## 📑 Table of Contents
+## What This Project Is
 
-1. [Key Features](#️-key-features)
-2. [Project Structure](#-project-structure)
-3. [Getting Started](#-getting-started)
-4. [Language Usage](#-language-usage)
-5. [Routing Examples](#-routing-examples)
-6. [Path Helper](#-path-helper)
-7. [Database Usage](#-database-usage)
-8. [Contributing](#-contributing)
-9. [License](#-license)
+- A lightweight MVC project skeleton for PHP 8.2+.
+- A simple framework core under `system/`.
+- A conventional application layer under `app/`.
+- A good fit for small web projects and simple APIs.
+- A codebase intended to stay easy to read, modify, and deploy.
 
----
+## What This Project Is Not
 
-## 🛠️ Key Features
+- It is not Laravel, Symfony, Slim, or a full-stack enterprise framework.
+- It does not assume React, Vue, Angular, jQuery, or a front-end build pipeline.
+- It does not try to hide PHP behind heavy abstractions.
 
-* **Boot System** – Automatically loads any class inside `app/Bootable` on application start.
-* **PSR-7 HTTP Handling** – Powered by [Laminas Diactoros](https://docs.laminas.dev/laminas-diactoros/).
-* **Custom Session Handler** – Supports `files | db | none` drivers.
-* **Advanced Language System**
+## Requirements
 
-    * Loads language files from `/languages`.
-    * Adds nested key prefixes based on folder structure (e.g., `languages/users/admin/pt-br.json` → `users.admin.key`).
-    * Supports key substitution: `lg("system.error.load", ["error" => $e->getMessage()])` replaces `{error}` in the string.
-* **Automatic Helper Loading** – All PHP files inside `app/helpers` are autoloaded.
-* **Middleware Support** – Easily register route-specific middlewares.
-* **Form Validation** – Built-in validation rules and custom rule support.
-* **Database Abstraction** – PDO wrapper with helper methods.
-* **Clean Project Structure** – Autoloaded, organized, and environment-configurable.
-* **View Rendering** – Shared variables, layouts, and templates.
-* **Environment Variables** – `.env` configuration support.
+- PHP 8.2 or newer
+- Composer
+- PHP extensions:
+  - `openssl`
+  - `pdo`
+- A web server that can route requests to `public/index.php`
 
-## ⚡ Lightweight Guidelines
+## Main Dependencies
 
-To keep this mini-MVC fast and minimal:
+- `miladrahimi/phprouter` for routing
+- `laminas/laminas-diactoros` for PSR-7 responses
+- `laminas/laminas-httphandlerrunner`
+- `vlucas/phpdotenv` for environment variables
+- PDO for database access
 
-* Keep middlewares focused and route-specific.
-* Prefer native helpers over adding new dependencies.
-* Load only the language keys and view data needed by each page.
-* Avoid global boot routines that run expensive operations per request.
-
----
-
-## 📂 Project Structure
-
-```
-/ 
-├── app/
-│   ├── Controllers/
-│   ├── Models/
-│   ├── Middlewares/
-│   ├── Bootable/
-│   ├── helpers/
-│   ├── views/
-│   │   ├── pages/
-│   │   └── templates/
-│   └── routes/
-├── languages/
-├── public/
-│   ├── assets/
-│   │   ├── css/
-│   │   ├── img/
-│   │   ├── js/
-│   │   └── libs/
-│   └── index.php
-├── storage/
-│   ├── logs/
-│   └── sessions/
-├── system/
-│   ├── Config/
-│   ├── Core/
-│   ├── Session/
-│   ├── Interfaces/
-│   ├── helpers/
-│   └── includes/
-├── vendor/
-├── .env
-├── .env.example
-├── .gitignore
-├── .htaccess
-├── composer.json
-├── composer.lock
-└── LICENSE
-└── README.md
-└── README.pt-br.md
-```
-
----
-
-## 🚀 Getting Started
-
-### 1. Installation
+## Installation
 
 ```bash
 git clone https://github.com/vitor-delgallo/php-mini-mvc.git
@@ -106,136 +45,434 @@ cd php-mini-mvc
 composer install
 ```
 
-### 2. Environment Setup
+Create your environment file:
 
-Rename `.env.example` to `.env` and configure according to your needs.
+```bash
+cp .env.example .env
+```
 
----
+On Windows PowerShell:
 
-## 🌍 Language Usage
+```powershell
+Copy-Item .env.example .env
+```
 
-**Example file:** `languages/system/en.json`
+Point your web server to `public/`, or use the included Apache `.htaccess` from the project root to route requests to `public/index.php`.
 
-```json
+## Environment
+
+The main `.env` values are:
+
+```dotenv
+APP_ENV=development
+BASE_PATH=/php-mini-mvc
+DEFAULT_LANGUAGE=en
+APP_HELPERS_AUTOLOAD=true
+
+SESSION_DRIVER=none
+SESSION_PREFIX=
+SESSION_ENCRYPT_KEY=
+
+DB_DRIVER=none
+DB_HOST=
+DB_PORT=
+DB_NAME=
+DB_USER=
+DB_PASS=
+DB_CHARSET=utf8
+```
+
+Important values:
+
+- `APP_ENV`: `production`, `development`, or `testing`.
+- `BASE_PATH`: use this when the app runs from a subdirectory, such as `/php-mini-mvc`.
+- `DEFAULT_LANGUAGE`: default language used by the translation system.
+- `APP_HELPERS_AUTOLOAD`: `true` to load all app helpers, or a list such as `['auth','format.php']`.
+- `SESSION_DRIVER`: `files`, `db`, or `none`.
+- `DB_DRIVER`: `mysql`, `pgsql`, or `none`.
+
+## Project Structure
+
+```text
+app/
+  Bootable/         Classes executed during bootstrap when they implement IBootable
+  Controllers/      Application controllers, namespace App\Controllers
+  Middlewares/      Route and route-group middlewares
+  Models/           Application models, namespace App\Models
+  helpers/          App-specific helpers
+  routes/           web.php and api.php route files
+  views/
+    pages/          Page views
+    templates/      Reusable templates/layouts
+
+languages/          Language JSON files
+public/             Expected document root
+storage/
+  ia-context/       Context files for AI agents and maintainers
+  logs/             Daily logs
+  sessions/         Session files when SESSION_DRIVER=files
+
+system/
+  Config/           Configuration and environment resolvers
+  Core/             Framework core classes
+  helpers/          Internal procedural helpers
+  includes/         Error and session handlers
+  Interfaces/       System contracts
+  Session/          Custom session handlers
+```
+
+## Request Lifecycle
+
+All requests enter through:
+
+```text
+public/index.php
+```
+
+The bootstrap:
+
+1. Loads Composer autoload.
+2. Loads error handlers.
+3. Loads `.env`.
+4. Detects whether the request is an API request.
+5. Loads system helpers and app helpers.
+6. Configures sessions for web requests, or disables cookies and uses `NULLHandler` for API requests.
+7. Connects to the database when `DB_DRIVER` is not `none`.
+8. Executes bootable classes in `app/Bootable`.
+9. Loads web routes from `app/routes/web.php` or API routes from `app/routes/api.php` with the `/api` prefix.
+10. Dispatches the request through the router.
+
+## Routing
+
+Routes use `miladrahimi/phprouter`. Each route file receives a local `$router` variable.
+
+Web routes live in:
+
+```text
+app/routes/web.php
+```
+
+Example:
+
+```php
+use MiladRahimi\PhpRouter\Router;
+
+$router->get('/', function () {
+    return response_html(view_render_page('home'));
+});
+
+$router->group([
+    'middleware' => [\App\Middlewares\Example::class],
+    'prefix' => '/admin',
+], function (Router $router) {
+    $router->get('/users/{id}', [\App\Controllers\User::class, 'showPage']);
+});
+```
+
+API routes live in:
+
+```text
+app/routes/api.php
+```
+
+They are loaded with the global `/api` prefix:
+
+```php
+$router->group(['prefix' => '/admin'], function (Router $router) {
+    $router->get('/users', [\App\Controllers\User::class, 'index']);
+});
+```
+
+With `BASE_PATH=/php-mini-mvc`, the API route above is available at:
+
+```text
+/php-mini-mvc/api/admin/users
+```
+
+## Controllers
+
+Controllers live in `app/Controllers` and use the `App\Controllers` namespace. They should return `Psr\Http\Message\ResponseInterface`.
+
+```php
+namespace App\Controllers;
+
+use App\Models\User as UserModel;
+use Psr\Http\Message\ResponseInterface;
+
+class User
 {
-  "error.load": "Error while loading: {error}"
-}
-```
-
-**Usage with substitution:**
-
-```php
-lg("system.error.load", ["error" => $e->getMessage()]);
-```
-
-Folder prefixes are automatically applied based on structure.
-
----
-
-## 🔎 Routing Examples
-
-**Basic route:**
-
-```php
-$router->get('/', [HomeController::class, 'index']);
-```
-
-**With parameters:**
-
-```php
-$router->get('/user/{id}', [UserController::class, 'show']);
-```
-
-**With middleware:**
-
-```php
-$router->get('/dashboard', [DashboardController::class, 'index'])
-       ->middleware([AuthMiddleware::class]);
-```
-
-**Middleware example:**
-
-```php
-namespace App\Middlewares;
-
-use MiladRahimi\PhpRouter\Middleware;
-use Psr\Http\Message\ServerRequestInterface;
-
-class AuthMiddleware implements Middleware
-{
-    public function handle(ServerRequestInterface $request, callable $next)
+    public function index(): ResponseInterface
     {
-        if (!session_has('user_id')) {
-            return response_redirect('/login');
+        return response_json(UserModel::all());
+    }
+
+    public function showPage(int $id): ResponseInterface
+    {
+        $user = UserModel::find($id);
+
+        if (empty($user)) {
+            return response_html(view_render_html('<h4>User not found</h4>'), 404);
         }
-        return $next($request);
+
+        return response_html(view_render_page('user-profile', [
+            'user' => $user,
+        ]));
     }
 }
 ```
 
----
+Recommended pattern:
 
-## 📂 Path Helper
+- Keep HTTP response decisions in controllers.
+- Keep queries and persistence in models.
+- Keep HTML in views.
+- Return responses through `response_html()`, `response_json()`, `response_redirect()`, and related helpers.
 
-`path_base()` is recommended for generating local asset URLs:
+## Views and Templates
 
-```php
-<script src="<?= path_base() ?>/assets/js/app.js"></script>
-<link rel="stylesheet" href="<?= path_base() ?>/assets/css/style.css">
+Page views live in:
+
+```text
+app/views/pages/
 ```
 
-Ensures correct paths even when the app is hosted in a subdirectory.
+Templates live in:
 
----
-
-## 📊 Database Usage
-
-**Select all:**
-
-```php
-$users = Database::select("SELECT * FROM users");
+```text
+app/views/templates/
 ```
 
-**Select single row:**
+Render a page:
 
 ```php
-$user = Database::selectRow("SELECT * FROM users WHERE id = ?", [$id]);
+return response_html(view_render_page('home', [
+    'title' => 'Home',
+]));
 ```
 
-**Insert:**
+Render a small raw HTML block:
 
 ```php
-Database::statement("INSERT INTO users (name, email) VALUES (?, ?)", [$name, $email]);
+return response_html(view_render_html('<h1>OK</h1>'));
 ```
 
-**With transactions:**
+Share data globally with views:
 
 ```php
-Database::startTransaction();
+view_share('appName', 'PHP Mini MVC');
+view_share_many(['theme' => 'light']);
+```
+
+## Assets and URLs
+
+Use path helpers instead of hard-coded absolute paths.
+
+```php
+<link rel="stylesheet" href="<?= path_base_public() ?>/assets/css/app.css">
+<script src="<?= path_base_public() ?>/assets/js/app.js"></script>
+```
+
+Use `site_url()` for absolute URLs:
+
+```php
+$loginUrl = site_url('/login');
+```
+
+This keeps the project compatible with subdirectory deployments through `BASE_PATH`.
+
+## Language System
+
+Translations live in `languages/` as JSON files. Files in subfolders receive prefixes based on the folder path.
+
+Example:
+
+```text
+languages/system/en.json      -> system.http.404.title
+languages/template/en.json    -> template.framework.name
+languages/pages/users/en.json -> pages.users.profile
+```
+
+Usage:
+
+```php
+echo lg('template.framework.name');
+
+echo lg('system.database.connection.error.info', [
+    'error' => $message,
+]);
+```
+
+Loading priority:
+
+1. Full requested or detected language, such as `pt-br`.
+2. Short language prefix, such as `pt`.
+3. `DEFAULT_LANGUAGE`.
+4. Empty translations when nothing is found.
+
+## Database
+
+Set `DB_DRIVER=mysql` or `DB_DRIVER=pgsql` in `.env` and configure the remaining database variables. The bootstrap connects automatically when the driver is not `none`.
+
+Use the database helpers:
+
+```php
+$users = database_select(
+    'SELECT id, name FROM users WHERE active = ?',
+    [1]
+);
+
+$user = database_select_row(
+    'SELECT * FROM users WHERE id = :id',
+    ['id' => $id]
+);
+
+database_statement(
+    'INSERT INTO users (name, email) VALUES (:name, :email)',
+    ['name' => $name, 'email' => $email]
+);
+```
+
+Transactions:
+
+```php
+database_start_transaction();
+
 try {
-    Database::statement("UPDATE accounts SET balance = balance - 100 WHERE id = ?", [$from]);
-    Database::statement("UPDATE accounts SET balance = balance + 100 WHERE id = ?", [$to]);
-    Database::commitTransaction();
-} catch (Exception $e) {
-    Database::rollbackTransaction();
+    database_statement('UPDATE accounts SET balance = balance - ? WHERE id = ?', [100, $from]);
+    database_statement('UPDATE accounts SET balance = balance + ? WHERE id = ?', [100, $to]);
+
+    database_commit_transaction();
+} catch (Throwable $e) {
+    if (database_is_in_transaction()) {
+        database_rollback_transaction();
+    }
+
+    throw $e;
 }
 ```
 
----
+Always use parameters or prepared statements. Do not concatenate user input directly into SQL.
 
-## 🤝 Contributing
+## Sessions
 
-We welcome contributions! You can:
+Configure sessions with:
 
-* Suggest new features or improvements.
-* Report bugs or unexpected behaviors.
-* Share examples of how you’re using the framework.
-* Submit pull requests for enhancements or fixes.
+```dotenv
+SESSION_DRIVER=none
+```
 
-To contribute, open an issue or pull request on the [GitHub repository](https://github.com/vitor-delgallo/php-mini-mvc).
+Supported drivers:
 
----
+- `files`: native file-backed sessions in `storage/sessions`.
+- `db`: database-backed sessions through `System\Session\DBHandler`.
+- `none`: session handling disabled.
 
-## 📜 License
+Common helpers:
 
-This project is licensed under the [MIT License](LICENSE).
+```php
+session_set('user_id', 123);
+
+if (session_has('user_id')) {
+    $id = session_get('user_id');
+}
+
+session_regenerate();
+session_save();
+```
+
+API routes should not use sessions. API requests use `System\Session\NULLHandler`.
+
+## Form Validation
+
+Use `form_validator()` for request data:
+
+```php
+$form = form_validator($_POST, reset: true);
+
+if (!$form->validate([
+    'email' => 'required|email',
+    'password' => 'required|min:8',
+])) {
+    return response_html(view_render_page('form', [
+        'errors' => $form->errors(),
+    ]), 422);
+}
+```
+
+Native rules include:
+
+```text
+required
+email
+min:{n}
+max:{n}
+same:{field}
+numeric
+integer
+date
+regex:{pattern}
+in:{a,b,c}
+```
+
+For arrays, use `..` to iterate child items:
+
+```php
+$form->validate([
+    'users..email' => 'required|email',
+]);
+```
+
+## Bootables
+
+Bootable classes live in `app/Bootable` and implement `System\Interfaces\IBootable`.
+
+```php
+namespace App\Bootable;
+
+use System\Interfaces\IBootable;
+use System\Core\View;
+
+class ShareDefaults implements IBootable
+{
+    public static function boot(): void
+    {
+        View::share('appName', 'PHP Mini MVC');
+    }
+}
+```
+
+Bootables run on every request. Keep them lightweight and avoid global queries or expensive initialization.
+
+## AI Context
+
+This repository includes structured context for AI coding agents:
+
+```text
+storage/ia-context/mvc.md
+storage/ia-context/mvc-references/
+```
+
+Use `storage/ia-context/mvc.md` as the entry point. The reference files split architecture, configuration, MVC layers, languages, database/session/forms, responses/middlewares/bootables, helpers, workflows, and cautions into focused documents.
+
+## Development Principles
+
+- Keep the framework small and predictable.
+- Prefer existing helpers and core classes before adding new abstractions.
+- Avoid heavy dependencies unless they are explicitly justified.
+- Preserve `BASE_PATH` support.
+- Keep API routes stateless.
+- Keep views simple.
+- Keep models responsible for data access.
+- Keep SQL parameterized.
+
+## Contributing
+
+Contributions are welcome. You can open issues for bugs, proposals, or documentation improvements, and pull requests for focused changes.
+
+Before changing the framework core, prefer small, testable updates that preserve the existing project structure.
+
+Repository: [vitor-delgallo/php-mini-mvc](https://github.com/vitor-delgallo/php-mini-mvc)
+
+## License
+
+This project is released under the [MIT License](LICENSE).

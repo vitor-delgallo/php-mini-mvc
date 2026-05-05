@@ -1,104 +1,43 @@
-[📄 Read me in English](README.md)
+[Read in English](README.md)
 
-# PHP Mini MVC Framework
+# PHP Mini MVC
 
-Um mini-framework PHP modular e leve, baseado na arquitetura MVC.
-Projetado para flexibilidade, legibilidade e configuração rápida de projetos — sem dependências pesadas.
+PHP Mini MVC é um mini-framework MVC simples e direto para PHP 8.2+. Ele foi pensado para landing pages, sites institucionais, sistemas pequenos, APIs simples e aplicações tradicionais com HTML, CSS e JavaScript.
 
----
+O projeto prioriza estrutura previsível, helpers procedurais, respostas PSR-7, traduções em JSON, acesso a banco com PDO e um conjunto mínimo de dependências.
 
-## 📑 Índice
+## O Que Este Projeto É
 
-1. [Recursos Principais](#️-recursos-principais)
-2. [Estrutura do Projeto](#-estrutura-do-projeto)
-3. [Primeiros Passos](#-primeiros-passos)
-4. [Uso de Idiomas](#-uso-de-idiomas)
-5. [Exemplos de Rotas](#-exemplos-de-rotas)
-6. [Helper de Caminho](#-helper-de-caminho)
-7. [Uso do Banco de Dados](#-uso-do-banco-de-dados)
-8. [Contribuindo](#-contribuindo)
-9. [Licença](#-licença)
+- Um esqueleto MVC leve para PHP 8.2+.
+- Um núcleo simples de framework em `system/`.
+- Uma camada de aplicação convencional em `app/`.
+- Uma boa base para sites pequenos e APIs simples.
+- Uma codebase feita para continuar fácil de ler, alterar e publicar.
 
----
+## O Que Este Projeto Não É
 
-## 🛠️ Recursos Principais
+- Não é Laravel, Symfony, Slim ou um framework enterprise completo.
+- Não assume React, Vue, Angular, jQuery ou pipeline de build front-end.
+- Não tenta esconder PHP atrás de abstrações pesadas.
 
-* **Sistema de Boot** – Carrega automaticamente qualquer classe dentro de `app/Bootable` na inicialização da aplicação.
-* **Manipulação HTTP PSR-7** – Alimentado por [Laminas Diactoros](https://docs.laminas.dev/laminas-diactoros/).
-* **Manipulador de Sessão Personalizado** – Suporte aos drivers `files | db | none`.
-* **Sistema de Idiomas Avançado**
+## Requisitos
 
-    * Carrega arquivos de idioma da pasta `/languages`.
-    * Adiciona prefixos de chave aninhados com base na estrutura de pastas (ex.: `languages/users/admin/pt-br.json` → `users.admin.key`).
-    * Suporte a substituição de chaves: `lg("system.error.load", ["error" => $e->getMessage()])` substitui `{error}` na string.
-* **Carregamento Automático de Helpers** – Todos os arquivos PHP em `app/helpers` são carregados automaticamente.
-* **Suporte a Middlewares** – Registre facilmente middlewares específicos por rota.
-* **Validação de Formulários** – Regras de validação integradas e suporte a regras personalizadas.
-* **Abstração de Banco de Dados** – Wrapper PDO com métodos auxiliares.
-* **Estrutura Limpa de Projeto** – Autocarregada, organizada e configurável por ambiente.
-* **Renderização de Views** – Variáveis globais, layouts e templates.
-* **Variáveis de Ambiente** – Suporte a configuração via `.env`.
+- PHP 8.2 ou superior
+- Composer
+- Extensões PHP:
+  - `openssl`
+  - `pdo`
+- Um servidor web capaz de direcionar requisições para `public/index.php`
 
-## ⚡ Diretrizes de Leveza
+## Dependências Principais
 
-Para manter este mini-MVC rápido e enxuto:
+- `miladrahimi/phprouter` para rotas
+- `laminas/laminas-diactoros` para respostas PSR-7
+- `laminas/laminas-httphandlerrunner`
+- `vlucas/phpdotenv` para variáveis de ambiente
+- PDO para acesso a banco de dados
 
-* Mantenha middlewares focados e específicos por rota.
-* Prefira helpers nativos antes de adicionar novas dependências.
-* Carregue apenas as chaves de idioma e dados de view necessários por página.
-* Evite rotinas globais de boot com operações pesadas por requisição.
-
----
-
-## 📂 Estrutura do Projeto
-
-```
-/ 
-├── app/
-│   ├── Controllers/
-│   ├── Models/
-│   ├── Middlewares/
-│   ├── Bootable/
-│   ├── helpers/
-│   ├── views/
-│   │   ├── pages/
-│   │   └── templates/
-│   └── routes/
-├── languages/
-├── public/
-│   ├── assets/
-│   │   ├── css/
-│   │   ├── img/
-│   │   ├── js/
-│   │   └── libs/
-│   └── index.php
-├── storage/
-│   ├── logs/
-│   └── sessions/
-├── system/
-│   ├── Config/
-│   ├── Core/
-│   ├── Session/
-│   ├── Interfaces/
-│   ├── helpers/
-│   └── includes/
-├── vendor/
-├── .env
-├── .env.example
-├── .gitignore
-├── .htaccess
-├── composer.json
-├── composer.lock
-└── LICENSE
-└── README.md
-└── README.pt-br.md
-```
-
----
-
-## 🚀 Primeiros Passos
-
-### 1. Instalação
+## Instalação
 
 ```bash
 git clone https://github.com/vitor-delgallo/php-mini-mvc.git
@@ -106,136 +45,434 @@ cd php-mini-mvc
 composer install
 ```
 
-### 2. Configuração do Ambiente
+Crie o arquivo de ambiente:
 
-Renomeie `.env.example` para `.env` e configure conforme necessário.
+```bash
+cp .env.example .env
+```
 
----
+No Windows PowerShell:
 
-## 🌍 Uso de Idiomas
+```powershell
+Copy-Item .env.example .env
+```
 
-**Exemplo de arquivo:** `languages/system/pt-br.json`
+Aponte o document root do servidor web para `public/`, ou use o `.htaccess` incluído na raiz do projeto para direcionar as requisições para `public/index.php` no Apache.
 
-```json
+## Ambiente
+
+Os principais valores do `.env` são:
+
+```dotenv
+APP_ENV=development
+BASE_PATH=/php-mini-mvc
+DEFAULT_LANGUAGE=en
+APP_HELPERS_AUTOLOAD=true
+
+SESSION_DRIVER=none
+SESSION_PREFIX=
+SESSION_ENCRYPT_KEY=
+
+DB_DRIVER=none
+DB_HOST=
+DB_PORT=
+DB_NAME=
+DB_USER=
+DB_PASS=
+DB_CHARSET=utf8
+```
+
+Valores importantes:
+
+- `APP_ENV`: `production`, `development` ou `testing`.
+- `BASE_PATH`: use quando a aplicação roda em subdiretório, como `/php-mini-mvc`.
+- `DEFAULT_LANGUAGE`: idioma padrão usado pelo sistema de traduções.
+- `APP_HELPERS_AUTOLOAD`: `true` para carregar todos os helpers da aplicação, ou uma lista como `['auth','format.php']`.
+- `SESSION_DRIVER`: `files`, `db` ou `none`.
+- `DB_DRIVER`: `mysql`, `pgsql` ou `none`.
+
+## Estrutura do Projeto
+
+```text
+app/
+  Bootable/         Classes executadas no bootstrap quando implementam IBootable
+  Controllers/      Controllers da aplicação, namespace App\Controllers
+  Middlewares/      Middlewares de rotas e grupos de rotas
+  Models/           Models da aplicação, namespace App\Models
+  helpers/          Helpers específicos do app
+  routes/           Arquivos de rota web.php e api.php
+  views/
+    pages/          Views de página
+    templates/      Templates/layouts reutilizáveis
+
+languages/          Arquivos JSON de idioma
+public/             Document root esperado
+storage/
+  ia-context/       Documentos de contexto para agentes de IA e mantenedores
+  logs/             Logs diários
+  sessions/         Arquivos de sessão quando SESSION_DRIVER=files
+
+system/
+  Config/           Resolvedores de configuração e ambiente
+  Core/             Classes centrais do framework
+  helpers/          Helpers procedurais internos
+  includes/         Handlers de erro e sessão
+  Interfaces/       Contratos do sistema
+  Session/          Session handlers customizados
+```
+
+## Ciclo de Requisição
+
+Todas as requisições entram por:
+
+```text
+public/index.php
+```
+
+O bootstrap:
+
+1. Carrega o autoload do Composer.
+2. Carrega os handlers de erro.
+3. Carrega o `.env`.
+4. Detecta se a requisição é API.
+5. Carrega helpers do sistema e helpers da aplicação.
+6. Configura sessão para requisições web, ou desativa cookies e usa `NULLHandler` para requisições API.
+7. Conecta ao banco quando `DB_DRIVER` não é `none`.
+8. Executa classes bootable em `app/Bootable`.
+9. Carrega rotas web de `app/routes/web.php` ou rotas API de `app/routes/api.php` com prefixo `/api`.
+10. Despacha a requisição pelo router.
+
+## Rotas
+
+As rotas usam `miladrahimi/phprouter`. Cada arquivo de rota recebe uma variável local `$router`.
+
+Rotas web ficam em:
+
+```text
+app/routes/web.php
+```
+
+Exemplo:
+
+```php
+use MiladRahimi\PhpRouter\Router;
+
+$router->get('/', function () {
+    return response_html(view_render_page('home'));
+});
+
+$router->group([
+    'middleware' => [\App\Middlewares\Example::class],
+    'prefix' => '/admin',
+], function (Router $router) {
+    $router->get('/users/{id}', [\App\Controllers\User::class, 'showPage']);
+});
+```
+
+Rotas API ficam em:
+
+```text
+app/routes/api.php
+```
+
+Elas são carregadas com prefixo global `/api`:
+
+```php
+$router->group(['prefix' => '/admin'], function (Router $router) {
+    $router->get('/users', [\App\Controllers\User::class, 'index']);
+});
+```
+
+Com `BASE_PATH=/php-mini-mvc`, a rota API acima fica disponível em:
+
+```text
+/php-mini-mvc/api/admin/users
+```
+
+## Controllers
+
+Controllers ficam em `app/Controllers` e usam o namespace `App\Controllers`. Eles devem retornar `Psr\Http\Message\ResponseInterface`.
+
+```php
+namespace App\Controllers;
+
+use App\Models\User as UserModel;
+use Psr\Http\Message\ResponseInterface;
+
+class User
 {
-  "error.load": "Erro ao carregar: {error}"
-}
-```
-
-**Uso com substituição:**
-
-```php
-lg("system.error.load", ["error" => $e->getMessage()]);
-```
-
-Os prefixos de chave são aplicados automaticamente com base na estrutura das pastas.
-
----
-
-## 🔎 Exemplos de Rotas
-
-**Rota básica:**
-
-```php
-$router->get('/', [HomeController::class, 'index']);
-```
-
-**Com parâmetros:**
-
-```php
-$router->get('/user/{id}', [UserController::class, 'show']);
-```
-
-**Com middleware:**
-
-```php
-$router->get('/dashboard', [DashboardController::class, 'index'])
-       ->middleware([AuthMiddleware::class]);
-```
-
-**Exemplo de middleware:**
-
-```php
-namespace App\Middlewares;
-
-use MiladRahimi\PhpRouter\Middleware;
-use Psr\Http\Message\ServerRequestInterface;
-
-class AuthMiddleware implements Middleware
-{
-    public function handle(ServerRequestInterface $request, callable $next)
+    public function index(): ResponseInterface
     {
-        if (!session_has('user_id')) {
-            return response_redirect('/login');
+        return response_json(UserModel::all());
+    }
+
+    public function showPage(int $id): ResponseInterface
+    {
+        $user = UserModel::find($id);
+
+        if (empty($user)) {
+            return response_html(view_render_html('<h4>User not found</h4>'), 404);
         }
-        return $next($request);
+
+        return response_html(view_render_page('user-profile', [
+            'user' => $user,
+        ]));
     }
 }
 ```
 
----
+Padrão recomendado:
 
-## 📂 Helper de Caminho
+- Mantenha decisões de resposta HTTP nos controllers.
+- Mantenha queries e persistência nos models.
+- Mantenha HTML nas views.
+- Retorne respostas com `response_html()`, `response_json()`, `response_redirect()` e helpers relacionados.
 
-`path_base()` é recomendado para gerar URLs de assets locais:
+## Views e Templates
 
-```php
-<script src="<?= path_base() ?>/assets/js/app.js"></script>
-<link rel="stylesheet" href="<?= path_base() ?>/assets/css/style.css">
+Views de página ficam em:
+
+```text
+app/views/pages/
 ```
 
-Garante caminhos corretos mesmo quando o app está hospedado em um subdiretório.
+Templates ficam em:
 
----
-
-## 📊 Uso do Banco de Dados
-
-**Selecionar todos:**
-
-```php
-$usuarios = Database::select("SELECT * FROM users");
+```text
+app/views/templates/
 ```
 
-**Selecionar uma linha:**
+Renderizar uma página:
 
 ```php
-$usuario = Database::selectRow("SELECT * FROM users WHERE id = ?", [$id]);
+return response_html(view_render_page('home', [
+    'title' => 'Home',
+]));
 ```
 
-**Inserir:**
+Renderizar um pequeno bloco de HTML bruto:
 
 ```php
-Database::statement("INSERT INTO users (name, email) VALUES (?, ?)", [$nome, $email]);
+return response_html(view_render_html('<h1>OK</h1>'));
 ```
 
-**Com transações:**
+Compartilhar dados globalmente com views:
 
 ```php
-Database::startTransaction();
+view_share('appName', 'PHP Mini MVC');
+view_share_many(['theme' => 'light']);
+```
+
+## Assets e URLs
+
+Use helpers de caminho em vez de caminhos absolutos fixos.
+
+```php
+<link rel="stylesheet" href="<?= path_base_public() ?>/assets/css/app.css">
+<script src="<?= path_base_public() ?>/assets/js/app.js"></script>
+```
+
+Use `site_url()` para URLs absolutas:
+
+```php
+$loginUrl = site_url('/login');
+```
+
+Isso mantém o projeto compatível com deploys em subdiretório usando `BASE_PATH`.
+
+## Sistema de Idiomas
+
+Traduções ficam em `languages/` como arquivos JSON. Arquivos em subpastas recebem prefixos baseados no caminho.
+
+Exemplo:
+
+```text
+languages/system/en.json      -> system.http.404.title
+languages/template/en.json    -> template.framework.name
+languages/pages/users/en.json -> pages.users.profile
+```
+
+Uso:
+
+```php
+echo lg('template.framework.name');
+
+echo lg('system.database.connection.error.info', [
+    'error' => $message,
+]);
+```
+
+Prioridade de carregamento:
+
+1. Idioma completo solicitado ou detectado, como `pt-br`.
+2. Prefixo curto do idioma, como `pt`.
+3. `DEFAULT_LANGUAGE`.
+4. Traduções vazias quando nada é encontrado.
+
+## Banco de Dados
+
+Defina `DB_DRIVER=mysql` ou `DB_DRIVER=pgsql` no `.env` e configure as demais variáveis de banco. O bootstrap conecta automaticamente quando o driver não é `none`.
+
+Use os helpers de banco:
+
+```php
+$users = database_select(
+    'SELECT id, name FROM users WHERE active = ?',
+    [1]
+);
+
+$user = database_select_row(
+    'SELECT * FROM users WHERE id = :id',
+    ['id' => $id]
+);
+
+database_statement(
+    'INSERT INTO users (name, email) VALUES (:name, :email)',
+    ['name' => $name, 'email' => $email]
+);
+```
+
+Transações:
+
+```php
+database_start_transaction();
+
 try {
-    Database::statement("UPDATE accounts SET balance = balance - 100 WHERE id = ?", [$origem]);
-    Database::statement("UPDATE accounts SET balance = balance + 100 WHERE id = ?", [$destino]);
-    Database::commitTransaction();
-} catch (Exception $e) {
-    Database::rollbackTransaction();
+    database_statement('UPDATE accounts SET balance = balance - ? WHERE id = ?', [100, $from]);
+    database_statement('UPDATE accounts SET balance = balance + ? WHERE id = ?', [100, $to]);
+
+    database_commit_transaction();
+} catch (Throwable $e) {
+    if (database_is_in_transaction()) {
+        database_rollback_transaction();
+    }
+
+    throw $e;
 }
 ```
 
----
+Sempre use parâmetros ou prepared statements. Não concatene entrada de usuário diretamente no SQL.
 
-## 🤝 Contribuindo
+## Sessões
 
-Contribuições são bem-vindas! Você pode:
+Configure sessões com:
 
-* Sugerir novos recursos ou melhorias.
-* Relatar bugs ou comportamentos inesperados.
-* Compartilhar exemplos de como está usando o framework.
-* Enviar pull requests com melhorias ou correções.
+```dotenv
+SESSION_DRIVER=none
+```
 
-Para contribuir, abra uma issue ou pull request no [repositório GitHub](https://github.com/vitor-delgallo/php-mini-mvc).
+Drivers suportados:
 
----
+- `files`: sessões nativas em arquivos dentro de `storage/sessions`.
+- `db`: sessões no banco através de `System\Session\DBHandler`.
+- `none`: sessão desabilitada.
 
-## 📜 Licença
+Helpers comuns:
 
-Este projeto está licenciado sob a [Licença MIT](LICENSE).
+```php
+session_set('user_id', 123);
+
+if (session_has('user_id')) {
+    $id = session_get('user_id');
+}
+
+session_regenerate();
+session_save();
+```
+
+Rotas API não devem usar sessão. Requisições API usam `System\Session\NULLHandler`.
+
+## Validação de Formulários
+
+Use `form_validator()` para dados de request:
+
+```php
+$form = form_validator($_POST, reset: true);
+
+if (!$form->validate([
+    'email' => 'required|email',
+    'password' => 'required|min:8',
+])) {
+    return response_html(view_render_page('form', [
+        'errors' => $form->errors(),
+    ]), 422);
+}
+```
+
+Regras nativas:
+
+```text
+required
+email
+min:{n}
+max:{n}
+same:{field}
+numeric
+integer
+date
+regex:{pattern}
+in:{a,b,c}
+```
+
+Para arrays, use `..` para iterar filhos:
+
+```php
+$form->validate([
+    'users..email' => 'required|email',
+]);
+```
+
+## Bootables
+
+Classes bootable ficam em `app/Bootable` e implementam `System\Interfaces\IBootable`.
+
+```php
+namespace App\Bootable;
+
+use System\Interfaces\IBootable;
+use System\Core\View;
+
+class ShareDefaults implements IBootable
+{
+    public static function boot(): void
+    {
+        View::share('appName', 'PHP Mini MVC');
+    }
+}
+```
+
+Bootables rodam em toda requisição. Mantenha essas classes leves e evite queries globais ou inicializações caras.
+
+## Contexto Para IA
+
+Este repositório inclui contexto estruturado para agentes de código com IA:
+
+```text
+storage/ia-context/mvc.md
+storage/ia-context/mvc-references/
+```
+
+Use `storage/ia-context/mvc.md` como ponto de entrada. Os arquivos de referência separam arquitetura, configuração, camadas MVC, idiomas, banco/sessão/formulários, respostas/middlewares/bootables, helpers, fluxos e pontos de atenção em documentos focados.
+
+## Princípios de Desenvolvimento
+
+- Mantenha o framework pequeno e previsível.
+- Prefira helpers e classes centrais existentes antes de adicionar novas abstrações.
+- Evite dependências pesadas sem justificativa explícita.
+- Preserve o suporte a `BASE_PATH`.
+- Mantenha rotas API stateless.
+- Mantenha views simples.
+- Mantenha models responsáveis por acesso a dados.
+- Mantenha SQL parametrizado.
+
+## Contribuindo
+
+Contribuições são bem-vindas. Você pode abrir issues para bugs, propostas ou melhorias de documentação, e pull requests para mudanças focadas.
+
+Antes de alterar o core do framework, prefira mudanças pequenas, testáveis e que preservem a estrutura existente do projeto.
+
+Repositório: [vitor-delgallo/php-mini-mvc](https://github.com/vitor-delgallo/php-mini-mvc)
+
+## Licença
+
+Este projeto é distribuído sob a [Licença MIT](LICENSE).
