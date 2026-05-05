@@ -103,7 +103,7 @@ Fluxo geral:
 
 ## Ordem recomendada para agentes
 
-1. Leia `storage/ia-context/mvc.md`.
+1. Leia `/storage/ia-context/mvc.md`.
 2. Abra apenas os documentos de referencia relacionados a tarefa.
 3. Identifique quais arquivos realmente precisam ser alterados.
 4. Procure helper, classe de core ou padrao existente antes de criar codigo novo.

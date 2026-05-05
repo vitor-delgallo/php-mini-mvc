@@ -38,7 +38,7 @@ Regras:
 
 Ao receber uma tarefa neste projeto:
 
-1. Leia `storage/ia-context/mvc.md`.
+1. Leia `/storage/ia-context/mvc.md`.
 2. Identifique quais arquivos realmente precisam ser alterados.
 3. Antes de criar nova funcao, procure helper ou classe existente.
 4. Antes de criar nova dependencia, tente resolver com core existente ou PHP puro.

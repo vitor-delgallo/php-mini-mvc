@@ -7,7 +7,7 @@ description: Contexto essencial para agentes de IA trabalharem no PHP Mini MVC s
 
 Este arquivo e o ponto de entrada do contexto do **PHP Mini MVC** para IAs, agentes de codigo e desenvolvedores.
 
-Mantenha este documento curto o suficiente para ficar sempre no contexto. Abra os documentos em `storage/ia-context/mvc-references/` somente quando a tarefa exigir detalhes do assunto.
+Mantenha este documento curto o suficiente para ficar sempre no contexto. Abra os documentos em `/storage/ia-context/mvc-references/` somente quando a tarefa exigir detalhes do assunto.
 
 ## Essencial que a IA deve saber sempre
 
@@ -158,14 +158,14 @@ Regras rapidas:
 | Nome | Descricao | Documento |
 | --- | --- | --- |
 | Arquitetura e bootstrap | Objetivo, stack, estrutura, ciclo de requisicao e convencoes globais. | [01-arquitetura-bootstrap.md](/storage/ia-context/mvc-references/01-arquitetura-bootstrap.md) |
-| Configuracao, rotas e URLs | `.env`, rotas web/API, `BASE_PATH`, assets e geracao de URL. | [02-configuracao-rotas-urls.md](storage/ia-context/mvc-references/02-configuracao-rotas-urls.md) |
-| Camadas MVC | Controllers, models, views, templates e fluxo para criar paginas. | [03-camadas-mvc.md](storage/ia-context/mvc-references/03-camadas-mvc.md) |
-| Idiomas e documentacao dinamica | Sistema de traducoes, prefixes de `languages/*` e home como documentacao. | [04-idiomas.md](storage/ia-context/mvc-references/04-idiomas.md) |
-| Banco, sessao e formularios | PDO, helpers `database_*`, drivers de sessao e `FormValidator`. | [05-banco-sessao-formularios.md](storage/ia-context/mvc-references/05-banco-sessao-formularios.md) |
-| Respostas, middlewares e bootables | Helpers `response_*`, middlewares e inicializacoes leves globais. | [06-respostas-middlewares-bootables.md](storage/ia-context/mvc-references/06-respostas-middlewares-bootables.md) |
-| Referencia de helpers | Tabela completa de helpers por area e decisoes rapidas de uso. | [07-helpers-referencia.md](storage/ia-context/mvc-references/07-helpers-referencia.md) |
-| Fluxos de trabalho | Checklists para novas paginas, APIs e novos projetos. | [08-fluxos-de-trabalho.md](storage/ia-context/mvc-references/08-fluxos-de-trabalho.md) |
-| Erros e pontos de atencao | Logs, handlers, riscos conhecidos e regras especificas para agentes. | [09-erros-atencoes.md](storage/ia-context/mvc-references/09-erros-atencoes.md) |
+| Configuracao, rotas e URLs | `.env`, rotas web/API, `BASE_PATH`, assets e geracao de URL. | [02-configuracao-rotas-urls.md](/storage/ia-context/mvc-references/02-configuracao-rotas-urls.md) |
+| Camadas MVC | Controllers, models, views, templates e fluxo para criar paginas. | [03-camadas-mvc.md](/storage/ia-context/mvc-references/03-camadas-mvc.md) |
+| Idiomas e documentacao dinamica | Sistema de traducoes, prefixes de `languages/*` e home como documentacao. | [04-idiomas.md](/storage/ia-context/mvc-references/04-idiomas.md) |
+| Banco, sessao e formularios | PDO, helpers `database_*`, drivers de sessao e `FormValidator`. | [05-banco-sessao-formularios.md](/storage/ia-context/mvc-references/05-banco-sessao-formularios.md) |
+| Respostas, middlewares e bootables | Helpers `response_*`, middlewares e inicializacoes leves globais. | [06-respostas-middlewares-bootables.md](/storage/ia-context/mvc-references/06-respostas-middlewares-bootables.md) |
+| Referencia de helpers | Tabela completa de helpers por area e decisoes rapidas de uso. | [07-helpers-referencia.md](/storage/ia-context/mvc-references/07-helpers-referencia.md) |
+| Fluxos de trabalho | Checklists para novas paginas, APIs e novos projetos. | [08-fluxos-de-trabalho.md](/storage/ia-context/mvc-references/08-fluxos-de-trabalho.md) |
+| Erros e pontos de atencao | Logs, handlers, riscos conhecidos e regras especificas para agentes. | [09-erros-atencoes.md](/storage/ia-context/mvc-references/09-erros-atencoes.md) |
 
 ## Home como documentacao dinamica
 
