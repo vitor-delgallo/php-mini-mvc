@@ -157,7 +157,7 @@ Regras rapidas:
 
 | Nome | Descricao | Documento |
 | --- | --- | --- |
-| Arquitetura e bootstrap | Objetivo, stack, estrutura, ciclo de requisicao e convencoes globais. | [01-arquitetura-bootstrap.md](storage/ia-context/mvc-references/01-arquitetura-bootstrap.md) |
+| Arquitetura e bootstrap | Objetivo, stack, estrutura, ciclo de requisicao e convencoes globais. | [01-arquitetura-bootstrap.md](/storage/ia-context/mvc-references/01-arquitetura-bootstrap.md) |
 | Configuracao, rotas e URLs | `.env`, rotas web/API, `BASE_PATH`, assets e geracao de URL. | [02-configuracao-rotas-urls.md](storage/ia-context/mvc-references/02-configuracao-rotas-urls.md) |
 | Camadas MVC | Controllers, models, views, templates e fluxo para criar paginas. | [03-camadas-mvc.md](storage/ia-context/mvc-references/03-camadas-mvc.md) |
 | Idiomas e documentacao dinamica | Sistema de traducoes, prefixes de `languages/*` e home como documentacao. | [04-idiomas.md](storage/ia-context/mvc-references/04-idiomas.md) |
