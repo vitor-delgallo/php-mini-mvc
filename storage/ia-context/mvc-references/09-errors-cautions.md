@@ -38,7 +38,7 @@ Rules:
 
 When receiving a task in this project:
 
-1. Read `/storage/ia-context/mvc.md`.
+1. Read `../mvc.md`.
 2. Identify which files actually need to change.
 3. Before creating a new function, look for an existing helper or class.
 4. Before creating a new dependency, try to solve it with the existing core or plain PHP.

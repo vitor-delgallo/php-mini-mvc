@@ -103,7 +103,7 @@ General flow:
 
 ## Recommended Order for Agents
 
-1. Read `/storage/ia-context/mvc.md`.
+1. Read `../mvc.md`.
 2. Open only the reference documents related to the task.
 3. Identify which files actually need to change.
 4. Look for an existing helper, core class, or internal pattern before creating new code.

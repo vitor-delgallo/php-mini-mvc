@@ -84,7 +84,7 @@ With `BASE_PATH=/php-mini-mvc`, the final URL is:
 ## Recommended Order for Changes
 
 1. Identify whether the change is web, API, database, view, language, session, or bootstrap related.
-2. Open the matching reference document in `/storage/ia-context/mvc-references/`.
+2. Open the matching reference document in `mvc-references/`.
 3. Look for an existing helper or core class.
 4. Make the smallest correct change.
 5. Update translations if there is interface text.

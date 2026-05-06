@@ -7,7 +7,7 @@ description: Essential context for AI agents working on PHP Mini MVC without red
 
 This file is the entry point for **PHP Mini MVC** context for AI agents, coding agents, and developers.
 
-Keep this document short enough to remain in context by default. Open the documents in `/storage/ia-context/mvc-references/` only when the task requires details about that topic.
+Keep this document short enough to remain in context by default. Open the documents in `mvc-references/` only when the task requires details about that topic.
 
 ## Essential Context Agents Should Always Know
 
@@ -157,15 +157,15 @@ Quick rules:
 
 | Name | Description | Document |
 | --- | --- | --- |
-| Architecture and bootstrap | Purpose, stack, structure, request lifecycle, and global conventions. | [01-architecture-bootstrap.md](/storage/ia-context/mvc-references/01-architecture-bootstrap.md) |
-| Configuration, routes, and URLs | `.env`, web/API routes, `BASE_PATH`, assets, and URL generation. | [02-configuration-routes-urls.md](/storage/ia-context/mvc-references/02-configuration-routes-urls.md) |
-| MVC layers | Controllers, models, views, templates, and the flow for creating pages. | [03-mvc-layers.md](/storage/ia-context/mvc-references/03-mvc-layers.md) |
-| Languages and dynamic documentation | Translation system, `languages/*` prefixes, and the home page as documentation. | [04-languages.md](/storage/ia-context/mvc-references/04-languages.md) |
-| Database, session, and forms | PDO, `database_*` helpers, session drivers, and `FormValidator`. | [05-database-session-forms.md](/storage/ia-context/mvc-references/05-database-session-forms.md) |
-| Responses, middlewares, and bootables | `response_*` helpers, middlewares, and lightweight global initialization. | [06-responses-middlewares-bootables.md](/storage/ia-context/mvc-references/06-responses-middlewares-bootables.md) |
-| Helper reference | Complete helper table by area and quick usage decisions. | [07-helper-reference.md](/storage/ia-context/mvc-references/07-helper-reference.md) |
-| Workflows | Checklists for new pages, APIs, and new projects. | [08-workflows.md](/storage/ia-context/mvc-references/08-workflows.md) |
-| Errors and cautions | Logs, handlers, known risks, and specific rules for agents. | [09-errors-cautions.md](/storage/ia-context/mvc-references/09-errors-cautions.md) |
+| Architecture and bootstrap | Purpose, stack, structure, request lifecycle, and global conventions. | [01-architecture-bootstrap.md](mvc-references/01-architecture-bootstrap.md) |
+| Configuration, routes, and URLs | `.env`, web/API routes, `BASE_PATH`, assets, and URL generation. | [02-configuration-routes-urls.md](mvc-references/02-configuration-routes-urls.md) |
+| MVC layers | Controllers, models, views, templates, and the flow for creating pages. | [03-mvc-layers.md](mvc-references/03-mvc-layers.md) |
+| Languages and dynamic documentation | Translation system, `languages/*` prefixes, and the home page as documentation. | [04-languages.md](mvc-references/04-languages.md) |
+| Database, session, and forms | PDO, `database_*` helpers, session drivers, and `FormValidator`. | [05-database-session-forms.md](mvc-references/05-database-session-forms.md) |
+| Responses, middlewares, and bootables | `response_*` helpers, middlewares, and lightweight global initialization. | [06-responses-middlewares-bootables.md](mvc-references/06-responses-middlewares-bootables.md) |
+| Helper and system class reference | Helper index plus per-class files with namespaces, static method signatures, helper signatures, accepted arguments, and usage examples. | [07-helper-reference.md](mvc-references/07-helper-reference.md) |
+| Workflows | Checklists for new pages, APIs, and new projects. | [08-workflows.md](mvc-references/08-workflows.md) |
+| Errors and cautions | Logs, handlers, known risks, and specific rules for agents. | [09-errors-cautions.md](mvc-references/09-errors-cautions.md) |
 
 ## Home as Dynamic Documentation
 
