@@ -200,9 +200,9 @@ $docs = [
     'System\\Core\\PHPAutoload' => [
         [
             'name'    => 'from(string $directory)',
-            'code'    => "use System\\Core\\Autoload;\n\nAutoload::from('/path/to/php/files');",
+            'code'    => "use System\\Core\\PHPAutoload;\n\nPHPAutoload::from(path_app_helpers());",
             'comment' => 'doc.autoload.code.comment.from',
-            'alt'    => "autoload_from('/path/to/php/files');",
+            'alt'    => "// No procedural helper is available for this method.",
             'desc'    => 'doc.autoload.from.desc'
         ],
     ],
@@ -216,24 +216,59 @@ $docs = [
         ],
         [
             'name'    => 'statement(string $sql, array $params = [])',
-            'code'    => "use System\\Core\\Database;\n\n\$sql = \"UPDATE users SET name = ? WHERE id = ?\";\nDatabase::statement(\$sql, ['John', 1]);",
+            'code'    => "use System\\Core\\Database;\n\n\$sql = \"UPDATE users SET name = :name WHERE id = :id\";\nDatabase::statement(\$sql, ['name' => 'John', 'id' => 1]);",
             'comment' => 'doc.database.code.comment.statement',
-            'alt'    => "database_statement(\$sql, ['John', 1]);",
+            'alt'    => "database_statement(\$sql, ['name' => 'John', 'id' => 1]);",
             'desc'    => 'doc.database.statement.desc'
         ],
         [
             'name'    => 'select(string $sql, array $params = [], ?string $key = null)',
-            'code'    => "use System\\Core\\Database;\n\n\$sql = \"SELECT * FROM users\";\n\$users = Database::select(\$sql);",
+            'code'    => "use System\\Core\\Database;\n\n\$sql = \"SELECT id, name FROM users WHERE active = :active\";\n\$users = Database::select(\$sql, ['active' => 1]);",
             'comment' => 'doc.database.code.comment.select',
-            'alt'    => "\$users = database_select(\$sql);",
+            'alt'    => "\$users = database_select(\$sql, ['active' => 1]);",
             'desc'    => 'doc.database.select.desc'
         ],
         [
             'name'    => 'selectRow(string $sql, array $params = [], ?string $key = null)',
-            'code'    => "use System\\Core\\Database;\n\n\$sql = \"SELECT * FROM users WHERE id = ?\";\n\$user = Database::selectRow(\$sql, [1]);",
+            'code'    => "use System\\Core\\Database;\n\n\$sql = \"SELECT id, name FROM users WHERE id = :id\";\n\$user = Database::selectRow(\$sql, ['id' => 1]);",
             'comment' => 'doc.database.code.comment.selectrow',
-            'alt'    => "\$user = database_select_row(\$sql, [1]);",
+            'alt'    => "\$user = database_select_row(\$sql, ['id' => 1]);",
             'desc'    => 'doc.database.selectrow.desc'
+        ],
+        [
+            'name'    => 'getLastInsertedID()',
+            'code'    => "use System\\Core\\Database;\n\n\$sql = \"INSERT INTO users (name) VALUES (?)\";\nDatabase::statement(\$sql, ['John']);\n\$id = Database::getLastInsertedID();",
+            'comment' => 'doc.database.code.comment.getlastinsertedid',
+            'alt'    => "\$id = database_get_last_inserted_id();",
+            'desc'    => 'doc.database.getlastinsertedid.desc'
+        ],
+        [
+            'name'    => 'isInTransaction()',
+            'code'    => "use System\\Core\\Database;\n\nif (Database::isInTransaction()) {\n    Database::rollbackTransaction();\n}",
+            'comment' => 'doc.database.code.comment.isintransaction',
+            'alt'    => "if (database_is_in_transaction()) {\n    database_rollback_transaction();\n}",
+            'desc'    => 'doc.database.isintransaction.desc'
+        ],
+        [
+            'name'    => 'startTransaction()',
+            'code'    => "use System\\Core\\Database;\n\nDatabase::startTransaction();\nDatabase::statement(\"UPDATE users SET active = ? WHERE id = ?\", [1, 10]);",
+            'comment' => 'doc.database.code.comment.starttransaction',
+            'alt'    => "database_start_transaction();",
+            'desc'    => 'doc.database.starttransaction.desc'
+        ],
+        [
+            'name'    => 'commitTransaction()',
+            'code'    => "use System\\Core\\Database;\n\nDatabase::startTransaction();\nDatabase::statement(\"UPDATE users SET active = ? WHERE id = ?\", [1, 10]);\nDatabase::commitTransaction();",
+            'comment' => 'doc.database.code.comment.committransaction',
+            'alt'    => "database_commit_transaction();",
+            'desc'    => 'doc.database.committransaction.desc'
+        ],
+        [
+            'name'    => 'rollbackTransaction()',
+            'code'    => "use System\\Core\\Database;\n\nDatabase::startTransaction();\nDatabase::statement(\"DELETE FROM users WHERE id = ?\", [10]);\nDatabase::rollbackTransaction();",
+            'comment' => 'doc.database.code.comment.rollbacktransaction',
+            'alt'    => "database_rollback_transaction();",
+            'desc'    => 'doc.database.rollbacktransaction.desc'
         ],
         [
             'name'    => 'disconnect()',
@@ -611,10 +646,17 @@ $docs = [
         ],
         [
             'name'    => 'render_html(string $html, array $data = [])',
-            'code'    => "use System\\Core\\View;\n\necho View::render_html('&lt;h1&gt;Olá&lt;/h1&gt;');",
+            'code'    => "use System\\Core\\View;\n\necho View::render_html('&lt;h1&gt;Hello&lt;/h1&gt;');",
             'comment' => 'doc.view.code.comment.renderHtml',
-            'alt'    => "echo view_render_html('&lt;h1&gt;Olá&lt;/h1&gt;');",
+            'alt'    => "echo view_render_html('&lt;h1&gt;Hello&lt;/h1&gt;');",
             'desc'    => 'doc.view.renderHtml.desc'
+        ],
+        [
+            'name'    => 'render_vue(string $page, array $data = [], ?string $entrypoint = null)',
+            'code'    => "use System\\Core\\View;\n\n\$html = View::render_vue('account/Profile', [\n    'title' => 'Account',\n    'user' => ['name' => 'Vitor'],\n]);",
+            'comment' => 'doc.view.code.comment.renderVue',
+            'alt'    => "return response_html(view_render_vue('account/Profile', [\n    'title' => 'Account',\n    'user' => ['name' => 'Vitor'],\n]));\n\nreturn response_html(view_render_vue('admin/Users', ['title' => 'Users'], 'admin.js'));",
+            'desc'    => 'doc.view.renderVue.desc'
         ],
         [
             'name'    => 'getGlobals()',

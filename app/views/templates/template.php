@@ -1,9 +1,59 @@
+<?php
+$vueRender = (!empty($vue) && is_array($vue)) ? $vue : null;
+$vueAssets = null;
+
+if ($vueRender !== null) {
+    $vueEntrypoint = trim((string) ($vueRender['entrypoint'] ?? 'main.js'), '/');
+    $viteDevServer = function_exists('globals_env') ? trim((string) (globals_env('VITE_DEV_SERVER') ?? '')) : '';
+
+    if ($viteDevServer !== '') {
+        $viteDevServer = rtrim($viteDevServer, '/');
+        $vueAssets = [
+            'dev' => true,
+            'client' => $viteDevServer . '/@vite/client',
+            'entrypoint' => $viteDevServer . '/resources/vue/' . $vueEntrypoint,
+            'css' => [],
+        ];
+    } else {
+        $manifestPath = path_public() . '/build/.vite/manifest.json';
+
+        if (!is_file($manifestPath)) {
+            throw new \RuntimeException('Vite manifest not found for Vue rendering. Run `npm run build` or configure VITE_DEV_SERVER.');
+        }
+
+        $manifest = json_decode((string) file_get_contents($manifestPath), true);
+        if (!is_array($manifest)) {
+            throw new \RuntimeException('Vite manifest is invalid for Vue rendering.');
+        }
+
+        $manifestKey = 'resources/vue/' . $vueEntrypoint;
+        if (empty($manifest[$manifestKey]) || empty($manifest[$manifestKey]['file'])) {
+            throw new \RuntimeException("Vite entrypoint `{$manifestKey}` was not found in the manifest.");
+        }
+
+        $assetBase = rtrim(path_base_public(), '/') . '/build/';
+        $vueAssets = [
+            'dev' => false,
+            'entrypoint' => $assetBase . ltrim($manifest[$manifestKey]['file'], '/'),
+            'css' => array_map(
+                fn(string $file): string => $assetBase . ltrim($file, '/'),
+                $manifest[$manifestKey]['css'] ?? []
+            ),
+        ];
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title ?? lg("template.framework.name")) ?></title>
+    <?php if (!empty($vueAssets['css'])): ?>
+        <?php foreach ($vueAssets['css'] as $cssFile): ?>
+            <link rel="stylesheet" href="<?= htmlspecialchars($cssFile) ?>">
+        <?php endforeach; ?>
+    <?php endif; ?>
     <style>
         :root {
             --bg-color: #f9f9f9;
@@ -133,6 +183,24 @@
                 include path_app_views_pages() . '/' . $page . '.php';
             } elseif (!empty($html)) {
                 echo $html;
+            } elseif ($vueRender !== null) {
+                $vueBootPayload = [
+                    'page' => $vueRender['page'] ?? '',
+                    'props' => $vueRender['props'] ?? [],
+                    'meta' => $vueRender['meta'] ?? [],
+                ];
+                $vueBootJson = json_encode(
+                    $vueBootPayload,
+                    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
+                );
+                ?>
+                <div id="php-mini-mvc-vue"></div>
+                <script type="application/json" id="php-mini-mvc-vue-data"><?= $vueBootJson ?></script>
+                <?php if (!empty($vueAssets['dev'])): ?>
+                    <script type="module" src="<?= htmlspecialchars($vueAssets['client']) ?>"></script>
+                <?php endif; ?>
+                <script type="module" src="<?= htmlspecialchars($vueAssets['entrypoint']) ?>"></script>
+                <?php
             }
             ?>
         </div>

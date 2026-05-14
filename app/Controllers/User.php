@@ -18,7 +18,23 @@ class User {
         if (empty($user)) {
             return Response::html(view_render_html("<h4>" . Language::get("pages.users.not-found") . "</h4>"), 404);
         }
-        return Response::html(view_render_page('user-profile', ['user' => $user]));
+
+        $title = Language::get("pages.users.profile");
+        view_share('title', $title);
+
+        return Response::html(view_render_vue('users/Profile', [
+            'title' => $title,
+            'user' => $user,
+            'labels' => [
+                'id' => Language::get("pages.users.profile.id"),
+                'name' => Language::get("pages.users.profile.name"),
+                'email' => Language::get("pages.users.profile.email"),
+                'backHome' => Language::get("back.home"),
+            ],
+            'urls' => [
+                'home' => site_url(),
+            ],
+        ]));
     }
 
     public function redirectToList(): ResponseInterface {

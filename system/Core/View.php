@@ -1,6 +1,8 @@
 <?php
 namespace System\Core;
 
+use InvalidArgumentException;
+
 /**
  * View rendering engine for the application.
  *
@@ -150,6 +152,55 @@ class View {
     }
 
     /**
+     * Normalize Vue resource paths and reject traversal attempts.
+     *
+     * @param string $path Path relative to the expected Vue resource directory.
+     * @param string $label Human-readable path label for error messages.
+     * @return string
+     */
+    private static function normalizeVuePath(string $path, string $label): string {
+        $normalized = str_replace("\\", "/", $path);
+        $normalized = trim($normalized, "/ \t\n\r\0\x0B");
+        $normalized = preg_replace('#/+#', '/', $normalized) ?? "";
+
+        if (
+            empty($normalized) ||
+            str_contains($normalized, "\0") ||
+            preg_match('#(^|/)\.\.?(/|$)#', $normalized)
+        ) {
+            throw new InvalidArgumentException("Invalid Vue {$label} path.");
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Normalize a Vue page path relative to resources/vue/pages.
+     *
+     * @param string $page Path with or without .vue extension.
+     * @return string
+     */
+    private static function normalizeVuePage(string $page): string {
+        $normalized = self::normalizeVuePath($page, 'page');
+
+        if (str_ends_with(strtolower($normalized), '.vue')) {
+            $normalized = substr($normalized, 0, -4);
+        }
+
+        return self::normalizeVuePath($normalized, 'page');
+    }
+
+    /**
+     * Normalize a Vue entrypoint path relative to resources/vue.
+     *
+     * @param string|null $entrypoint Entrypoint path, defaulting to main.js.
+     * @return string
+     */
+    private static function normalizeVueEntrypoint(?string $entrypoint = null): string {
+        return self::normalizeVuePath($entrypoint ?: 'main.js', 'entrypoint');
+    }
+
+    /**
      * Render a view file within the main layout template.
      *
      * Variables passed through `$data` and shared globals will be extracted.
@@ -173,6 +224,32 @@ class View {
      */
     public static function render_html(string $html, array $data = []): string {
         return self::render(null, $html, $data);
+    }
+
+    /**
+     * Render a Vue page within the main layout template.
+     *
+     * @param string $page Path relative to resources/vue/pages, with or without .vue.
+     * @param array $data Props passed to the Vue page component.
+     * @param string|null $entrypoint Vite entrypoint relative to resources/vue.
+     * @return string Rendered HTML content.
+     */
+    public static function render_vue(string $page, array $data = [], ?string $entrypoint = null): string {
+        $normalizedPage = self::normalizeVuePage($page);
+        $normalizedEntrypoint = self::normalizeVueEntrypoint($entrypoint);
+
+        return self::render(null, null, [
+            'vue' => [
+                'page' => $normalizedPage,
+                'props' => $data,
+                'entrypoint' => $normalizedEntrypoint,
+                'meta' => [
+                    'basePath' => Path::basePath(),
+                    'basePublicPath' => Path::basePathPublic(),
+                    'entrypoint' => $normalizedEntrypoint,
+                ],
+            ],
+        ]);
     }
 
     /**

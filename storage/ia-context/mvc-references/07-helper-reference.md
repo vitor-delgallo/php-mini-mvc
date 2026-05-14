@@ -18,7 +18,7 @@ Use this file as the index. The detailed references below were checked against t
 | Path | `System\Core\Path` | `path_*`, `site_url` | [08-system-core-path.md](helpers/08-system-core-path.md) |
 | Response | `System\Core\Response` | `response_redirect`, `response_html`, `response_text`, `response_json`, `response_xml`, `response_file` | [09-system-core-response.md](helpers/09-system-core-response.md) |
 | Session core | `System\Core\Session` | `session_start_safe`, `session_has`, `session_get`, `session_set`, `session_set_many`, `session_forget`, `session_clear`, `session_save`, `session_destroy_safe`, `session_regenerate` | [10-system-core-session.md](helpers/10-system-core-session.md) |
-| View | `System\Core\View` | `view_share`, `view_share_many`, `view_forget`, `view_forget_many`, `view_set_template`, `view_get_template`, `view_render_page`, `view_render_html`, `view_globals` | [11-system-core-view.md](helpers/11-system-core-view.md) |
+| View | `System\Core\View` | `view_share`, `view_share_many`, `view_forget`, `view_forget_many`, `view_set_template`, `view_get_template`, `view_render_page`, `view_render_html`, `view_render_vue`, `view_globals` | [11-system-core-view.md](helpers/11-system-core-view.md) |
 
 ## System Classes Without Procedural Helpers
 
@@ -35,6 +35,7 @@ Use this file as the index. The detailed references below were checked against t
 | Need | Use |
 | --- | --- |
 | Render a page | `view_render_page()` + `response_html()` |
+| Render an optional Vue page | `view_render_vue()` + `response_html()` |
 | Return JSON | `response_json()` |
 | Redirect | `response_redirect()` |
 | Generate an absolute URL | `site_url()` |

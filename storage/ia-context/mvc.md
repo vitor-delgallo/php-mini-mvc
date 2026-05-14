@@ -20,6 +20,7 @@ Keep this document short enough to remain in context by default. Open the docume
 - Procedural helpers are the recommended short API for views, controllers, and middlewares.
 - Before creating a new function, class, or dependency, look for an existing helper, core class, or internal pattern.
 - Do not convert the project to Laravel, Symfony, Slim, React, Vue, Angular, or another larger framework without an explicit request.
+- Vue/Vite support is optional and should only be used when a route explicitly calls the Vue renderer.
 - Prefer Bootstrap 5 and vanilla JavaScript for traditional front-end work.
 - Use prepared statements whenever SQL is involved; never concatenate user input directly into queries.
 - Preserve `BASE_PATH` compatibility; assets should use `path_base_public()` and absolute URLs should use `site_url()`.
@@ -133,13 +134,14 @@ Quick rules:
 | Path | `path_root`, `path_app`, `path_app_bootable`, `path_app_helpers`, `path_app_routes`, `path_app_middlewares`, `path_app_controllers`, `path_app_models`, `path_app_views`, `path_app_views_pages`, `path_app_views_templates`, `path_system`, `path_system_interfaces`, `path_system_helpers`, `path_system_includes`, `path_public`, `path_storage`, `path_storage_sessions`, `path_storage_logs`, `path_languages`, `path_base`, `path_base_public`, `site_url` |
 | Response | `response_redirect`, `response_html`, `response_text`, `response_json`, `response_xml`, `response_file` |
 | Session | `session_start_safe`, `session_has`, `session_get`, `session_set`, `session_set_many`, `session_forget`, `session_clear`, `session_save`, `session_destroy_safe`, `session_regenerate`, `session_driver`, `session_is`, `session_is_files`, `session_is_db`, `session_is_none` |
-| View | `view_share`, `view_share_many`, `view_forget`, `view_forget_many`, `view_set_template`, `view_get_template`, `view_render_page`, `view_render_html`, `view_globals` |
+| View | `view_share`, `view_share_many`, `view_forget`, `view_forget_many`, `view_set_template`, `view_get_template`, `view_render_page`, `view_render_html`, `view_render_vue`, `view_globals` |
 
 ## Quick Decisions
 
 | Need | Use |
 | --- | --- |
 | Render a page | `view_render_page()` + `response_html()` |
+| Render an optional Vue page | `view_render_vue()` + `response_html()` |
 | Return JSON | `response_json()` |
 | Redirect | `response_redirect()` |
 | Generate an absolute URL | `site_url()` |
@@ -166,6 +168,7 @@ Quick rules:
 | Helper and system class reference | Helper index plus per-class files with namespaces, static method signatures, helper signatures, accepted arguments, and usage examples. | [07-helper-reference.md](mvc-references/07-helper-reference.md) |
 | Workflows | Checklists for new pages, APIs, and new projects. | [08-workflows.md](mvc-references/08-workflows.md) |
 | Errors and cautions | Logs, handlers, known risks, and specific rules for agents. | [09-errors-cautions.md](mvc-references/09-errors-cautions.md) |
+| Optional Vue and Vite support | Optional Vue renderer workflow, route examples, props, entrypoints, build output, and `BASE_PATH` cautions. | [10-vue-vite.md](mvc-references/10-vue-vite.md) |
 
 ## Home as Dynamic Documentation
 

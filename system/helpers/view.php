@@ -34,6 +34,10 @@ function view_render_html(string $html, array $data = []): string {
     return View::render_html($html, $data);
 }
 
+function view_render_vue(string $page, array $data = [], ?string $entrypoint = null): string {
+    return View::render_vue($page, $data, $entrypoint);
+}
+
 function view_globals(): array {
     return View::getGlobals();
 }

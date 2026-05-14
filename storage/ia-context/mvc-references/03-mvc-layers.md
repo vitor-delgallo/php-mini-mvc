@@ -153,6 +153,26 @@ view_render_html('<h1>OK</h1>');
 
 Use this for simple cases, error pages, or small HTML blocks.
 
+Optional Vue rendering:
+
+```php
+return response_html(view_render_vue('account/Profile', [
+    'title' => 'Account',
+    'user' => ['name' => 'Vitor'],
+]));
+```
+
+Vue rendering is opt-in. PHP pages and PHP templates remain the default MVC flow unless a route explicitly calls `view_render_vue()` or `View::render_vue()`.
+
+Rules:
+
+- Vue pages live in `resources/vue/pages`.
+- The page name is relative to `resources/vue/pages`, with or without `.vue`.
+- The entrypoint is relative to `resources/vue`; `null` uses `main.js`.
+- Data passed from PHP becomes props for the Vue page component.
+- The PHP template still owns the HTML shell, layout, footer, and asset loading.
+- Public asset URLs must stay compatible with `BASE_PATH`; use `path_base_public()` and `site_url()` instead of hardcoded `/public/...` URLs.
+
 ## View Helpers
 
 ```php
@@ -164,6 +184,7 @@ view_set_template('template');
 view_get_template();
 view_render_page('home', ['title' => 'Home']);
 view_render_html('<h1>OK</h1>');
+view_render_vue('account/Profile', ['title' => 'Account']);
 view_globals();
 ```
 

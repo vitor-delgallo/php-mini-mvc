@@ -20,6 +20,7 @@ $html = View::render_page('home', ['title' => 'Home']);
 ```php
 view_set_template('template');
 $html = view_render_page('home', ['title' => 'Home']);
+$vueHtml = view_render_vue('account/Profile', ['title' => 'Account']);
 ```
 
 ## Method And Helper Signatures
@@ -35,16 +36,21 @@ $html = view_render_page('home', ['title' => 'Home']);
 | `View::getTemplate(): string` | `view_get_template(): string` | No arguments. | Current normalized template path, defaulting to `/template.php`. |
 | `View::render_page(string $page, array $data = []): string` | `view_render_page(string $page, array $data = []): string` | Page path relative to `app/views/pages`, without `.php`, plus local data. | Rendered HTML. |
 | `View::render_html(string $html, array $data = []): string` | `view_render_html(string $html, array $data = []): string` | Raw HTML plus local data. | Rendered HTML inside the current template. |
+| `View::render_vue(string $page, array $data = [], ?string $entrypoint = null): string` | `view_render_vue(string $page, array $data = [], ?string $entrypoint = null): string` | Vue page relative to `resources/vue/pages`, props data, and optional entrypoint relative to `resources/vue`. | Rendered HTML inside the current template. |
 | `View::getGlobals(): array` | `view_globals(): array` | No arguments. | Shared global variables. |
 
 ## Template Rules
 
 - Template files live under `app/views/templates`.
 - Page files live under `app/views/pages`.
+- Vue page files live under `resources/vue/pages`.
 - `setTemplate(null)` or an empty value resolves to `/template.php`.
 - Passed `$data` is merged with shared globals and extracted into view scope.
+- Vue `$data` is serialized as props/input for the Vue page, and `null` entrypoint resolves to `main.js`.
 
 ## Notes
 
 - The internal template expects `$page` or `$html` to be available and decide how to include/render content.
 - Use `response_html(view_render_page(...))` in controllers when returning full pages.
+- Use `response_html(view_render_vue(...))` only for routes that intentionally opt in to Vue/Vite.
+- Vue/Vite asset URLs must preserve `BASE_PATH` compatibility through `path_base_public()` and `site_url()` rules.
