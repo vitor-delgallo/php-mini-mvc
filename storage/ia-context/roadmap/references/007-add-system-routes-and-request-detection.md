@@ -23,14 +23,14 @@ System routes must use these prefixes:
 
 ```text
 /web-system
-/api-mvc-system
+/api-system
 ```
 
 With `BASE_PATH=/php-mini-mvc`, final URLs must be:
 
 ```text
 /php-mini-mvc/web-system
-/php-mini-mvc/api-mvc-system
+/php-mini-mvc/api-system
 ```
 
 ## Required Files
@@ -80,7 +80,7 @@ Add matching helpers in `system/helpers/globals.php`:
 
 Update `public/index.php` so route loading can distinguish:
 
-1. system API route: `/api-mvc-system`
+1. system API route: `/api-system`
 2. system web route: `/web-system`
 3. app API route: `/api`
 4. app web route: normal app web routes
@@ -105,7 +105,7 @@ Session handling should continue to disable sessions for API requests. Include s
 
 - `system/routes/web.php` and `system/routes/api.php` exist.
 - `/web-system` loads system web routes.
-- `/api-mvc-system` loads system API routes.
+- `/api-system` loads system API routes.
 - `BASE_PATH` works for system and app routes.
 - Existing app `/api` and web routes continue to work.
 - System API requests are treated as API requests for session handling.

@@ -12,6 +12,7 @@ Resolves project filesystem paths, normalized base paths, public asset paths, an
 use System\Core\Path;
 
 $viewPath = Path::appViewsPages();
+$systemRoutePath = Path::systemRoutes();
 $url = Path::siteURL('users/1');
 ```
 
@@ -19,6 +20,7 @@ $url = Path::siteURL('users/1');
 
 ```php
 $viewPath = path_app_views_pages();
+$systemRoutePath = path_system_routes();
 $url = site_url('users/1');
 ```
 
@@ -30,6 +32,7 @@ $url = site_url('users/1');
 | `Path::app(): string` | `path_app(): string` | No arguments. | `app` directory. |
 | `Path::appBootable(): string` | `path_app_bootable(): string` | No arguments. | `app/Bootable` directory. |
 | `Path::appHelpers(): string` | `path_app_helpers(): string` | No arguments. | `app/helpers` directory. |
+| `Path::appLanguages(): string` | `path_app_languages(): string` | No arguments. | `app/languages` directory. |
 | `Path::appRoutes(): string` | `path_app_routes(): string` | No arguments. | `app/routes` directory. |
 | `Path::appMiddlewares(): string` | `path_app_middlewares(): string` | No arguments. | `app/Middlewares` directory. |
 | `Path::appControllers(): string` | `path_app_controllers(): string` | No arguments. | `app/Controllers` directory. |
@@ -40,12 +43,20 @@ $url = site_url('users/1');
 | `Path::system(): string` | `path_system(): string` | No arguments. | `system` directory. |
 | `Path::systemInterfaces(): string` | `path_system_interfaces(): string` | No arguments. | `system/Interfaces` directory. |
 | `Path::systemHelpers(): string` | `path_system_helpers(): string` | No arguments. | `system/helpers` directory. |
+| `Path::systemLanguages(): string` | `path_system_languages(): string` | No arguments. | `system/languages` directory. |
+| `Path::systemRoutes(): string` | `path_system_routes(): string` | No arguments. | `system/routes` directory. |
+| `Path::systemMiddlewares(): string` | `path_system_middlewares(): string` | No arguments. | `system/Middlewares` directory. |
+| `Path::systemControllers(): string` | `path_system_controllers(): string` | No arguments. | `system/Controllers` directory. |
+| `Path::systemModels(): string` | `path_system_models(): string` | No arguments. | `system/Models` directory. |
+| `Path::systemViews(): string` | `path_system_views(): string` | No arguments. | `system/views` directory. |
+| `Path::systemViewsPages(): string` | `path_system_views_pages(): string` | No arguments. | `system/views/pages` directory. |
+| `Path::systemViewsTemplates(): string` | `path_system_views_templates(): string` | No arguments. | `system/views/templates` directory. |
 | `Path::systemIncludes(): string` | `path_system_includes(): string` | No arguments. | `system/includes` directory. |
 | `Path::public(): string` | `path_public(): string` | No arguments. | `public` directory. |
 | `Path::storage(): string` | `path_storage(): string` | No arguments. | `storage` directory. |
 | `Path::storageSessions(): string` | `path_storage_sessions(): string` | No arguments. | `storage/sessions` directory. |
 | `Path::storageLogs(): string` | `path_storage_logs(): string` | No arguments. | `storage/logs` directory. |
-| `Path::languages(): string` | `path_languages(): string` | No arguments. | `languages` directory. |
+| `Path::languages(): string` | `path_languages(): string` | No arguments. | Legacy root `languages` path; runtime translation loading uses `app/languages` and `system/languages`. |
 | `Path::basePath(): string` | `path_base(): string` | No arguments. Reads `BASE_PATH`. | Normalized base path such as `/php-mini-mvc` or empty string. |
 | `Path::basePathPublic(): string` | `path_base_public(): string` | No arguments. | Base path plus `/public`. |
 | `Path::siteURL(?string $final = null): string` | `site_url(?string $final = null): string` | Optional relative URL suffix. | Absolute URL using current host, protocol, and `BASE_PATH`. |

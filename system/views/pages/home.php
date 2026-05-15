@@ -1,14 +1,14 @@
 <!-- Introductory section describing the framework -->
 <section>
-    <p><strong><?= lg("template.framework.name") ?></strong> <?= lg("doc.body.details") ?></p>
+    <p><strong><?= lg("system.template.framework.name") ?></strong> <?= lg("system.doc.body.details") ?></p>
     <ul>
-        <li>✅ <?= lg("doc.features.routes") ?></li>
-        <li>✅ <?= lg("doc.features.templates") ?></li>
-        <li>✅ <?= lg("doc.features.helpers") ?></li>
-        <li>✅ <?= lg("doc.features.simple") ?></li>
+        <li>✅ <?= lg("system.doc.features.routes") ?></li>
+        <li>✅ <?= lg("system.doc.features.templates") ?></li>
+        <li>✅ <?= lg("system.doc.features.helpers") ?></li>
+        <li>✅ <?= lg("system.doc.features.simple") ?></li>
     </ul>
-    <p><?= lg("doc.description.purpose") ?></p>
-    <p><?= lg("doc.create.landingpage") ?></p>
+    <p><?= lg("system.doc.description.purpose") ?></p>
+    <p><?= lg("system.doc.create.landingpage") ?></p>
 </section>
 
 <?php
@@ -18,652 +18,815 @@ $docs = [
         [
             'name'    => 'env()',
             'code'    => "use System\\Config\\Database;\n\n\$driver = Database::env();",
-            'comment' => 'doc.database.code.comment.env',
+            'comment' => 'system.doc.database.code.comment.env',
             'alt'    => "database_driver();",
-            'desc'    => 'doc.database.env.desc'
+            'desc'    => 'system.doc.database.env.desc'
         ],
         [
             'name'    => 'is(string $env)',
             'code'    => "use System\\Config\\Database;\n\nif (Database::is('mysql')) {\n    // your logic\n}",
-            'comment' => 'doc.database.code.comment.is',
+            'comment' => 'system.doc.database.code.comment.is',
             'alt'    => "database_is('mysql');",
-            'desc'    => 'doc.database.is.desc'
+            'desc'    => 'system.doc.database.is.desc'
         ],
         [
             'name'    => 'isMysql()',
             'code'    => "use System\\Config\\Database;\n\nif (Database::isMysql()) {\n    // your logic\n}",
-            'comment' => 'doc.database.code.comment.ismysql',
+            'comment' => 'system.doc.database.code.comment.ismysql',
             'alt'    => "database_is_mysql();",
-            'desc'    => 'doc.database.ismysql.desc'
+            'desc'    => 'system.doc.database.ismysql.desc'
         ],
         [
             'name'    => 'isPostgres()',
             'code'    => "use System\\Config\\Database;\n\nif (Database::isPostgres()) {\n    // your logic\n}",
-            'comment' => 'doc.database.code.comment.ispostgres',
+            'comment' => 'system.doc.database.code.comment.ispostgres',
             'alt'    => "database_is_postgres();",
-            'desc'    => 'doc.database.ispostgres.desc'
+            'desc'    => 'system.doc.database.ispostgres.desc'
         ],
         [
             'name'    => 'isNone()',
             'code'    => "use System\\Config\\Database;\n\nif (Database::isNone()) {\n    // your logic\n}",
-            'comment' => 'doc.database.code.comment.isnone',
+            'comment' => 'system.doc.database.code.comment.isnone',
             'alt'    => "database_is_none();",
-            'desc'    => 'doc.database.isnone.desc'
+            'desc'    => 'system.doc.database.isnone.desc'
         ],
     ],
     'System\\Config\\Session' => [
         [
             'name'    => 'env()',
             'code'    => "use System\\Config\\Session;\n\n\$driver = Session::env();",
-            'comment' => 'doc.session.code.comment.env',
+            'comment' => 'system.doc.session.code.comment.env',
             'alt'    => "session_driver();",
-            'desc'    => 'doc.session.env.desc'
+            'desc'    => 'system.doc.session.env.desc'
         ],
         [
             'name'    => "is(string \$env)",
             'code'    => "use System\\Config\\Session;\n\nif (Session::is('db')) {\n    // your logic\n}",
-            'comment' => 'doc.session.code.comment.is',
+            'comment' => 'system.doc.session.code.comment.is',
             'alt'    => "session_is('db');",
-            'desc'    => 'doc.session.is.desc'
+            'desc'    => 'system.doc.session.is.desc'
         ],
         [
             'name'    => 'isFiles()',
             'code'    => "use System\\Config\\Session;\n\nif (Session::isFiles()) {\n    // your logic\n}",
-            'comment' => 'doc.session.code.comment.isfiles',
+            'comment' => 'system.doc.session.code.comment.isfiles',
             'alt'    => "session_is_files();",
-            'desc'    => 'doc.session.isfiles.desc'
+            'desc'    => 'system.doc.session.isfiles.desc'
         ],
         [
             'name'    => 'isDB()',
             'code'    => "use System\\Config\\Session;\n\nif (Session::isDB()) {\n    // your logic\n}",
-            'comment' => 'doc.session.code.comment.isdb',
+            'comment' => 'system.doc.session.code.comment.isdb',
             'alt'    => "session_is_db();",
-            'desc'    => 'doc.session.isdb.desc'
+            'desc'    => 'system.doc.session.isdb.desc'
         ],
         [
             'name'    => 'isNone()',
             'code'    => "use System\\Config\\Session;\n\nif (Session::isNone()) {\n    // your logic\n}",
-            'comment' => 'doc.session.code.comment.isnone',
+            'comment' => 'system.doc.session.code.comment.isnone',
             'alt'    => "session_is_none();",
-            'desc'    => 'doc.session.isnone.desc'
+            'desc'    => 'system.doc.session.isnone.desc'
         ],
     ],
     'System\\Config\\Environment' => [
         [
             'name'    => 'env()',
             'code'    => "use System\\Config\\Environment as ConfigEnvironment;\n\n\$current = ConfigEnvironment::env();",
-            'comment' => 'doc.environment.code.comment.env',
+            'comment' => 'system.doc.environment.code.comment.env',
             'alt'    => "environment_type();",
-            'desc'    => 'doc.environment.env.desc'
+            'desc'    => 'system.doc.environment.env.desc'
         ],
         [
             'name'    => "is(string \$env)",
             'code'    => "use System\\Config\\Environment as ConfigEnvironment;\n\nif (ConfigEnvironment::is('development')) {\n    // your logic\n}",
-            'comment' => 'doc.environment.code.comment.is',
+            'comment' => 'system.doc.environment.code.comment.is',
             'alt'    => "environment_is('development');",
-            'desc'    => 'doc.environment.is.desc'
+            'desc'    => 'system.doc.environment.is.desc'
         ],
         [
             'name'    => 'isProduction()',
             'code'    => "use System\\Config\\Environment as ConfigEnvironment;\n\nif (ConfigEnvironment::isProduction()) {\n    // your logic\n}",
-            'comment' => 'doc.environment.code.comment.isproduction',
+            'comment' => 'system.doc.environment.code.comment.isproduction',
             'alt'    => "environment_is_production();",
-            'desc'    => 'doc.environment.isproduction.desc'
+            'desc'    => 'system.doc.environment.isproduction.desc'
         ],
         [
             'name'    => 'isDevelopment()',
             'code'    => "use System\\Config\\Environment as ConfigEnvironment;\n\nif (ConfigEnvironment::isDevelopment()) {\n    // your logic\n}",
-            'comment' => 'doc.environment.code.comment.isdevelopment',
+            'comment' => 'system.doc.environment.code.comment.isdevelopment',
             'alt'    => "environment_is_development();",
-            'desc'    => 'doc.environment.isdevelopment.desc'
+            'desc'    => 'system.doc.environment.isdevelopment.desc'
         ],
         [
             'name'    => 'isTesting()',
             'code'    => "use System\\Config\\Environment as ConfigEnvironment;\n\nif (ConfigEnvironment::isTesting()) {\n    // your logic\n}",
-            'comment' => 'doc.environment.code.comment.istesting',
+            'comment' => 'system.doc.environment.code.comment.istesting',
             'alt'    => "environment_is_testing();",
-            'desc'    => 'doc.environment.istesting.desc'
+            'desc'    => 'system.doc.environment.istesting.desc'
         ],
     ],
     'System\\Config\\Globals' => [
         [
             'name'    => 'get(?string $key = null)',
             'code'    => "use System\\Config\\Globals;\n\n\$timezone = Globals::get('CACHE_PREFIX');",
-            'comment' => 'doc.globals.code.comment.get',
+            'comment' => 'system.doc.globals.code.comment.get',
             'alt'    => "globals_get('CACHE_PREFIX');",
-            'desc'    => 'doc.globals.get.desc'
+            'desc'    => 'system.doc.globals.get.desc'
         ],
         [
             'name'    => 'add(string $key, mixed $value)',
             'code'    => "use System\\Config\\Globals;\n\nGlobals::add('CACHE_ENABLED', true);",
-            'comment' => 'doc.globals.code.comment.add',
+            'comment' => 'system.doc.globals.code.comment.add',
             'alt'    => "globals_add('CACHE_ENABLED', true);",
-            'desc'    => 'doc.globals.add.desc'
+            'desc'    => 'system.doc.globals.add.desc'
         ],
         [
             'name'    => 'merge(array $config)',
             'code'    => "use System\\Config\\Globals;\n\nGlobals::merge([\n    'CACHE_ENABLED' => true,\n    'APP_MODE' => 'fast',\n]);",
             'comment' => '',
             'alt'    => "globals_merge([\n    'CACHE_ENABLED' => true,\n    'APP_MODE' => 'fast',\n]);",
-            'desc'    => 'doc.globals.merge.desc'
+            'desc'    => 'system.doc.globals.merge.desc'
         ],
         [
             'name'    => 'forget(string $key)',
             'code'    => "use System\\Config\\Globals;\n\nGlobals::forget('APP_MODE');",
-            'comment' => 'doc.globals.code.comment.forget',
+            'comment' => 'system.doc.globals.code.comment.forget',
             'alt'    => "globals_forget('APP_MODE');",
-            'desc'    => 'doc.globals.forget.desc'
+            'desc'    => 'system.doc.globals.forget.desc'
         ],
         [
             'name'    => 'forgetMany(array $keys)',
             'code'    => "use System\\Config\\Globals;\n\nGlobals::forgetMany(['APP_MODE', 'CACHE_ENABLED']);",
             'comment' => '',
             'alt'    => "globals_forget_many(['APP_MODE', 'CACHE_ENABLED']);",
-            'desc'    => 'doc.globals.forgetmany.desc'
+            'desc'    => 'system.doc.globals.forgetmany.desc'
         ],
         [
             'name'    => 'reset()',
             'code'    => "use System\\Config\\Globals;\n\nGlobals::reset();",
-            'comment' => 'doc.globals.code.comment.reset',
+            'comment' => 'system.doc.globals.code.comment.reset',
             'alt'    => "globals_reset();",
-            'desc'    => 'doc.globals.reset.desc'
+            'desc'    => 'system.doc.globals.reset.desc'
         ],
         [
             'name'    => 'loadEnv()',
             'code'    => "use System\\Config\\Globals;\n\nGlobals::loadEnv();",
-            'comment' => 'doc.globals.code.comment.loadenv',
+            'comment' => 'system.doc.globals.code.comment.loadenv',
             'alt'    => "globals_load_env();",
-            'desc'    => 'doc.globals.loadenv.desc'
+            'desc'    => 'system.doc.globals.loadenv.desc'
         ],
         [
             'name'    => 'env(?string $key = null)',
             'code'    => "use System\\Config\\Globals;\n\n\$dbUser = Globals::env('DB_USER');",
-            'comment' => 'doc.globals.code.comment.env',
+            'comment' => 'system.doc.globals.code.comment.env',
             'alt'    => "globals_env('DB_USER');",
-            'desc'    => 'doc.globals.env.desc'
+            'desc'    => 'system.doc.globals.env.desc'
         ],
         [
             'name'    => 'getApiPrefix()',
             'code'    => "use System\\Config\\Globals;\n\n\$apiPrefix = Globals::getApiPrefix();",
-            'comment' => 'doc.globals.code.comment.getapiprefix',
+            'comment' => 'system.doc.globals.code.comment.getapiprefix',
             'alt'    => "globals_get_api_prefix();",
-            'desc'    => 'doc.globals.getapiprefix.desc'
+            'desc'    => 'system.doc.globals.getapiprefix.desc'
         ],
         [
             'name'    => 'isApiRequest()',
             'code'    => "use System\\Config\\Globals;\n\n\$isApiRequest = Globals::isApiRequest();",
-            'comment' => 'doc.globals.code.comment.isapirequest',
+            'comment' => 'system.doc.globals.code.comment.isapirequest',
             'alt'    => "globals_is_api_request();",
-            'desc'    => 'doc.globals.isapirequest.desc'
+            'desc'    => 'system.doc.globals.isapirequest.desc'
+        ],
+        [
+            'name'    => 'getSystemWebPrefix()',
+            'code'    => "use System\\Config\\Globals;\n\n\$prefix = Globals::getSystemWebPrefix();",
+            'comment' => 'system.doc.globals.code.comment.getsystemwebprefix',
+            'alt'    => "globals_get_system_web_prefix();",
+            'desc'    => 'system.doc.globals.getsystemwebprefix.desc'
+        ],
+        [
+            'name'    => 'getSystemApiPrefix()',
+            'code'    => "use System\\Config\\Globals;\n\n\$prefix = Globals::getSystemApiPrefix();",
+            'comment' => 'system.doc.globals.code.comment.getsystemapiprefix',
+            'alt'    => "globals_get_system_api_prefix();",
+            'desc'    => 'system.doc.globals.getsystemapiprefix.desc'
+        ],
+        [
+            'name'    => 'isSystemWebRequest()',
+            'code'    => "use System\\Config\\Globals;\n\n\$isSystemWebRequest = Globals::isSystemWebRequest();",
+            'comment' => 'system.doc.globals.code.comment.issystemwebrequest',
+            'alt'    => "globals_is_system_web_request();",
+            'desc'    => 'system.doc.globals.issystemwebrequest.desc'
+        ],
+        [
+            'name'    => 'isSystemApiRequest()',
+            'code'    => "use System\\Config\\Globals;\n\n\$isSystemApiRequest = Globals::isSystemApiRequest();",
+            'comment' => 'system.doc.globals.code.comment.issystemapirequest',
+            'alt'    => "globals_is_system_api_request();",
+            'desc'    => 'system.doc.globals.issystemapirequest.desc'
         ],
     ],
     'System\\Core\\PHPAutoload' => [
         [
             'name'    => 'from(string $directory)',
             'code'    => "use System\\Core\\PHPAutoload;\n\nPHPAutoload::from(path_app_helpers());",
-            'comment' => 'doc.autoload.code.comment.from',
-            'alt'    => "// No procedural helper is available for this method.",
-            'desc'    => 'doc.autoload.from.desc'
+            'comment' => 'system.doc.autoload.code.comment.from',
+            'alt'    => "php_autoload_from(path_app_helpers());",
+            'desc'    => 'system.doc.autoload.from.desc'
+        ],
+        [
+            'name'    => 'boot()',
+            'code'    => "use System\\Core\\PHPAutoload;\n\nPHPAutoload::boot();",
+            'comment' => 'system.doc.autoload.code.comment.boot',
+            'alt'    => "php_autoload_boot();",
+            'desc'    => 'system.doc.autoload.boot.desc'
+        ],
+    ],
+    'System\\Core\\RouterLoader' => [
+        [
+            'name'    => 'load(string $file)',
+            'code'    => "use System\\Core\\RouterLoader;\n\nRouterLoader::load('web');",
+            'comment' => 'system.doc.router_loader.code.comment.load',
+            'alt'    => "router_loader_load('web');",
+            'desc'    => 'system.doc.router_loader.load.desc'
+        ],
+        [
+            'name'    => 'loadWithPrefix(string $prefix, string $file)',
+            'code'    => "use System\\Core\\RouterLoader;\n\nRouterLoader::loadWithPrefix('/api', 'api');",
+            'comment' => 'system.doc.router_loader.code.comment.loadWithPrefix',
+            'alt'    => "router_loader_load_with_prefix('/api', 'api');",
+            'desc'    => 'system.doc.router_loader.loadWithPrefix.desc'
+        ],
+        [
+            'name'    => 'loadSystem(string $file)',
+            'code'    => "use System\\Core\\RouterLoader;\n\nRouterLoader::loadSystem('web');",
+            'comment' => 'system.doc.router_loader.code.comment.loadSystem',
+            'alt'    => "router_loader_load_system('web');",
+            'desc'    => 'system.doc.router_loader.loadSystem.desc'
+        ],
+        [
+            'name'    => 'loadSystemWithPrefix(string $prefix, string $file)',
+            'code'    => "use System\\Core\\RouterLoader;\n\nRouterLoader::loadSystemWithPrefix('/web-system', 'web');",
+            'comment' => 'system.doc.router_loader.code.comment.loadSystemWithPrefix',
+            'alt'    => "router_loader_load_system_with_prefix('/web-system', 'web');",
+            'desc'    => 'system.doc.router_loader.loadSystemWithPrefix.desc'
+        ],
+        [
+            'name'    => 'dispatch()',
+            'code'    => "use System\\Core\\RouterLoader;\n\nRouterLoader::dispatch();",
+            'comment' => 'system.doc.router_loader.code.comment.dispatch',
+            'alt'    => "router_loader_dispatch();",
+            'desc'    => 'system.doc.router_loader.dispatch.desc'
         ],
     ],
     'System\\Core\\Database' => [
         [
             'name'    => 'connect()',
             'code'    => "use System\\Core\\Database;\n\n\$pdo = Database::connect();",
-            'comment' => 'doc.database.code.comment.connect',
+            'comment' => 'system.doc.database.code.comment.connect',
             'alt'    => "\$pdo = database_connect();",
-            'desc'    => 'doc.database.connect.desc'
+            'desc'    => 'system.doc.database.connect.desc'
         ],
         [
             'name'    => 'statement(string $sql, array $params = [])',
             'code'    => "use System\\Core\\Database;\n\n\$sql = \"UPDATE users SET name = :name WHERE id = :id\";\nDatabase::statement(\$sql, ['name' => 'John', 'id' => 1]);",
-            'comment' => 'doc.database.code.comment.statement',
+            'comment' => 'system.doc.database.code.comment.statement',
             'alt'    => "database_statement(\$sql, ['name' => 'John', 'id' => 1]);",
-            'desc'    => 'doc.database.statement.desc'
+            'desc'    => 'system.doc.database.statement.desc'
         ],
         [
             'name'    => 'select(string $sql, array $params = [], ?string $key = null)',
             'code'    => "use System\\Core\\Database;\n\n\$sql = \"SELECT id, name FROM users WHERE active = :active\";\n\$users = Database::select(\$sql, ['active' => 1]);",
-            'comment' => 'doc.database.code.comment.select',
+            'comment' => 'system.doc.database.code.comment.select',
             'alt'    => "\$users = database_select(\$sql, ['active' => 1]);",
-            'desc'    => 'doc.database.select.desc'
+            'desc'    => 'system.doc.database.select.desc'
         ],
         [
             'name'    => 'selectRow(string $sql, array $params = [], ?string $key = null)',
             'code'    => "use System\\Core\\Database;\n\n\$sql = \"SELECT id, name FROM users WHERE id = :id\";\n\$user = Database::selectRow(\$sql, ['id' => 1]);",
-            'comment' => 'doc.database.code.comment.selectrow',
+            'comment' => 'system.doc.database.code.comment.selectrow',
             'alt'    => "\$user = database_select_row(\$sql, ['id' => 1]);",
-            'desc'    => 'doc.database.selectrow.desc'
+            'desc'    => 'system.doc.database.selectrow.desc'
         ],
         [
             'name'    => 'getLastInsertedID()',
             'code'    => "use System\\Core\\Database;\n\n\$sql = \"INSERT INTO users (name) VALUES (?)\";\nDatabase::statement(\$sql, ['John']);\n\$id = Database::getLastInsertedID();",
-            'comment' => 'doc.database.code.comment.getlastinsertedid',
+            'comment' => 'system.doc.database.code.comment.getlastinsertedid',
             'alt'    => "\$id = database_get_last_inserted_id();",
-            'desc'    => 'doc.database.getlastinsertedid.desc'
+            'desc'    => 'system.doc.database.getlastinsertedid.desc'
         ],
         [
             'name'    => 'isInTransaction()',
             'code'    => "use System\\Core\\Database;\n\nif (Database::isInTransaction()) {\n    Database::rollbackTransaction();\n}",
-            'comment' => 'doc.database.code.comment.isintransaction',
+            'comment' => 'system.doc.database.code.comment.isintransaction',
             'alt'    => "if (database_is_in_transaction()) {\n    database_rollback_transaction();\n}",
-            'desc'    => 'doc.database.isintransaction.desc'
+            'desc'    => 'system.doc.database.isintransaction.desc'
         ],
         [
             'name'    => 'startTransaction()',
             'code'    => "use System\\Core\\Database;\n\nDatabase::startTransaction();\nDatabase::statement(\"UPDATE users SET active = ? WHERE id = ?\", [1, 10]);",
-            'comment' => 'doc.database.code.comment.starttransaction',
+            'comment' => 'system.doc.database.code.comment.starttransaction',
             'alt'    => "database_start_transaction();",
-            'desc'    => 'doc.database.starttransaction.desc'
+            'desc'    => 'system.doc.database.starttransaction.desc'
         ],
         [
             'name'    => 'commitTransaction()',
             'code'    => "use System\\Core\\Database;\n\nDatabase::startTransaction();\nDatabase::statement(\"UPDATE users SET active = ? WHERE id = ?\", [1, 10]);\nDatabase::commitTransaction();",
-            'comment' => 'doc.database.code.comment.committransaction',
+            'comment' => 'system.doc.database.code.comment.committransaction',
             'alt'    => "database_commit_transaction();",
-            'desc'    => 'doc.database.committransaction.desc'
+            'desc'    => 'system.doc.database.committransaction.desc'
         ],
         [
             'name'    => 'rollbackTransaction()',
             'code'    => "use System\\Core\\Database;\n\nDatabase::startTransaction();\nDatabase::statement(\"DELETE FROM users WHERE id = ?\", [10]);\nDatabase::rollbackTransaction();",
-            'comment' => 'doc.database.code.comment.rollbacktransaction',
+            'comment' => 'system.doc.database.code.comment.rollbacktransaction',
             'alt'    => "database_rollback_transaction();",
-            'desc'    => 'doc.database.rollbacktransaction.desc'
+            'desc'    => 'system.doc.database.rollbacktransaction.desc'
         ],
         [
             'name'    => 'disconnect()',
             'code'    => "use System\\Core\\Database;\n\nDatabase::disconnect();",
-            'comment' => 'doc.database.code.comment.disconnect',
+            'comment' => 'system.doc.database.code.comment.disconnect',
             'alt'    => "database_disconnect();",
-            'desc'    => 'doc.database.disconnect.desc'
+            'desc'    => 'system.doc.database.disconnect.desc'
         ],
     ],
     'System\\Core\\Language' => [
         [
             'name'    => 'get(?string $key = null, ?array $replacements = null, ?string $lang = null)',
-            'code'    => "use System\\Core\\Language;\n\n\$all = Language::get();\n\$title = Language::get(\"template.framework.name\");",
-            'comment' => 'doc.language.code.comment.get.all',
-            'alt'    => "\$title = lg(\"template.framework.name\");\n\$title = language_get(\"template.framework.name\");",
-            'desc'    => 'doc.language.get.desc'
+            'code'    => "use System\\Core\\Language;\n\n\$all = Language::get();\n\$title = Language::get(\"system.template.framework.name\");",
+            'comment' => 'system.doc.language.code.comment.get.all',
+            'alt'    => "\$title = lg(\"system.template.framework.name\");\n\$title = language_get(\"system.template.framework.name\");",
+            'desc'    => 'system.doc.language.get.desc'
+        ],
+        [
+            'name'    => 'getByPrefix(string $prefix, ?string $lang = null)',
+            'code'    => "use System\\Core\\Language;\n\n\$translations = Language::getByPrefix('app.pages', 'en');",
+            'comment' => 'system.doc.language.code.comment.getByPrefix',
+            'alt'    => "\$translations = language_get_by_prefix('app.pages', 'en');",
+            'desc'    => 'system.doc.language.getByPrefix.desc'
+        ],
+        [
+            'name'    => 'normalizePrefix(string $prefix)',
+            'code'    => "use System\\Core\\Language;\n\n\$prefix = Language::normalizePrefix('app.pages');",
+            'comment' => 'system.doc.language.code.comment.normalizePrefix',
+            'alt'    => "\$prefix = language_normalize_prefix('app.pages');",
+            'desc'    => 'system.doc.language.normalizePrefix.desc'
         ],
         [
             'name'    => 'currentLang()',
             'code'    => "use System\\Core\\Language;\n\n\$lang = Language::currentLang();",
-            'comment' => 'doc.language.code.comment.current',
+            'comment' => 'system.doc.language.code.comment.current',
             'alt'    => "\$lang = language_current();",
-            'desc'    => 'doc.language.current.desc'
+            'desc'    => 'system.doc.language.current.desc'
         ],
         [
             'name'    => 'load(?string $lang = null)',
             'code'    => "use System\\Core\\Language;\n\nLanguage::load(\"pt-br\");",
-            'comment' => 'doc.language.code.comment.load',
+            'comment' => 'system.doc.language.code.comment.load',
             'alt'    => "language_load(\"pt-br\");\nld(\"pt-br\");",
-            'desc'    => 'doc.language.load.desc'
+            'desc'    => 'system.doc.language.load.desc'
         ],
         [
             'name'    => 'defaultLang()',
             'code'    => "use System\\Core\\Language;\n\n\$lang = Language::defaultLang();",
-            'comment' => 'doc.language.code.comment.default',
+            'comment' => 'system.doc.language.code.comment.default',
             'alt'    => "\$lang = language_default();",
-            'desc'    => 'doc.language.default.desc'
+            'desc'    => 'system.doc.language.default.desc'
         ],
         [
             'name'    => 'detect()',
             'code'    => "use System\\Core\\Language;\n\n\$lang = Language::detect();",
-            'comment' => 'doc.language.code.comment.detect',
+            'comment' => 'system.doc.language.code.comment.detect',
             'alt'    => "\$lang = language_detect();",
-            'desc'    => 'doc.language.detect.desc'
+            'desc'    => 'system.doc.language.detect.desc'
         ],
     ],
     'System\\Core\\Path' => [
         [
             'name'    => 'root()',
             'code'    => "use System\\Core\\Path;\n\n\$root = Path::root();",
-            'comment' => 'doc.path.code.comment.root',
+            'comment' => 'system.doc.path.code.comment.root',
             'alt'    => "\$root = path_root();",
-            'desc'    => 'doc.path.root.desc'
+            'desc'    => 'system.doc.path.root.desc'
         ],
         [
             'name'    => 'app()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::app();",
-            'comment' => 'doc.path.code.comment.app',
+            'comment' => 'system.doc.path.code.comment.app',
             'alt'    => "\$path = path_app();",
-            'desc'    => 'doc.path.app.desc'
+            'desc'    => 'system.doc.path.app.desc'
         ],
         [
             'name'    => 'appBootable()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::appBootable();",
-            'comment' => 'doc.path.code.comment.appBootable',
+            'comment' => 'system.doc.path.code.comment.appBootable',
             'alt'    => "\$path = path_app_bootable();",
-            'desc'    => 'doc.path.appBootable.desc'
+            'desc'    => 'system.doc.path.appBootable.desc'
         ],
         [
             'name'    => 'appHelpers()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::appHelpers();",
-            'comment' => 'doc.path.code.comment.appHelpers',
+            'comment' => 'system.doc.path.code.comment.appHelpers',
             'alt'    => "\$path = path_app_helpers();",
-            'desc'    => 'doc.path.appHelpers.desc'
+            'desc'    => 'system.doc.path.appHelpers.desc'
+        ],
+        [
+            'name'    => 'appLanguages()',
+            'code'    => "use System\\Core\\Path;\n\n\$path = Path::appLanguages();",
+            'comment' => 'system.doc.path.code.comment.appLanguages',
+            'alt'    => "\$path = path_app_languages();",
+            'desc'    => 'system.doc.path.appLanguages.desc'
         ],
         [
             'name'    => 'appRoutes()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::appRoutes();",
-            'comment' => 'doc.path.code.comment.appRoutes',
+            'comment' => 'system.doc.path.code.comment.appRoutes',
             'alt'    => "\$path = path_app_routes();",
-            'desc'    => 'doc.path.appRoutes.desc'
+            'desc'    => 'system.doc.path.appRoutes.desc'
         ],
         [
             'name'    => 'appMiddlewares()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::appMiddlewares();",
-            'comment' => 'doc.path.code.comment.appMiddlewares',
+            'comment' => 'system.doc.path.code.comment.appMiddlewares',
             'alt'    => "\$path = path_app_middlewares();",
-            'desc'    => 'doc.path.appMiddlewares.desc'
+            'desc'    => 'system.doc.path.appMiddlewares.desc'
         ],
         [
             'name'    => 'appControllers()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::appControllers();",
-            'comment' => 'doc.path.code.comment.appControllers',
+            'comment' => 'system.doc.path.code.comment.appControllers',
             'alt'    => "\$path = path_app_controllers();",
-            'desc'    => 'doc.path.appControllers.desc'
+            'desc'    => 'system.doc.path.appControllers.desc'
         ],
         [
             'name'    => 'appModels()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::appModels();",
-            'comment' => 'doc.path.code.comment.appModels',
+            'comment' => 'system.doc.path.code.comment.appModels',
             'alt'    => "\$path = path_app_models();",
-            'desc'    => 'doc.path.appModels.desc'
+            'desc'    => 'system.doc.path.appModels.desc'
         ],
         [
             'name'    => 'appViews()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::appViews();",
-            'comment' => 'doc.path.code.comment.appViews',
+            'comment' => 'system.doc.path.code.comment.appViews',
             'alt'    => "\$path = path_app_views();",
-            'desc'    => 'doc.path.appViews.desc'
+            'desc'    => 'system.doc.path.appViews.desc'
         ],
         [
             'name'    => 'appViewsPages()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::appViewsPages();",
-            'comment' => 'doc.path.code.comment.appViewsPages',
+            'comment' => 'system.doc.path.code.comment.appViewsPages',
             'alt'    => "\$path = path_app_views_pages();",
-            'desc'    => 'doc.path.appViewsPages.desc'
+            'desc'    => 'system.doc.path.appViewsPages.desc'
         ],
         [
             'name'    => 'appViewsTemplates()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::appViewsTemplates();",
-            'comment' => 'doc.path.code.comment.appViewsTemplates',
+            'comment' => 'system.doc.path.code.comment.appViewsTemplates',
             'alt'    => "\$path = path_app_views_templates();",
-            'desc'    => 'doc.path.appViewsTemplates.desc'
+            'desc'    => 'system.doc.path.appViewsTemplates.desc'
         ],
         [
             'name'    => 'system()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::system();",
-            'comment' => 'doc.path.code.comment.system',
+            'comment' => 'system.doc.path.code.comment.system',
             'alt'    => "\$path = path_system();",
-            'desc'    => 'doc.path.system.desc'
+            'desc'    => 'system.doc.path.system.desc'
         ],
         [
             'name'    => 'systemInterfaces()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::systemInterfaces();",
-            'comment' => 'doc.path.code.comment.systemInterfaces',
+            'comment' => 'system.doc.path.code.comment.systemInterfaces',
             'alt'    => "\$path = path_system_interfaces();",
-            'desc'    => 'doc.path.systemInterfaces.desc'
+            'desc'    => 'system.doc.path.systemInterfaces.desc'
         ],
         [
             'name'    => 'systemHelpers()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::systemHelpers();",
-            'comment' => 'doc.path.code.comment.systemHelpers',
+            'comment' => 'system.doc.path.code.comment.systemHelpers',
             'alt'    => "\$path = path_system_helpers();",
-            'desc'    => 'doc.path.systemHelpers.desc'
+            'desc'    => 'system.doc.path.systemHelpers.desc'
+        ],
+        [
+            'name'    => 'systemLanguages()',
+            'code'    => "use System\\Core\\Path;\n\n\$path = Path::systemLanguages();",
+            'comment' => 'system.doc.path.code.comment.systemLanguages',
+            'alt'    => "\$path = path_system_languages();",
+            'desc'    => 'system.doc.path.systemLanguages.desc'
+        ],
+        [
+            'name'    => 'systemRoutes()',
+            'code'    => "use System\\Core\\Path;\n\n\$path = Path::systemRoutes();",
+            'comment' => 'system.doc.path.code.comment.systemRoutes',
+            'alt'    => "\$path = path_system_routes();",
+            'desc'    => 'system.doc.path.systemRoutes.desc'
+        ],
+        [
+            'name'    => 'systemMiddlewares()',
+            'code'    => "use System\\Core\\Path;\n\n\$path = Path::systemMiddlewares();",
+            'comment' => 'system.doc.path.code.comment.systemMiddlewares',
+            'alt'    => "\$path = path_system_middlewares();",
+            'desc'    => 'system.doc.path.systemMiddlewares.desc'
+        ],
+        [
+            'name'    => 'systemControllers()',
+            'code'    => "use System\\Core\\Path;\n\n\$path = Path::systemControllers();",
+            'comment' => 'system.doc.path.code.comment.systemControllers',
+            'alt'    => "\$path = path_system_controllers();",
+            'desc'    => 'system.doc.path.systemControllers.desc'
+        ],
+        [
+            'name'    => 'systemModels()',
+            'code'    => "use System\\Core\\Path;\n\n\$path = Path::systemModels();",
+            'comment' => 'system.doc.path.code.comment.systemModels',
+            'alt'    => "\$path = path_system_models();",
+            'desc'    => 'system.doc.path.systemModels.desc'
+        ],
+        [
+            'name'    => 'systemViews()',
+            'code'    => "use System\\Core\\Path;\n\n\$path = Path::systemViews();",
+            'comment' => 'system.doc.path.code.comment.systemViews',
+            'alt'    => "\$path = path_system_views();",
+            'desc'    => 'system.doc.path.systemViews.desc'
+        ],
+        [
+            'name'    => 'systemViewsPages()',
+            'code'    => "use System\\Core\\Path;\n\n\$path = Path::systemViewsPages();",
+            'comment' => 'system.doc.path.code.comment.systemViewsPages',
+            'alt'    => "\$path = path_system_views_pages();",
+            'desc'    => 'system.doc.path.systemViewsPages.desc'
+        ],
+        [
+            'name'    => 'systemViewsTemplates()',
+            'code'    => "use System\\Core\\Path;\n\n\$path = Path::systemViewsTemplates();",
+            'comment' => 'system.doc.path.code.comment.systemViewsTemplates',
+            'alt'    => "\$path = path_system_views_templates();",
+            'desc'    => 'system.doc.path.systemViewsTemplates.desc'
         ],
         [
             'name'    => 'systemIncludes()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::systemIncludes();",
-            'comment' => 'doc.path.code.comment.systemIncludes',
+            'comment' => 'system.doc.path.code.comment.systemIncludes',
             'alt'    => "\$path = path_system_includes();",
-            'desc'    => 'doc.path.systemIncludes.desc'
+            'desc'    => 'system.doc.path.systemIncludes.desc'
         ],
         [
             'name'    => 'public()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::public();",
-            'comment' => 'doc.path.code.comment.public',
+            'comment' => 'system.doc.path.code.comment.public',
             'alt'    => "\$path = path_public();",
-            'desc'    => 'doc.path.public.desc'
+            'desc'    => 'system.doc.path.public.desc'
         ],
         [
             'name'    => 'storage()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::storage();",
-            'comment' => 'doc.path.code.comment.storage',
+            'comment' => 'system.doc.path.code.comment.storage',
             'alt'    => "\$path = path_storage();",
-            'desc'    => 'doc.path.storage.desc'
+            'desc'    => 'system.doc.path.storage.desc'
         ],
         [
             'name'    => 'storageSessions()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::storageSessions();",
-            'comment' => 'doc.path.code.comment.storageSessions',
+            'comment' => 'system.doc.path.code.comment.storageSessions',
             'alt'    => "\$path = path_storage_sessions();",
-            'desc'    => 'doc.path.storageSessions.desc'
+            'desc'    => 'system.doc.path.storageSessions.desc'
         ],
         [
             'name'    => 'storageLogs()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::storageLogs();",
-            'comment' => 'doc.path.code.comment.storageLogs',
+            'comment' => 'system.doc.path.code.comment.storageLogs',
             'alt'    => "\$path = path_storage_logs();",
-            'desc'    => 'doc.path.storageLogs.desc'
+            'desc'    => 'system.doc.path.storageLogs.desc'
         ],
         [
             'name'    => 'languages()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::languages();",
-            'comment' => 'doc.path.code.comment.languages',
+            'comment' => 'system.doc.path.code.comment.languages',
             'alt'    => "\$path = path_languages();",
-            'desc'    => 'doc.path.languages.desc'
+            'desc'    => 'system.doc.path.languages.desc'
         ],
         [
             'name'    => 'basePath()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::basePath();",
-            'comment' => 'doc.path.code.comment.basePath',
+            'comment' => 'system.doc.path.code.comment.basePath',
             'alt'    => "\$path = path_base();",
-            'desc'    => 'doc.path.basePath.desc'
+            'desc'    => 'system.doc.path.basePath.desc'
         ],
         [
             'name'    => 'basePathPublic()',
             'code'    => "use System\\Core\\Path;\n\n\$path = Path::basePathPublic();",
-            'comment' => 'doc.path.code.comment.basePathPublic',
+            'comment' => 'system.doc.path.code.comment.basePathPublic',
             'alt'    => "\$path = path_base_public();",
-            'desc'    => 'doc.path.basePathPublic.desc'
+            'desc'    => 'system.doc.path.basePathPublic.desc'
         ],
         [
             'name'    => 'siteURL(?string $final = null)',
             'code'    => "use System\\Core\\Path;\n\n\$url = Path::siteURL('dashboard');",
-            'comment' => 'doc.path.code.comment.siteURL',
+            'comment' => 'system.doc.path.code.comment.siteURL',
             'alt'    => "\$url = site_url('dashboard');",
-            'desc'    => 'doc.path.siteURL.desc'
+            'desc'    => 'system.doc.path.siteURL.desc'
         ],
     ],
     'System\\Core\\Response' => [
         [
             'name'    => 'redirect(string $uri = \'\', string $method = \'auto\', ?int $code = null)',
             'code'    => "use System\\Core\\Response;\n\nreturn Response::redirect('/login');",
-            'comment' => 'doc.response.code.comment.redirect',
+            'comment' => 'system.doc.response.code.comment.redirect',
             'alt'    => "return response_redirect('/login');",
-            'desc'    => 'doc.response.redirect.desc'
+            'desc'    => 'system.doc.response.redirect.desc'
         ],
         [
             'name'    => 'html(string $html, int $status = 200)',
             'code'    => "use System\\Core\\Response;\n\nreturn Response::html('&lt;h1&gt;Hello&lt;/h1&gt;');",
-            'comment' => 'doc.response.code.comment.html',
+            'comment' => 'system.doc.response.code.comment.html',
             'alt'    => "return response_html('&lt;h1&gt;Hello&lt;/h1&gt;');",
-            'desc'    => 'doc.response.html.desc'
+            'desc'    => 'system.doc.response.html.desc'
         ],
         [
             'name'    => 'text(string $text, int $status = 200)',
             'code'    => "use System\\Core\\Response;\n\nreturn Response::text('Hello');",
-            'comment' => 'doc.response.code.comment.text',
+            'comment' => 'system.doc.response.code.comment.text',
             'alt'    => "return response_text('Hello');",
-            'desc'    => 'doc.response.text.desc'
+            'desc'    => 'system.doc.response.text.desc'
         ],
         [
             'name'    => 'json(array|string $data, int $status = 200)',
             'code'    => "use System\\Core\\Response;\n\nreturn Response::json(['status' => 'ok']);",
-            'comment' => 'doc.response.code.comment.json',
+            'comment' => 'system.doc.response.code.comment.json',
             'alt'    => "return response_json(['status' => 'ok']);",
-            'desc'    => 'doc.response.json.desc'
+            'desc'    => 'system.doc.response.json.desc'
         ],
         [
             'name'    => 'xml(string $xml, int $status = 200)',
             'code'    => "use System\\Core\\Response;\n\nreturn Response::xml('&lt;message&gt;Hello&lt;/message&gt;');",
-            'comment' => 'doc.response.code.comment.xml',
+            'comment' => 'system.doc.response.code.comment.xml',
             'alt'    => "return response_xml('&lt;message&gt;Hello&lt;/message&gt;');",
-            'desc'    => 'doc.response.xml.desc'
+            'desc'    => 'system.doc.response.xml.desc'
         ],
         [
             'name'    => 'file(string $filePath, string $downloadName, string $hashFile, string $contentType = \'application/octet-stream\')',
             'code'    => "use System\\Core\\Response;\n\nreturn Response::file(\$filePath, \$downloadName, \$hashFile, \$contentType);",
-            'comment' => 'doc.response.code.comment.file',
+            'comment' => 'system.doc.response.code.comment.file',
             'alt'    => "return response_file(\$filePath, \$downloadName, \$hashFile, \$contentType);",
-            'desc'    => 'doc.response.file.desc'
+            'desc'    => 'system.doc.response.file.desc'
         ],
     ],
     'System\\Core\\Session' => [
         [
             'name'    => 'start()',
             'code'    => "use System\\Core\\Session;\n\nSession::start();",
-            'comment' => 'doc.session.code.comment.start',
+            'comment' => 'system.doc.session.code.comment.start',
             'alt'    => "session_start_safe();",
-            'desc'    => 'doc.session.start.desc'
+            'desc'    => 'system.doc.session.start.desc'
         ],
         [
             'name'    => 'has(string $key)',
             'code'    => "use System\\Core\\Session;\n\nif (Session::has('user_id')) {\n    // your logic\n}",
-            'comment' => 'doc.session.code.comment.has',
+            'comment' => 'system.doc.session.code.comment.has',
             'alt'    => "session_has('user_id');",
-            'desc'    => 'doc.session.has.desc'
+            'desc'    => 'system.doc.session.has.desc'
         ],
         [
             'name'    => 'get(string $key, mixed $default = null)',
             'code'    => "use System\\Core\\Session;\n\n\$userId = Session::get('user_id', 0);",
-            'comment' => 'doc.session.code.comment.get',
+            'comment' => 'system.doc.session.code.comment.get',
             'alt'    => "\$userId = session_get('user_id', 0);",
-            'desc'    => 'doc.session.get.desc'
+            'desc'    => 'system.doc.session.get.desc'
         ],
         [
             'name'    => 'set(string $key, mixed $value)',
             'code'    => "use System\\Core\\Session;\n\nSession::set('user_id', 123);",
-            'comment' => 'doc.session.code.comment.set',
+            'comment' => 'system.doc.session.code.comment.set',
             'alt'    => "session_set('user_id', 123);",
-            'desc'    => 'doc.session.set.desc'
+            'desc'    => 'system.doc.session.set.desc'
         ],
         [
             'name'    => 'setMany(array $items)',
             'code'    => "use System\\Core\\Session;\n\nSession::setMany([\n  'user_id' => 123,\n  'user_role' => 'admin'\n]);",
-            'comment' => 'doc.session.code.comment.setMany',
+            'comment' => 'system.doc.session.code.comment.setMany',
             'alt'    => "session_set_many([\n  'user_id' => 123,\n  'user_role' => 'admin'\n]);",
-            'desc'    => 'doc.session.setMany.desc'
+            'desc'    => 'system.doc.session.setMany.desc'
         ],
         [
             'name'    => 'forget(string $key)',
             'code'    => "use System\\Core\\Session;\n\nSession::forget('user_id');",
-            'comment' => 'doc.session.code.comment.forget',
+            'comment' => 'system.doc.session.code.comment.forget',
             'alt'    => "session_forget('user_id');",
-            'desc'    => 'doc.session.forget.desc'
+            'desc'    => 'system.doc.session.forget.desc'
         ],
         [
             'name'    => 'clear()',
             'code'    => "use System\\Core\\Session;\n\nSession::clear();",
-            'comment' => 'doc.session.code.comment.clear',
+            'comment' => 'system.doc.session.code.comment.clear',
             'alt'    => "session_clear();",
-            'desc'    => 'doc.session.clear.desc'
+            'desc'    => 'system.doc.session.clear.desc'
         ],
         [
             'name'    => 'save()',
             'code'    => "use System\\Core\\Session;\n\nSession::save();",
-            'comment' => 'doc.session.code.comment.save',
+            'comment' => 'system.doc.session.code.comment.save',
             'alt'    => "session_save();",
-            'desc'    => 'doc.session.save.desc'
+            'desc'    => 'system.doc.session.save.desc'
         ],
         [
             'name'    => 'destroy()',
             'code'    => "use System\\Core\\Session;\n\nSession::destroy();",
-            'comment' => 'doc.session.code.comment.destroy',
+            'comment' => 'system.doc.session.code.comment.destroy',
             'alt'    => "session_destroy_safe();",
-            'desc'    => 'doc.session.destroy.desc'
+            'desc'    => 'system.doc.session.destroy.desc'
         ],
         [
             'name'    => 'regenerate(bool $deleteOldSession = true)',
             'code'    => "use System\\Core\\Session;\n\nSession::regenerate();",
-            'comment' => 'doc.session.code.comment.regenerate',
+            'comment' => 'system.doc.session.code.comment.regenerate',
             'alt'    => "session_regenerate();",
-            'desc'    => 'doc.session.regenerate.desc'
+            'desc'    => 'system.doc.session.regenerate.desc'
         ],
     ],
     'System\\Core\\View' => [
         [
             'name'    => 'share(string $key, mixed $value)',
             'code'    => "use System\\Core\\View;\n\nView::share('app_name', 'Mini ERP');",
-            'comment' => 'doc.view.code.comment.share',
+            'comment' => 'system.doc.view.code.comment.share',
             'alt'    => "view_share('app_name', 'Mini ERP');",
-            'desc'    => 'doc.view.share.desc'
+            'desc'    => 'system.doc.view.share.desc'
         ],
         [
             'name'    => 'shareMany(array $items)',
             'code'    => "use System\\Core\\View;\n\nView::shareMany([\n  'user' => \$user,\n  'language' => 'pt-BR'\n]);",
-            'comment' => 'doc.view.code.comment.shareMany',
+            'comment' => 'system.doc.view.code.comment.shareMany',
             'alt'    => "view_share_many([\n  'user' => \$user,\n  'language' => 'pt-BR'\n]);",
-            'desc'    => 'doc.view.shareMany.desc'
+            'desc'    => 'system.doc.view.shareMany.desc'
         ],
         [
             'name'    => 'forget(string $key)',
             'code'    => "use System\\Core\\View;\n\nView::forget('language');",
-            'comment' => 'doc.view.code.comment.forget',
+            'comment' => 'system.doc.view.code.comment.forget',
             'alt'    => "view_forget('language');",
-            'desc'    => 'doc.view.forget.desc'
+            'desc'    => 'system.doc.view.forget.desc'
         ],
         [
             'name'    => 'forgetMany(array $keys)',
             'code'    => "use System\\Core\\View;\n\nView::forgetMany(['user', 'language']);",
-            'comment' => 'doc.view.code.comment.forgetMany',
+            'comment' => 'system.doc.view.code.comment.forgetMany',
             'alt'    => "view_forget_many(['user', 'language']);",
-            'desc'    => 'doc.view.forgetMany.desc'
+            'desc'    => 'system.doc.view.forgetMany.desc'
+        ],
+        [
+            'name'    => 'clear()',
+            'code'    => "use System\\Core\\View;\n\nView::clear();",
+            'comment' => 'system.doc.view.code.comment.clear',
+            'alt'    => "view_clear();",
+            'desc'    => 'system.doc.view.clear.desc'
         ],
         [
             'name'    => 'setTemplate(?string $relativePath = null)',
             'code'    => "use System\\Core\\View;\n\nView::setTemplate('layouts/main');",
-            'comment' => 'doc.view.code.comment.setTemplate',
+            'comment' => 'system.doc.view.code.comment.setTemplate',
             'alt'    => "view_set_template('layouts/main');",
-            'desc'    => 'doc.view.setTemplate.desc'
+            'desc'    => 'system.doc.view.setTemplate.desc'
         ],
         [
             'name'    => 'getTemplate()',
             'code'    => "use System\\Core\\View;\n\n\$template = View::getTemplate();",
-            'comment' => 'doc.view.code.comment.getTemplate',
+            'comment' => 'system.doc.view.code.comment.getTemplate',
             'alt'    => "\$template = view_get_template();",
-            'desc'    => 'doc.view.getTemplate.desc'
+            'desc'    => 'system.doc.view.getTemplate.desc'
         ],
         [
             'name'    => 'render_page(string $page, array $data = [])',
-            'code'    => "use System\\Core\\View;\n\necho View::render_page('home', ['user' => \$user]);",
-            'comment' => 'doc.view.code.comment.renderPage',
-            'alt'    => "echo view_render_page('home', ['user' => \$user]);",
-            'desc'    => 'doc.view.renderPage.desc'
+            'code'    => "use System\\Core\\View;\n\necho View::render_page('user-profile', ['user' => \$user]);",
+            'comment' => 'system.doc.view.code.comment.renderPage',
+            'alt'    => "echo view_render_page('user-profile', ['user' => \$user]);",
+            'desc'    => 'system.doc.view.renderPage.desc'
+        ],
+        [
+            'name'    => 'render_system_page(string $page, array $data = [])',
+            'code'    => "use System\\Core\\View;\n\necho View::render_system_page('home');",
+            'comment' => 'system.doc.view.code.comment.renderSystemPage',
+            'alt'    => "echo view_render_system_page('home');",
+            'desc'    => 'system.doc.view.renderSystemPage.desc'
         ],
         [
             'name'    => 'render_html(string $html, array $data = [])',
             'code'    => "use System\\Core\\View;\n\necho View::render_html('&lt;h1&gt;Hello&lt;/h1&gt;');",
-            'comment' => 'doc.view.code.comment.renderHtml',
+            'comment' => 'system.doc.view.code.comment.renderHtml',
             'alt'    => "echo view_render_html('&lt;h1&gt;Hello&lt;/h1&gt;');",
-            'desc'    => 'doc.view.renderHtml.desc'
+            'desc'    => 'system.doc.view.renderHtml.desc'
         ],
         [
-            'name'    => 'render_vue(string $page, array $data = [], ?string $entrypoint = null)',
-            'code'    => "use System\\Core\\View;\n\n\$html = View::render_vue('account/Profile', [\n    'title' => 'Account',\n    'user' => ['name' => 'Vitor'],\n]);",
-            'comment' => 'doc.view.code.comment.renderVue',
-            'alt'    => "return response_html(view_render_vue('account/Profile', [\n    'title' => 'Account',\n    'user' => ['name' => 'Vitor'],\n]));\n\nreturn response_html(view_render_vue('admin/Users', ['title' => 'Users'], 'admin.js'));",
-            'desc'    => 'doc.view.renderVue.desc'
+            'name'    => 'render_vue(string $page, array $data = [], ?string $entrypoint = null, array|string|null $i18nPrefixes = null, ?string $lang = null)',
+            'code'    => "use System\\Core\\View;\n\n\$html = View::render_vue('account/Profile', [\n    'title' => 'Account',\n    'user' => ['name' => 'Vitor'],\n], null, ['app.pages.account']);",
+            'comment' => 'system.doc.view.code.comment.renderVue',
+            'alt'    => "return response_html(view_render_vue('account/Profile', [\n    'title' => 'Account',\n    'user' => ['name' => 'Vitor'],\n], null, ['app.pages.account']));\n\nreturn response_html(view_render_vue('admin/Users', ['title' => 'Users'], 'admin.js', ['app.pages.admin'], 'en'));",
+            'desc'    => 'system.doc.view.renderVue.desc'
         ],
         [
             'name'    => 'getGlobals()',
             'code'    => "use System\\Core\\View;\n\n\$globals = View::getGlobals();",
-            'comment' => 'doc.view.code.comment.getGlobals',
+            'comment' => 'system.doc.view.code.comment.getGlobals',
             'alt'    => "\$globals = view_globals();",
-            'desc'    => 'doc.view.getGlobals.desc'
+            'desc'    => 'system.doc.view.getGlobals.desc'
         ],
     ],
     'System\\Core\\FormValidator' => [
@@ -672,49 +835,49 @@ $docs = [
             'code'    => "use System\\Core\\FormValidator;\n\n\$form = new FormValidator();\n\$form->setForm(\$_POST);\n\$isValid = \$form->validate([\n    'email' => 'required|email',\n    'password' => 'required|min:8'\n]);\n\nif (!\$isValid) {\n    \$errors = \$form->errors();\n}",
             'comment' => '',
             'alt'    => "\$form = form_validator(\$_POST);\n\nif (!\$form->validate([\n    'email' => 'required|email',\n    'password' => 'required|min:8'\n])) {\n    \$errors = \$form->errors();\n}",
-            'desc'    => 'doc.form_validator.validate.desc'
+            'desc'    => 'system.doc.form_validator.validate.desc'
         ],
         [
             'name'    => 'registerRule(string $name, callable $callback)',
-            'code'    => "use System\\Core\\FormValidator;\n\n// Using the class directly\nFormValidator::registerRule('cpf', function(\$value) {\n    return preg_match('/^\\d{11}$/', \$value)\n        ? true\n        : lg('doc.form_validator.code.comment.cpf.error');\n});",
+            'code'    => "use System\\Core\\FormValidator;\n\n// Using the class directly\nFormValidator::registerRule('cpf', function(\$value) {\n    return preg_match('/^\\d{11}$/', \$value)\n        ? true\n        : lg('system.doc.form_validator.code.comment.cpf.error');\n});",
             'comment' => '',
-            'alt'    => "form_validator_register_rule('cpf', function(\$value) {\n    return preg_match('/^\\d{11}$/', \$value)\n        ? true\n        : lg('doc.form_validator.code.comment.cpf.error');\n});",
-            'desc'    => 'doc.form_validator.register_rule.desc'
+            'alt'    => "form_validator_register_rule('cpf', function(\$value) {\n    return preg_match('/^\\d{11}$/', \$value)\n        ? true\n        : lg('system.doc.form_validator.code.comment.cpf.error');\n});",
+            'desc'    => 'system.doc.form_validator.register_rule.desc'
         ],
         [
             'name'    => 'setForm(array $data)',
             'code'    => "use System\\Core\\FormValidator;\n\n\$form = new FormValidator();\n\$form->setForm(['name' => 'Vitor', 'email' => 'vitor@email.com']);",
             'comment' => '',
             'alt'    => "form_validator(['name' => 'Vitor', 'email' => 'vitor@email.com']);",
-            'desc'    => 'doc.form_validator.setForm.desc'
+            'desc'    => 'system.doc.form_validator.setForm.desc'
         ],
         [
             'name'    => 'resetErrors()',
             'code'    => "use System\\Core\\FormValidator;\n\n\$form = new FormValidator();\n\$form->resetErrors();",
             'comment' => '',
             'alt'    => "form_validator()->resetErrors();",
-            'desc'    => 'doc.form_validator.resetErrors.desc'
+            'desc'    => 'system.doc.form_validator.resetErrors.desc'
         ],
         [
             'name'    => 'errors()',
             'code'    => "use System\\Core\\FormValidator;\n\n\$form = new FormValidator();\n\$errors = \$form->errors();",
             'comment' => '',
             'alt'    => "\$errors = form_validator()->errors();",
-            'desc'    => 'doc.form_validator.errors.desc'
+            'desc'    => 'system.doc.form_validator.errors.desc'
         ],
         [
             'name'    => 'get(string $key, mixed $default = null)',
             'code'    => "use System\\Core\\FormValidator;\n\n\$form = new FormValidator();\n\$form->setForm(['age' => 25]);\n\$age = \$form->get('age');",
-            'comment' => 'doc.form_validator.code.comment.get',
+            'comment' => 'system.doc.form_validator.code.comment.get',
             'alt'    => "\$age = form_validator(['age' => 25])->get('age');",
-            'desc'    => 'doc.form_validator.get.desc'
+            'desc'    => 'system.doc.form_validator.get.desc'
         ],
         [
             'name'    => 'has(string $key)',
             'code'    => "use System\\Core\\FormValidator;\n\n\$form = new FormValidator();\n\$form->setForm(['token' => 'abc']);\nif (\$form->has('token')) {\n    // your logic\n}",
-            'comment' => 'doc.form_validator.code.comment.has',
+            'comment' => 'system.doc.form_validator.code.comment.has',
             'alt'    => "if (form_validator(['token' => 'abc'])->has('token')) {\n    // your logic\n}",
-            'desc'    => 'doc.form_validator.has.desc'
+            'desc'    => 'system.doc.form_validator.has.desc'
         ],
     ],
 ];
@@ -730,7 +893,7 @@ $docs = [
             <pre><code>
 <?= $method['code'] ?><?php if (!empty($method['comment'])): ?> // <?= lg($method['comment']) ?><?php endif; ?>
             </code></pre>
-            <?= lg("doc.alternatively") ?>
+            <?= lg("system.doc.alternatively") ?>
             <pre><code><?= $method['alt'] ?></code></pre>
             <footer><em><?= lg($method['desc']) ?></em></footer>
         </details>
@@ -738,3 +901,4 @@ $docs = [
     </details>
 </section>
 <?php endforeach; ?>
+

@@ -99,13 +99,13 @@ GET /i18n
 Final URL with system API prefix:
 
 ```text
-/api-mvc-system/i18n?prefix=app.pages
+/api-system/i18n?prefix=app.pages
 ```
 
 With `BASE_PATH=/php-mini-mvc`:
 
 ```text
-/php-mini-mvc/api-mvc-system/i18n?prefix=app.pages
+/php-mini-mvc/api-system/i18n?prefix=app.pages
 ```
 
 ## Response Shape
@@ -129,5 +129,5 @@ Recommended success response:
 - The endpoint requires a valid system token.
 - The endpoint returns translations filtered by prefix.
 - The endpoint uses the framework language loader and fallback rules.
-- The endpoint works under the `/api-mvc-system` route prefix and respects `BASE_PATH`.
+- The endpoint works under the `/api-system` route prefix and respects `BASE_PATH`.
 - Documentation explains the route, token, prefix parameter, and response shape.

@@ -2,6 +2,7 @@
 namespace System\Core;
 
 use InvalidArgumentException;
+use System\Config\Globals;
 
 /**
  * View rendering engine for the application.
@@ -136,16 +137,25 @@ class View {
      * @param array  $data The data to be extracted into the view.
      * @return string Rendered HTML content.
      */
-    private static function render(?string $page = null, ?string $html = null, array $data = []): string {
+    private static function render(
+        ?string $page = null,
+        ?string $html = null,
+        array $data = [],
+        ?string $pagesPath = null,
+        ?string $templatesPath = null
+    ): string {
         // Merge shared global variables with the local data passed to the view
         // Then extract them into the local scope (e.g. $data['user'] → $user)
         extract(array_merge(self::getGlobals(), $data));
+
+        $__viewPagesPath = $pagesPath ?? Path::appViewsPages();
+        $__viewTemplatePath = ($templatesPath ?? Path::appViewsTemplates()) . self::getTemplate();
 
         // Start output buffering to capture the output of the included template
         ob_start();
 
         // Include the layout template, which is expected to use the extracted variables
-        include Path::appViewsTemplates() . self::getTemplate();
+        include $__viewTemplatePath;
 
         // Return the rendered HTML as a string
         return ob_get_clean();
@@ -201,6 +211,71 @@ class View {
     }
 
     /**
+     * Normalize i18n prefixes requested by a Vue page.
+     *
+     * @param array|string|null $prefixes One prefix or a list of prefixes.
+     * @return array<int, string>
+     */
+    private static function normalizeVueI18nPrefixes(array|string|null $prefixes): array {
+        if ($prefixes === null) {
+            return [];
+        }
+
+        if (is_string($prefixes)) {
+            $prefixes = [$prefixes];
+        }
+
+        $normalized = [];
+        foreach ($prefixes as $prefix) {
+            if (!is_string($prefix)) {
+                continue;
+            }
+
+            $prefix = rtrim(Language::normalizePrefix($prefix), '.');
+            if ($prefix !== '') {
+                $normalized[$prefix] = $prefix;
+            }
+        }
+
+        return array_values($normalized);
+    }
+
+    /**
+     * Build the optional Vue i18n boot payload.
+     *
+     * @param array|string|null $prefixes Translation prefixes requested by the page.
+     * @param string|null $lang Optional language override.
+     * @return array<string, mixed>
+     */
+    private static function vueI18nPayload(array|string|null $prefixes, ?string $lang = null): array {
+        $prefixes = self::normalizeVueI18nPrefixes($prefixes);
+        if (empty($prefixes)) {
+            return [
+                'enabled' => false,
+                'prefixes' => [],
+            ];
+        }
+
+        $token = Globals::env('SYSTEM_TOKEN');
+        $token = is_string($token) ? trim($token) : '';
+
+        if ($token === '') {
+            return [
+                'enabled' => false,
+                'prefixes' => $prefixes,
+            ];
+        }
+
+        return [
+            'enabled' => true,
+            'endpoint' => Path::basePath() . Globals::getSystemApiPrefix() . '/i18n',
+            'prefixes' => $prefixes,
+            'lang' => $lang ?: Language::currentLang() ?: Language::defaultLang(),
+            'token' => $token,
+        ];
+    }
+
+    /**
      * Render a view file within the main layout template.
      *
      * Variables passed through `$data` and shared globals will be extracted.
@@ -211,6 +286,19 @@ class View {
      */
     public static function render_page(string $page, array $data = []): string {
         return self::render($page, null, $data);
+    }
+
+    /**
+     * Render a system view file within the system layout template.
+     *
+     * Variables passed through `$data` and shared globals will be extracted.
+     *
+     * @param string $page The relative system view path (without extension).
+     * @param array  $data The data to be extracted into the view.
+     * @return string Rendered HTML content.
+     */
+    public static function render_system_page(string $page, array $data = []): string {
+        return self::render($page, null, $data, Path::systemViewsPages(), Path::systemViewsTemplates());
     }
 
     /**
@@ -232,9 +320,17 @@ class View {
      * @param string $page Path relative to resources/vue/pages, with or without .vue.
      * @param array $data Props passed to the Vue page component.
      * @param string|null $entrypoint Vite entrypoint relative to resources/vue.
+     * @param array|string|null $i18nPrefixes Translation prefixes requested by the Vue page.
+     * @param string|null $lang Optional language code for i18n fetches.
      * @return string Rendered HTML content.
      */
-    public static function render_vue(string $page, array $data = [], ?string $entrypoint = null): string {
+    public static function render_vue(
+        string $page,
+        array $data = [],
+        ?string $entrypoint = null,
+        array|string|null $i18nPrefixes = null,
+        ?string $lang = null
+    ): string {
         $normalizedPage = self::normalizeVuePage($page);
         $normalizedEntrypoint = self::normalizeVueEntrypoint($entrypoint);
 
@@ -243,6 +339,7 @@ class View {
                 'page' => $normalizedPage,
                 'props' => $data,
                 'entrypoint' => $normalizedEntrypoint,
+                'i18n' => self::vueI18nPayload($i18nPrefixes, $lang),
                 'meta' => [
                     'basePath' => Path::basePath(),
                     'basePublicPath' => Path::basePathPublic(),

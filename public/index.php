@@ -22,7 +22,10 @@ $response = null;
 try {
     // Loads .env environment variables into memory
     Globals::loadEnv();
-    $isApiRequest = Globals::isApiRequest();
+    $isSystemApiRequest = Globals::isSystemApiRequest();
+    $isSystemWebRequest = Globals::isSystemWebRequest();
+    $isAppApiRequest = Globals::isApiRequest();
+    $isApiRequest = $isAppApiRequest || $isSystemApiRequest;
 
     // Configures error visibility based on the environment
     if (ConfigEnvironment::isProduction()) {
@@ -98,7 +101,11 @@ try {
     PHPAutoload::boot();
 
     // Loads and registers all application routes
-    if ($isApiRequest) {
+    if ($isSystemApiRequest) {
+        RouterLoader::loadSystemWithPrefix(Globals::getSystemApiPrefix(), 'api');
+    } elseif ($isSystemWebRequest) {
+        RouterLoader::loadSystemWithPrefix(Globals::getSystemWebPrefix(), 'web');
+    } elseif ($isAppApiRequest) {
         RouterLoader::loadWithPrefix(Globals::getApiPrefix(), 'api');
     } else {
         RouterLoader::load('web');

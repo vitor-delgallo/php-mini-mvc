@@ -60,6 +60,15 @@ class Path {
     }
 
     /**
+     * Get the /app/languages directory path.
+     *
+     * @return string
+     */
+    public static function appLanguages(): string {
+        return self::app() . '\\languages';
+    }
+
+    /**
      * Get the /app/routes directory path.
      *
      * @return string
@@ -150,6 +159,78 @@ class Path {
     }
 
     /**
+     * Get the /system/languages directory path.
+     *
+     * @return string
+     */
+    public static function systemLanguages(): string {
+        return self::system() . '\\languages';
+    }
+
+    /**
+     * Get the /system/routes directory path.
+     *
+     * @return string
+     */
+    public static function systemRoutes(): string {
+        return self::system() . '\\routes';
+    }
+
+    /**
+     * Get the /system/Middlewares directory path.
+     *
+     * @return string
+     */
+    public static function systemMiddlewares(): string {
+        return self::system() . '\\Middlewares';
+    }
+
+    /**
+     * Get the /system/Controllers directory path.
+     *
+     * @return string
+     */
+    public static function systemControllers(): string {
+        return self::system() . '\\Controllers';
+    }
+
+    /**
+     * Get the /system/Models directory path.
+     *
+     * @return string
+     */
+    public static function systemModels(): string {
+        return self::system() . '\\Models';
+    }
+
+    /**
+     * Get the /system/views directory path.
+     *
+     * @return string
+     */
+    public static function systemViews(): string {
+        return self::system() . '\\views';
+    }
+
+    /**
+     * Get the /system/views/pages directory path.
+     *
+     * @return string
+     */
+    public static function systemViewsPages(): string {
+        return self::systemViews() . '\\pages';
+    }
+
+    /**
+     * Get the /system/views/templates directory path.
+     *
+     * @return string
+     */
+    public static function systemViewsTemplates(): string {
+        return self::systemViews() . '\\templates';
+    }
+
+    /**
      * Get the /system/includes directory path.
      *
      * @return string
@@ -195,7 +276,9 @@ class Path {
     }
 
     /**
-     * Get the /languages directory path.
+     * Get the legacy /languages directory path.
+     *
+     * Runtime translation loading uses appLanguages() and systemLanguages().
      *
      * @return string
      */

@@ -144,16 +144,62 @@ class Globals {
     }
 
     /**
+     * Gets the system web prefix used to determine if a request is for a system web route.
+     *
+     * @return string
+     */
+    public static function getSystemWebPrefix(): string {
+        return "/web-system";
+    }
+
+    /**
+     * Gets the system API prefix used to determine if a request is for a system API route.
+     *
+     * @return string
+     */
+    public static function getSystemApiPrefix(): string {
+        return "/api-system";
+    }
+
+    /**
+     * Checks if the current HTTP request is targeting the given prefix.
+     *
+     * @param string $prefix
+     * @return bool
+     */
+    private static function isRequestForPrefix(string $prefix): bool {
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+        $base = self::env('BASE_PATH') ?? '';
+        $cleanUri = str_replace($base, '', $uri);
+
+        return !!preg_match('#^' . preg_quote($prefix) . '(/|$)#', $cleanUri);
+    }
+
+    /**
      * Checks if the current HTTP request is targeting an API route based on the URI and configured API prefix.
      * This is used to conditionally disable session handling for API requests.
      * 
      * @return bool
      */
     public static function isApiRequest(): bool {
-        $uri = $_SERVER['REQUEST_URI'] ?? '/';
-        $base = self::env('BASE_PATH') ?? '';
-        $cleanUri = str_replace($base, '', $uri);
+        return self::isRequestForPrefix(self::getApiPrefix());
+    }
 
-        return !!preg_match('#^' . preg_quote(self::getApiPrefix()) . '(/|$)#', $cleanUri);
+    /**
+     * Checks if the current HTTP request is targeting a system web route.
+     *
+     * @return bool
+     */
+    public static function isSystemWebRequest(): bool {
+        return self::isRequestForPrefix(self::getSystemWebPrefix());
+    }
+
+    /**
+     * Checks if the current HTTP request is targeting a system API route.
+     *
+     * @return bool
+     */
+    public static function isSystemApiRequest(): bool {
+        return self::isRequestForPrefix(self::getSystemApiPrefix());
     }
 }

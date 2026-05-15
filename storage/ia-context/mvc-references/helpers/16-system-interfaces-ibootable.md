@@ -24,7 +24,7 @@ class ExecAllRoutes implements IBootable
 
 ## Helper Usage
 
-There is no procedural helper for this interface. `System\Core\PHPAutoload::boot()` discovers and executes implementations.
+There is no procedural helper for this interface. `System\Core\PHPAutoload::boot()` / `php_autoload_boot()` discovers and executes implementations.
 
 ## Method Signature
 

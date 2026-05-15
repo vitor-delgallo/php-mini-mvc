@@ -1,0 +1,14 @@
+{
+    "error.required":  "This field is required.",
+    "error.email":  "Invalid email address.",
+    "error.min":  "Minimum length is {param} characters.",
+    "error.max":  "Maximum length is {param} characters.",
+    "error.same":  "This field must match \u0027{param}\u0027.",
+    "error.numeric":  "This field must be numeric.",
+    "error.integer":  "This field must be an integer.",
+    "error.date":  "This field must be a valid date.",
+    "error.regex":  "Invalid format.",
+    "error.in":  "Invalid value.",
+    "error.invalid":  "The field is invalid.",
+    "error.unknown":  "Unknown rule: {rule}"
+}

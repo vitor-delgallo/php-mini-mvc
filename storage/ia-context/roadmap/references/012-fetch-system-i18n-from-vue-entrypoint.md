@@ -37,7 +37,7 @@ Recommended fields:
 {
   "i18n": {
     "enabled": true,
-    "endpoint": "/php-mini-mvc/api-mvc-system/i18n",
+    "endpoint": "/php-mini-mvc/api-system/i18n",
     "prefixes": ["app.pages"],
     "lang": "en",
     "token": "..."
@@ -84,7 +84,7 @@ Update:
 
 ## Acceptance Criteria
 
-- Vue pages can fetch translations from `/api-mvc-system/i18n`.
+- Vue pages can fetch translations from `/api-system/i18n`.
 - The fetch works with `BASE_PATH`.
 - The token is sent in a header.
 - Missing or disabled i18n does not break mounting Vue.

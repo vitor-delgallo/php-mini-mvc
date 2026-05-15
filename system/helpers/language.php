@@ -6,6 +6,14 @@ function language_get(?string $key = null, array $replacements = null, ?string $
     return Language::get($key, $replacements, $lang);
 }
 
+function language_get_by_prefix(string $prefix, ?string $lang = null): array {
+    return Language::getByPrefix($prefix, $lang);
+}
+
+function language_normalize_prefix(string $prefix): string {
+    return Language::normalizePrefix($prefix);
+}
+
 function lg(?string $key = null, array $replacements = null, ?string $lang = null): string|array|null {
     return language_get($key, $replacements, $lang);
 }

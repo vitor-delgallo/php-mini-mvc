@@ -6,6 +6,7 @@
 APP_ENV=development
 BASE_PATH=/php-mini-mvc
 DEFAULT_LANGUAGE=en
+SYSTEM_TOKEN=
 APP_HELPERS_AUTOLOAD=true
 
 SESSION_DRIVER=none
@@ -27,6 +28,7 @@ Important rules:
 - Environment fallback should be treated as `production`.
 - `BASE_PATH` should be used when the app runs from a subdirectory.
 - `DEFAULT_LANGUAGE` defines the default language for translations.
+- `SYSTEM_TOKEN` protects system API routes such as `/api-system/i18n`; leave it empty to disable those routes. Vue pages that fetch translations directly receive this token in browser boot data, so use it only for framework utility endpoints, not private user data.
 - `APP_HELPERS_AUTOLOAD` can load all app helpers or a specific list.
 - `SESSION_DRIVER` accepts `files`, `db`, or `none`.
 - `DB_DRIVER` accepts `mysql`, `pgsql`, or `none`.
@@ -41,7 +43,7 @@ Each route file receives a local variable:
 $router
 ```
 
-## Web Routes
+## App Web Routes
 
 File:
 
@@ -49,14 +51,17 @@ File:
 app/routes/web.php
 ```
 
-Example:
+The app root redirects to the framework documentation home:
 
 ```php
 $router->get('/', function () {
-    $html = view_render_page('home');
-    return response_html($html);
+    return response_redirect('/web-system');
 });
+```
 
+Example:
+
+```php
 $router->group([
     'middleware' => [\App\Middlewares\Example::class],
     'prefix' => '/admin',
@@ -65,7 +70,7 @@ $router->group([
 });
 ```
 
-## API Routes
+## App API Routes
 
 File:
 
@@ -73,7 +78,7 @@ File:
 app/routes/api.php
 ```
 
-This file is loaded with the global `/api` prefix.
+This file is loaded with the app API `/api` prefix.
 
 Example:
 
@@ -90,6 +95,63 @@ If `BASE_PATH=/php-mini-mvc`, a `/api/health` route will be available at:
 ```
 
 APIs should return JSON, text, XML, files, or another PSR-7 response. Do not use sessions in API routes.
+
+## System Web Routes
+
+File:
+
+```text
+system/routes/web.php
+```
+
+This file is loaded with the system web `/web-system` prefix. Framework-owned web pages live here. The documentation home is served at:
+
+```text
+/web-system
+```
+
+With `BASE_PATH=/php-mini-mvc`, the final URL is:
+
+```text
+/php-mini-mvc/web-system
+```
+
+## System API Routes
+
+File:
+
+```text
+system/routes/api.php
+```
+
+This file is loaded with the system API `/api-system` prefix. System API requests are treated as API requests and do not use sessions.
+
+With `BASE_PATH=/php-mini-mvc`, a system API route at `/health` would be available at:
+
+```text
+/php-mini-mvc/api-system/health
+```
+
+The protected system i18n endpoint exposes selected translations for system consumers:
+
+```text
+GET /api-system/i18n?prefix=app.pages&lang=en
+X-System-Token: <SYSTEM_TOKEN>
+```
+
+`Authorization: Bearer <SYSTEM_TOKEN>` is also accepted. If `SYSTEM_TOKEN` is empty or undefined, the endpoint is disabled and returns 404. Invalid or missing tokens return 403.
+
+Successful response shape:
+
+```json
+{
+  "lang": "en",
+  "prefix": "app.pages.",
+  "translations": {
+    "app.pages.users.profile": "User Profile"
+  }
+}
+```
 
 ## `BASE_PATH` and URLs
 
@@ -112,6 +174,8 @@ In views, for assets:
 
 Do not write fixed absolute paths such as `/assets/...` when the project may run from a subdirectory.
 
+`BASE_PATH` also applies to route prefixes. For example, `/api`, `/web-system`, and `/api-system` become `/php-mini-mvc/api`, `/php-mini-mvc/web-system`, and `/php-mini-mvc/api-system` when `BASE_PATH=/php-mini-mvc`.
+
 ## Main Path Helpers
 
 Main class:
@@ -127,6 +191,7 @@ path_root();
 path_app();
 path_app_bootable();
 path_app_helpers();
+path_app_languages();
 path_app_routes();
 path_app_middlewares();
 path_app_controllers();
@@ -137,6 +202,14 @@ path_app_views_templates();
 path_system();
 path_system_interfaces();
 path_system_helpers();
+path_system_languages();
+path_system_routes();
+path_system_middlewares();
+path_system_controllers();
+path_system_models();
+path_system_views();
+path_system_views_pages();
+path_system_views_templates();
 path_system_includes();
 path_public();
 path_storage();
@@ -149,3 +222,23 @@ site_url();
 ```
 
 Use `path_base_public()` for public assets and `site_url()` for absolute URLs.
+
+## Route Loader Helpers
+
+Main class:
+
+```php
+System\Core\RouterLoader
+```
+
+Helpers:
+
+```php
+router_loader_load('web');
+router_loader_load_with_prefix('/api', 'api');
+router_loader_load_system('web');
+router_loader_load_system_with_prefix('/web-system', 'web');
+router_loader_dispatch();
+```
+
+Use app route helpers for files in `app/routes` and system route helpers for files in `system/routes`. Prefixes are normalized by the loader and must still preserve `BASE_PATH` compatibility.

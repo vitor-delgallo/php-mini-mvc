@@ -16,6 +16,14 @@ namespace App\Controllers;
 
 Controllers must return a PSR-7 response, usually through `response_*()` helpers.
 
+Framework-owned controllers can live in:
+
+```text
+system/Controllers
+```
+
+System controllers use the `System\Controllers` namespace and are registered from `system/routes/*`.
+
 Recommended example:
 
 ```php
@@ -116,8 +124,10 @@ System\Core\View
 Structure:
 
 ```text
-app/views/pages/       Page views
-app/views/templates/   Templates/layouts
+app/views/pages/          Application page views
+app/views/templates/      Application templates/layouts
+system/views/pages/       Framework/system page views
+system/views/templates/   Framework/system templates/layouts
 ```
 
 Default template:
@@ -129,7 +139,7 @@ app/views/templates/template.php
 Page rendering:
 
 ```php
-view_render_page('home', ['title' => 'Home']);
+view_render_page('user-profile', ['user' => $user]);
 ```
 
 Equivalent core method:
@@ -144,6 +154,14 @@ Flow:
 2. Run `extract(...)`.
 3. Include the current template.
 4. The template includes the page in `app/views/pages/$page.php`.
+
+System pages are rendered by system controllers through `View::render_system_page()`. The framework documentation home lives at:
+
+```text
+system/views/pages/home.php
+```
+
+It is served through `system/routes/web.php` at `/web-system`. The app root `/` redirects there.
 
 Raw HTML rendering:
 
@@ -182,7 +200,7 @@ view_forget('user');
 view_forget_many(['user', 'title']);
 view_set_template('template');
 view_get_template();
-view_render_page('home', ['title' => 'Home']);
+view_render_page('user-profile', ['user' => $user]);
 view_render_html('<h1>OK</h1>');
 view_render_vue('account/Profile', ['title' => 'Account']);
 view_globals();
@@ -201,8 +219,8 @@ app/views/pages/products/show.php
 2. Create translations at:
 
 ```text
-languages/pages/products/pt-br.json
-languages/pages/products/en.json
+app/languages/pages/products/pt-br.json
+app/languages/pages/products/en.json
 ```
 
 3. Create the controller at:
@@ -223,9 +241,9 @@ Route example:
 $router->get('/products/{id}', [\App\Controllers\Products::class, 'show']);
 ```
 
-Because the language file is at `languages/pages/products/pt-br.json`, final keys can be:
+Because the language file is at `app/languages/pages/products/pt-br.json`, final keys can be:
 
 ```text
-pages.products.show.title
-pages.products.not-found
+app.pages.products.show.title
+app.pages.products.not-found
 ```

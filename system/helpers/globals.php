@@ -41,3 +41,19 @@ function globals_get_api_prefix(): string {
 function globals_is_api_request(): bool {
     return Globals::isApiRequest();
 }
+
+function globals_get_system_web_prefix(): string {
+    return Globals::getSystemWebPrefix();
+}
+
+function globals_get_system_api_prefix(): string {
+    return Globals::getSystemApiPrefix();
+}
+
+function globals_is_system_web_request(): bool {
+    return Globals::isSystemWebRequest();
+}
+
+function globals_is_system_api_request(): bool {
+    return Globals::isSystemApiRequest();
+}

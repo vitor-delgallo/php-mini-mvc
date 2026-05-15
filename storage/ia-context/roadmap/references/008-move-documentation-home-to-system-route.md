@@ -35,7 +35,7 @@ The index route inside the system web routes should be `/` relative to the `/web
 
 ## Required Move
 
-Move the documentation home view and controller responsibility into `system/`.
+Move the documentation home view and controller responsibility into `system/`. Copy the template to `system/templates/template.php`.
 
 Recommended structure:
 
@@ -46,6 +46,8 @@ system/
   views/
     pages/
       home.php
+    templates/
+      template.php
 ```
 
 If the existing View system only supports `app/views`, extend it carefully so system views can be rendered without breaking app views.

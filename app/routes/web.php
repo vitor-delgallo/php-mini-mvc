@@ -8,8 +8,7 @@ use MiladRahimi\PhpRouter\Router;
  * Responsible for dispatching HTTP requests to the appropriate route handler.
  */
 $router->get('/', function () {
-    $html = view_render_page('home');
-    return response_html($html);
+    return response_redirect('/web-system');
 });
 $router->group(['middleware' => [\App\Middlewares\Example::class], 'prefix' => '/admin'], function(Router $router) {
     $router->get('/users/{id}', [\App\Controllers\User::class, 'showPage']);

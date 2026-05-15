@@ -1,7 +1,7 @@
 # System\Core\PHPAutoload
 
 Source: `system/Core/PHPAutoload.php`  
-Helper source: none  
+Helper source: `system/helpers/php_autoload.php`  
 Namespace: `System\Core`
 
 Loads PHP files from directories and boots application bootable classes.
@@ -18,16 +18,20 @@ PHPAutoload::boot();
 
 ## Helper Usage
 
-There is no procedural helper for this class. Use static methods directly.
+```php
+php_autoload_from(path_system_helpers());
+php_autoload_boot();
+```
 
-## Method Signatures
+## Method And Helper Signatures
 
-| Static method | Accepts | Returns |
-| --- | --- | --- |
-| `PHPAutoload::from(string $directory): void` | Absolute directory path. Recursively includes all `.php` files. | Nothing. Throws `InvalidArgumentException` when the path is not a directory. |
-| `PHPAutoload::boot(): void` | No arguments. Scans `app/Bootable` and calls `::boot()` on classes that implement `System\Interfaces\IBootable`. | Nothing. |
+| Static method | Helper | Accepts | Returns |
+| --- | --- | --- | --- |
+| `PHPAutoload::from(string $directory): void` | `php_autoload_from(string $directory): void` | Absolute directory path. Recursively includes all `.php` files. | Nothing. Throws `InvalidArgumentException` when the path is not a directory. |
+| `PHPAutoload::boot(): void` | `php_autoload_boot(): void` | No arguments. Scans `app/Bootable` and calls `::boot()` on classes that implement `System\Interfaces\IBootable`. | Nothing. |
 
 ## Notes
 
 - `from()` is used during bootstrap to load system helpers and app helpers.
 - `boot()` assumes the bootable class namespace matches `App\Bootable\...` and the file path.
+- The helpers are thin wrappers for bootstrap and internal setup flows; they do not add state or change inclusion order.

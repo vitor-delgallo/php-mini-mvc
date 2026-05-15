@@ -33,12 +33,12 @@ app/
   Middlewares/      Route and route-group middlewares
   Models/           Application models, namespace App\Models
   helpers/          App-specific helpers
+  languages/        Application-owned translation JSON files, exposed as app.*
   routes/           web.php and api.php route files
   views/
     pages/          Page views
     templates/      Reusable templates/layouts
 
-languages/          Language JSON files
 public/             Expected server document root
 storage/
   ia-context/       General AI context documents
@@ -51,13 +51,14 @@ system/
   helpers/          Internal procedural helpers
   includes/         Error and session handlers
   Interfaces/       System contracts
+  languages/        Framework, docs, template, validation, and core error translations, exposed as system.*
   Session/          Custom session handlers
 ```
 
 ## General Conventions
 
 - Respect the project's own MVC structure.
-- Preserve the `app/`, `system/`, `public/`, `languages/`, and `storage/` structure.
+- Preserve the `app/`, `system/`, `public/`, and `storage/` structure, including split language roots under `app/languages/` and `system/languages/`.
 - Use `App\...` for application code.
 - Use `System\...` for framework code.
 - Controllers must return `Psr\Http\Message\ResponseInterface`.
@@ -87,17 +88,17 @@ General flow:
 4. Read variables from `.env`.
 5. Detect whether the request is an API request with `Globals::isApiRequest()`.
 6. Configure error display according to `APP_ENV`.
-7. Load internal helpers from `system/helpers`.
+7. Load internal helpers from `system/helpers` through `PHPAutoload::from()` / `php_autoload_from()`.
 8. Load app helpers according to `APP_HELPERS_AUTOLOAD`.
 9. Configure sessions:
    - web: use `system/includes/session_handlers.php`;
    - API: disable cookies and use `System\Session\NULLHandler`.
 10. Automatically connect to the database when `DB_DRIVER` is valid.
-11. Execute bootable classes in `app/Bootable`.
+11. Execute bootable classes in `app/Bootable` through `PHPAutoload::boot()` / `php_autoload_boot()`.
 12. Load routes:
    - web: `app/routes/web.php`;
    - API: `app/routes/api.php` with the `/api` prefix.
-13. Dispatch the route through `RouterLoader`.
+13. Dispatch the route through `RouterLoader` / `router_loader_dispatch()`.
 14. On `RouteNotFoundException`, return HTML 404.
 15. On other errors, return HTML 500; outside production, show details and write the daily log.
 

@@ -22,7 +22,7 @@ response_file($filePath, $downloadName, $hashFile, $contentType = 'application/o
 Examples:
 
 ```php
-return response_html(view_render_page('home'));
+return response_html(view_render_page('user-profile'));
 
 return response_json([
     'status' => 'ok',
@@ -117,3 +117,5 @@ Rules:
 - avoid global queries;
 - avoid heavy logic;
 - use them for small configuration, shared variables, and simple initialization.
+
+Bootstrap executes bootables through `System\Core\PHPAutoload::boot()`, also exposed as `php_autoload_boot()`. Use `php_autoload_from()` only for controlled bootstrap-style directory loading.

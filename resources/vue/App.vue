@@ -14,6 +14,10 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
+  translations: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const pages = import.meta.glob('./pages/**/*.vue');

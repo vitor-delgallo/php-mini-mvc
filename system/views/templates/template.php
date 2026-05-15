@@ -188,7 +188,6 @@ if ($vueRender !== null) {
                     'page' => $vueRender['page'] ?? '',
                     'props' => $vueRender['props'] ?? [],
                     'meta' => $vueRender['meta'] ?? [],
-                    'i18n' => $vueRender['i18n'] ?? ['enabled' => false],
                 ];
                 $vueBootJson = json_encode(
                     $vueBootPayload,

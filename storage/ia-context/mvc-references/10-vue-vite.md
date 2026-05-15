@@ -33,7 +33,7 @@ $router->get('/account', function () {
     return response_html(view_render_vue('account/Profile', [
         'title' => 'Account',
         'user' => ['name' => 'Vitor'],
-    ]));
+    ], null, ['app.pages.account']));
 });
 ```
 
@@ -45,7 +45,7 @@ use System\Core\View;
 $html = View::render_vue('account/Profile', [
     'title' => 'Account',
     'user' => ['name' => 'Vitor'],
-]);
+], null, ['app.pages.account']);
 ```
 
 ## Page And Props Rules
@@ -54,6 +54,7 @@ $html = View::render_vue('account/Profile', [
 - The `$page` argument is relative to `resources/vue/pages/`.
 - The `$page` argument may be passed with or without `.vue`.
 - The `$data` array is serialized into the boot payload and passed to the Vue page as props.
+- The optional fourth argument accepts one i18n prefix or a list of prefixes requested by the Vue page.
 - `resources/vue/App.vue` loads pages with `import.meta.glob('./pages/**/*.vue')`.
 - The PHP template still controls the full HTML shell and decides where the Vue mount is printed.
 
@@ -83,6 +84,7 @@ resources/vue/main.js
 page
 pageProps
 meta
+translations
 ```
 
 ## Custom Entrypoint
@@ -93,7 +95,8 @@ Pass a third argument when a route needs a different Vite entrypoint:
 return response_html(view_render_vue(
     'admin/Users',
     ['title' => 'Users'],
-    'admin.js'
+    'admin.js',
+    ['app.pages.admin']
 ));
 ```
 
@@ -104,6 +107,59 @@ resources/vue/
 ```
 
 If a custom entrypoint is used in production, it must also be present in the Vite manifest.
+
+## Vue I18n From MVC Translations
+
+Vue pages can request translations from the protected system i18n API by passing one prefix or a list of prefixes as the fourth renderer argument:
+
+```php
+return response_html(view_render_vue(
+    'users/Profile',
+    ['user' => $user],
+    null,
+    ['app.pages.users', 'app.back'],
+    'en'
+));
+```
+
+When `SYSTEM_TOKEN` is configured, the Vue boot payload includes:
+
+```json
+{
+  "i18n": {
+    "enabled": true,
+    "endpoint": "/php-mini-mvc/api-system/i18n",
+    "prefixes": ["app.pages.users", "app.back"],
+    "lang": "en",
+    "token": "..."
+  }
+}
+```
+
+`resources/vue/main.js` fetches each prefix before mounting, sends the token in `X-System-Token`, merges the returned translation maps, and exposes:
+
+```js
+app.provide('t', t);
+app.config.globalProperties.$t = t;
+```
+
+Example in a Vue component:
+
+```vue
+<script setup>
+import { inject } from 'vue';
+
+const t = inject('t', (key) => key);
+</script>
+
+<template>
+  <h1>{{ t('app.pages.users.profile') }}</h1>
+</template>
+```
+
+If i18n is disabled, the token is empty, a fetch fails, or a key is missing, Vue still mounts and `t(key)` returns the key itself.
+
+Security note: frontend i18n fetches expose `SYSTEM_TOKEN` to the browser. Use this token only for framework utility endpoints such as translation subsets, not private user data. Use a server-side proxy or authenticated app endpoint for stronger protection.
 
 ## Development And Production Assets
 
@@ -151,3 +207,4 @@ When `BASE_PATH=/php-mini-mvc`, build asset URLs must keep that prefix.
 - Do not bypass `View::render_vue()` path normalization.
 - Do not recommend hardcoded public asset URLs.
 - Keep Vue/Vite docs separate from the default PHP rendering flow so the framework remains lightweight by default.
+- Do not expose `SYSTEM_TOKEN` on non-Vue pages. The template only prints Vue i18n boot data inside the Vue render branch.

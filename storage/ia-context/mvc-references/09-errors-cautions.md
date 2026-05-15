@@ -57,8 +57,8 @@ Specific rules:
 - SQL must use parameters/prepared statements.
 - Assets must use `path_base_public()`.
 - Absolute URLs must use `site_url()`.
-- Translatable text must go to `languages/*`.
-- Language files in subfolders receive a prefix based on the path.
+- Translatable text must go to `app/languages/*` for application text or `system/languages/*` for framework/system text.
+- Language keys receive the source prefix (`app.*` or `system.*`) plus any subfolder prefix.
 - Do not use a view name that comes directly from the user.
 
 ## Main Principle

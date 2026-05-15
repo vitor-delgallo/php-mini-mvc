@@ -18,6 +18,10 @@ function view_forget_many(array $keys): void {
     View::forgetMany($keys);
 }
 
+function view_clear(): void {
+    View::clear();
+}
+
 function view_set_template(?string $relativePath = null): void {
     View::setTemplate($relativePath);
 }
@@ -30,12 +34,22 @@ function view_render_page(string $page, array $data = []): string {
     return View::render_page($page, $data);
 }
 
+function view_render_system_page(string $page, array $data = []): string {
+    return View::render_system_page($page, $data);
+}
+
 function view_render_html(string $html, array $data = []): string {
     return View::render_html($html, $data);
 }
 
-function view_render_vue(string $page, array $data = [], ?string $entrypoint = null): string {
-    return View::render_vue($page, $data, $entrypoint);
+function view_render_vue(
+    string $page,
+    array $data = [],
+    ?string $entrypoint = null,
+    array|string|null $i18nPrefixes = null,
+    ?string $lang = null
+): string {
+    return View::render_vue($page, $data, $entrypoint, $i18nPrefixes, $lang);
 }
 
 function view_globals(): array {

@@ -25,7 +25,7 @@ Update project context and references to explain:
 - app web routes live in `app/routes/web.php`;
 - app API routes live in `app/routes/api.php` and use `/api`;
 - system web routes live in `system/routes/web.php` and use `/web-system`;
-- system API routes live in `system/routes/api.php` and use `/api-mvc-system`;
+- system API routes live in `system/routes/api.php` and use `/api-system`;
 - the framework documentation home now lives at `/web-system`;
 - app `/` redirects to `/web-system`;
 - `BASE_PATH` applies to all route prefixes.
@@ -76,5 +76,5 @@ Update whichever home view currently owns the documentation: `app/views/pages/ho
 - Route prefix docs cover app and system web/API routes.
 - Home documentation includes the new Globals methods and helper alternatives.
 - English and Portuguese translation files include every key used by the home page.
-- The docs explain `BASE_PATH` behavior for `/web-system` and `/api-mvc-system`.
+- The docs explain `BASE_PATH` behavior for `/web-system` and `/api-system`.
 - No stale documentation says the app root `/` directly renders the documentation home.

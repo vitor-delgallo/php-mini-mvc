@@ -1,0 +1,14 @@
+{
+    "error.required":  "Este campo é obrigatório.",
+    "error.email":  "Endereço de e-mail inválido.",
+    "error.min":  "O mínimo é de {param} caracteres.",
+    "error.max":  "O máximo é de {param} caracteres.",
+    "error.same":  "Este campo deve ser igual a \u0027{param}\u0027.",
+    "error.numeric":  "Este campo deve ser numérico.",
+    "error.integer":  "Este campo deve ser um número inteiro.",
+    "error.date":  "Este campo deve conter uma data válida.",
+    "error.regex":  "Formato inválido.",
+    "error.in":  "Valor inválido.",
+    "error.invalid":  "O campo é inválido.",
+    "error.unknown":  "Regra desconhecida: {rule}"
+}

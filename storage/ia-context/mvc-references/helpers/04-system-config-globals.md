@@ -4,7 +4,7 @@ Source: `system/Config/Globals.php`
 Helper source: `system/helpers/globals.php`  
 Namespace: `System\Config`
 
-Stores runtime configuration, loads `.env` values through `vlucas/phpdotenv`, and detects API requests.
+Stores runtime configuration, loads `.env` values through `vlucas/phpdotenv`, and detects app/system route requests.
 
 ## Static Usage
 
@@ -36,11 +36,17 @@ globals_add('current_page', 'home');
 | `Globals::reset(): void` | `globals_reset(): void` | No arguments. Clears runtime config and reloads `.env`. | Nothing. |
 | `Globals::loadEnv(): void` | `globals_load_env(): void` | No arguments. Loads `.env` once. | Nothing. |
 | `Globals::env(?string $key = null): array|string|null` | `globals_env(?string $key = null): array|string|null` | Optional env key. | Full env array, one string value, or `null`. |
-| `Globals::getApiPrefix(): string` | `globals_get_api_prefix(): string` | No arguments. | The API prefix, currently `/api`. |
-| `Globals::isApiRequest(): bool` | `globals_is_api_request(): bool` | No arguments. Reads `REQUEST_URI` and `BASE_PATH`. | `true` when the current request targets the API prefix. |
+| `Globals::getApiPrefix(): string` | `globals_get_api_prefix(): string` | No arguments. | The app API prefix, currently `/api`. |
+| `Globals::isApiRequest(): bool` | `globals_is_api_request(): bool` | No arguments. Reads `REQUEST_URI` and `BASE_PATH`. | `true` when the current request targets the app API prefix. |
+| `Globals::getSystemWebPrefix(): string` | `globals_get_system_web_prefix(): string` | No arguments. | The system web prefix, currently `/web-system`. |
+| `Globals::getSystemApiPrefix(): string` | `globals_get_system_api_prefix(): string` | No arguments. | The system API prefix, currently `/api-system`. |
+| `Globals::isSystemWebRequest(): bool` | `globals_is_system_web_request(): bool` | No arguments. Reads `REQUEST_URI` and `BASE_PATH`. | `true` when the current request targets the system web prefix. |
+| `Globals::isSystemApiRequest(): bool` | `globals_is_system_api_request(): bool` | No arguments. Reads `REQUEST_URI` and `BASE_PATH`. | `true` when the current request targets the system API prefix. |
 
 ## Notes
 
 - `loadEnv()` is idempotent while the internal env cache is populated.
 - `reset()` clears the cache and reloads `.env`; use it carefully in tests or bootstrap code.
-- `isApiRequest()` strips `BASE_PATH` before checking the `/api` prefix.
+- Request detection strips `BASE_PATH` before checking `/api`, `/web-system`, or `/api-system`.
+- App APIs use `/api`; framework/system APIs use `/api-system`.
+- The framework documentation home is a system web request under `/web-system`.

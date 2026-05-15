@@ -18,6 +18,10 @@ function path_app_helpers(): string {
     return Path::appHelpers();
 }
 
+function path_app_languages(): string {
+    return Path::appLanguages();
+}
+
 function path_app_routes(): string {
     return Path::appRoutes();
 }
@@ -56,6 +60,38 @@ function path_system_interfaces(): string {
 
 function path_system_helpers(): string {
     return Path::systemHelpers();
+}
+
+function path_system_languages(): string {
+    return Path::systemLanguages();
+}
+
+function path_system_routes(): string {
+    return Path::systemRoutes();
+}
+
+function path_system_middlewares(): string {
+    return Path::systemMiddlewares();
+}
+
+function path_system_controllers(): string {
+    return Path::systemControllers();
+}
+
+function path_system_models(): string {
+    return Path::systemModels();
+}
+
+function path_system_views(): string {
+    return Path::systemViews();
+}
+
+function path_system_views_pages(): string {
+    return Path::systemViewsPages();
+}
+
+function path_system_views_templates(): string {
+    return Path::systemViewsTemplates();
 }
 
 function path_system_includes(): string {

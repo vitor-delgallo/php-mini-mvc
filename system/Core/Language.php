@@ -7,7 +7,7 @@ use System\Config\Globals;
 /**
  * Language handler and translator for the application.
  *
- * Loads JSON-based translation files from the /languages directory,
+ * Loads JSON-based translation files from the app and system language directories,
  * detects or uses a specified language code (e.g., "pt-br", "en"),
  * and provides translated strings on demand.
  */
@@ -29,7 +29,7 @@ class Language {
     /**
      * In-memory cache of discovered language files per language code.
      *
-     * @var array<string, array<string>>
+     * @var array<string, array<int, array{path: string, baseDir: string, sourcePrefix: string}>>
      */
     private static array $langFilesCache = [];
 
@@ -66,6 +66,47 @@ class Language {
     }
 
     /**
+     * Retrieve all translations whose keys start with a normalized prefix.
+     *
+     * The returned array preserves full translation keys so PHP and JavaScript
+     * consumers can use the same identifiers.
+     *
+     * @param string $prefix Translation key prefix, with or without trailing dot.
+     * @param string|null $lang Optional language code to load before filtering.
+     * @return array<string, string>
+     */
+    public static function getByPrefix(string $prefix, ?string $lang = null): array {
+        $prefix = self::normalizePrefix($prefix);
+        if ($prefix === '') {
+            return [];
+        }
+
+        $translations = self::get(null, null, $lang);
+        if (!is_array($translations)) {
+            return [];
+        }
+
+        return array_filter(
+            $translations,
+            fn($value, $key) => str_starts_with((string) $key, $prefix),
+            ARRAY_FILTER_USE_BOTH
+        );
+    }
+
+    /**
+     * Normalize a translation prefix to dot notation with one trailing dot.
+     *
+     * @param string $prefix
+     * @return string
+     */
+    public static function normalizePrefix(string $prefix): string {
+        $prefix = trim($prefix);
+        $prefix = trim($prefix, '.');
+
+        return $prefix === '' ? '' : $prefix . '.';
+    }
+
+    /**
      * Get the current language code in use.
      *
      * @return string|null
@@ -75,31 +116,58 @@ class Language {
     }
 
     /**
+     * Get language source roots and the prefix applied to each source.
+     *
+     * @return array<int, array{path: string, sourcePrefix: string}>
+     */
+    private static function languageRoots(): array {
+        return [
+            ['path' => Path::appLanguages(), 'sourcePrefix' => 'app.'],
+            ['path' => Path::systemLanguages(), 'sourcePrefix' => 'system.'],
+        ];
+    }
+
+    /**
      * Recursively find all files with the exact language filename (e.g., pt-br.json).
      *
      * @param string $lang Language code
-     * @return array<string> List of full paths
+     * @return array<int, array{path: string, baseDir: string, sourcePrefix: string}>
      */
     private static function findLangFiles(string $lang): array {
         if (isset(self::$langFilesCache[$lang])) {
             return self::$langFilesCache[$lang];
         }
 
-        $directory = Path::languages();
         $target = "{$lang}.json";
         $matches = [];
 
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS)
-        );
+        foreach (self::languageRoots() as $root) {
+            $directory = $root['path'];
+            if (!is_dir($directory)) {
+                continue;
+            }
 
-        foreach ($iterator AS $file) {
-            if (
-                $file->isFile() &&
-                $file->getExtension() === 'json' &&
-                $file->getFilename() === $target
-            ) {
-                $matches[] = $file->getPathname();
+            $baseDir = realpath($directory);
+            if ($baseDir === false) {
+                continue;
+            }
+
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS)
+            );
+
+            foreach ($iterator AS $file) {
+                if (
+                    $file->isFile() &&
+                    $file->getExtension() === 'json' &&
+                    $file->getFilename() === $target
+                ) {
+                    $matches[] = [
+                        'path' => $file->getPathname(),
+                        'baseDir' => $baseDir,
+                        'sourcePrefix' => $root['sourcePrefix'],
+                    ];
+                }
             }
         }
 
@@ -108,26 +176,34 @@ class Language {
     }
 
     /**
-     * Adds a string prefix to all keys of a flat associative array.
+     * Adds source and subdirectory prefixes to all keys of a flat associative array.
      *
-     * - If a key already starts with the prefix, it will be left unchanged.
-     * - Useful for avoiding key collisions when merging multiple translation files.
+     * - If a key already starts with the source prefix, it will be left unchanged.
+     * - If a key already starts with the subdirectory prefix, only the source prefix is added.
+     * - Otherwise both source and subdirectory prefixes are added.
      *
      * Example:
-     *   prefixKeys(["title" => "Dashboard"], "admin.") returns ["admin.title" => "Dashboard"]
+     *   prefixKeys(["title" => "Dashboard"], "app.", "admin.") returns ["app.admin.title" => "Dashboard"]
      *
      * @param array $arr The original key-value array.
-     * @param string $prefix The prefix to prepend to each key.
+     * @param string $sourcePrefix The source prefix to prepend to each key.
+     * @param string $relativePrefix The relative directory prefix to prepend after the source prefix.
      * @return array The new array with prefixed keys.
      */
-    private static function prefixKeys(array $arr, string $prefix): array {
+    private static function prefixKeys(array $arr, string $sourcePrefix, string $relativePrefix = ''): array {
         $prefixed = [];
         foreach ($arr AS $key => $value) {
-            if(str_starts_with($key, $prefix)) {
-                $prefixed["{$key}"] = $value;
+            if (str_starts_with($key, $sourcePrefix)) {
+                $prefixed[$key] = $value;
                 continue;
             }
-            $prefixed["{$prefix}{$key}"] = $value;
+
+            if (!empty($relativePrefix) && str_starts_with($key, $relativePrefix)) {
+                $prefixed["{$sourcePrefix}{$key}"] = $value;
+                continue;
+            }
+
+            $prefixed["{$sourcePrefix}{$relativePrefix}{$key}"] = $value;
         }
         return $prefixed;
     }
@@ -135,9 +211,9 @@ class Language {
     /**
      * Loads and merges all translation files matching the given language code.
      *
-     * - Recursively scans the language directory for files named exactly "<lang>.json".
-     * - Keys from files in subdirectories are automatically prefixed with the relative path (dot notation).
-     *   Example: "modules/admin/pt-br.json" will prefix keys with "modules.admin.".
+     * - Recursively scans app and system language directories for files named exactly "<lang>.json".
+     * - Keys are prefixed with the source and relative path (dot notation).
+     *   Example: "app/languages/modules/admin/pt-br.json" will prefix keys with "app.modules.admin.".
      * - All keys are flattened and merged into `self::$translations`.
      *
      * @param string $lang Language code (e.g., "pt-br").
@@ -150,21 +226,22 @@ class Language {
         }
 
         self::$translations = [];
-        $baseDir = realpath(Path::languages());
-
-        foreach ($files as $file) {
+        foreach ($files as $fileInfo) {
+            $file = $fileInfo['path'];
             $json = json_decode(file_get_contents($file), true);
             if (!is_array($json)) {
                 continue;
             }
 
             $fileDir = realpath(dirname($file));
-            $relativePath = trim(str_replace($baseDir, '', $fileDir), DIRECTORY_SEPARATOR);
+            if ($fileDir === false) {
+                continue;
+            }
+
+            $relativePath = trim(substr($fileDir, strlen($fileInfo['baseDir'])), DIRECTORY_SEPARATOR);
             $prefix = $relativePath ? str_replace(DIRECTORY_SEPARATOR, '.', $relativePath) . '.' : '';
 
-            if (!empty($prefix)) {
-                $json = self::prefixKeys($json, $prefix);
-            }
+            $json = self::prefixKeys($json, $fileInfo['sourcePrefix'], $prefix);
 
             self::$translations = array_merge(self::$translations, $json);
         }
@@ -176,10 +253,10 @@ class Language {
      * Loads the appropriate translation files into memory.
      *
      * Enhanced behavior:
-     * - Recursively searches for all JSON files with the exact name matching the language code (e.g., "pt-br.json").
+     * - Recursively searches app and system language roots for all JSON files with the exact name matching the language code (e.g., "pt-br.json").
      * - All matching files are loaded and merged into the translation array.
-     * - Files located in subdirectories will have their keys automatically prefixed with the relative folder path.
-     *   Example: a file in "admin/pt-br.json" will generate keys like "admin.title".
+     * - Files are prefixed by source and relative folder path.
+     *   Example: a file in "app/languages/admin/pt-br.json" will generate keys like "app.admin.title".
      * - Later files may override keys loaded earlier.
      *
      * Load priority:

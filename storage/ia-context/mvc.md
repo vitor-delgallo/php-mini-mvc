@@ -12,7 +12,7 @@ Keep this document short enough to remain in context by default. Open the docume
 ## Essential Context Agents Should Always Know
 
 - The project is a **PHP 8.2+** MVC mini-framework for landing pages, institutional websites, small systems, simple APIs, and traditional front-end work.
-- Preserve the `app/`, `system/`, `public/`, `languages/`, and `storage/` structure.
+- Preserve the `app/`, `system/`, `public/`, and `storage/` structure, including split language roots under `app/languages/` and `system/languages/`.
 - Use `App\...` namespaces for application code and `System\...` namespaces for framework code.
 - Controllers must return `Psr\Http\Message\ResponseInterface`, usually through `response_*()` helpers.
 - Views should focus on presentation; do not put business logic in them.
@@ -24,7 +24,7 @@ Keep this document short enough to remain in context by default. Open the docume
 - Prefer Bootstrap 5 and vanilla JavaScript for traditional front-end work.
 - Use prepared statements whenever SQL is involved; never concatenate user input directly into queries.
 - Preserve `BASE_PATH` compatibility; assets should use `path_base_public()` and absolute URLs should use `site_url()`.
-- Translatable UI text should live in `languages/*` and be consumed through `lg()`.
+- Translatable UI text should live in `app/languages/*` or `system/languages/*` and be consumed through `lg()` with `app.*` or `system.*` keys.
 - APIs must not use sessions; the bootstrap uses `NULLHandler` for API requests.
 - Deliver small, testable changes that are consistent with the project's own MVC style.
 
@@ -47,12 +47,11 @@ app/
   Middlewares/      Route and route-group middlewares
   Models/           Application models, namespace App\Models
   helpers/          App-specific helpers
-  routes/           web.php and api.php route files
+  languages/        Application-owned translation JSON files, exposed as app.*
+  routes/           Application web.php and api.php route files
   views/
-    pages/          Page views
-    templates/      Reusable templates/layouts
-
-languages/          Language JSON files
+    pages/          Application page views
+    templates/      Application templates/layouts
 public/             Expected server document root
 storage/
   ia-context/       General AI context documents
@@ -61,11 +60,15 @@ storage/
 
 system/
   Config/           Configuration/env resolvers
+  Controllers/      Framework/system controllers, namespace System\Controllers
   Core/             Framework core
   helpers/          Internal procedural helpers
   includes/         Error and session handlers
   Interfaces/       System contracts
+  languages/        Framework, docs, template, validation, and core error translations, exposed as system.*
+  routes/           Framework/system web.php and api.php route files
   Session/          Custom session handlers
+  views/            Framework/system views and templates
 ```
 
 ## Bootstrap Summary
@@ -81,14 +84,14 @@ Essential flow:
 1. Load `../vendor/autoload.php`.
 2. Include `system/includes/error_handlers.php`.
 3. Run `Globals::loadEnv()` and read `.env`.
-4. Detect API requests with `Globals::isApiRequest()`.
+4. Detect app API, system API, and system web requests with `Globals`.
 5. Configure error display according to `APP_ENV`.
 6. Load internal helpers and app helpers according to `APP_HELPERS_AUTOLOAD`.
-7. Configure sessions: web requests use normal handlers; API requests disable cookies and use `System\Session\NULLHandler`.
+7. Configure sessions: web requests use normal handlers; app and system API requests disable cookies and use `System\Session\NULLHandler`.
 8. Automatically connect to the database when `DB_DRIVER` is valid.
 9. Execute bootables in `app/Bootable`.
-10. Load `app/routes/web.php` or `app/routes/api.php` with the `/api` prefix.
-11. Dispatch the route through `RouterLoader`.
+10. Load `system/routes/api.php` under `/api-system`, `system/routes/web.php` under `/web-system`, `app/routes/api.php` under `/api`, or `app/routes/web.php` for normal app web routes.
+11. Dispatch the route through `RouterLoader` / `router_loader_dispatch()`.
 12. Return HTML 404 for missing routes and HTML 500 for general errors; outside production, show details and write the daily log.
 
 ## Main `.env` Variables
@@ -97,6 +100,7 @@ Essential flow:
 APP_ENV=development
 BASE_PATH=/php-mini-mvc
 DEFAULT_LANGUAGE=en
+SYSTEM_TOKEN=
 APP_HELPERS_AUTOLOAD=true
 
 SESSION_DRIVER=none
@@ -117,6 +121,7 @@ Quick rules:
 - `APP_ENV`: `production`, `development`, or `testing`; fallback should be treated as `production`.
 - `BASE_PATH`: required when the app runs from a subdirectory.
 - `DEFAULT_LANGUAGE`: default language for translations.
+- `SYSTEM_TOKEN`: fixed owner-defined token for protected system API routes; empty disables those routes. Vue pages that fetch i18n directly receive it in browser boot data, so do not use it to protect private user data.
 - `APP_HELPERS_AUTOLOAD`: `true` for all app helpers, or a specific list.
 - `SESSION_DRIVER`: `files`, `db`, or `none`.
 - `DB_DRIVER`: `mysql`, `pgsql`, or `none`.
@@ -129,24 +134,31 @@ Quick rules:
 | Database core | `database_connect`, `database_select`, `database_select_row`, `database_statement`, `database_get_last_inserted_id`, `database_is_in_transaction`, `database_start_transaction`, `database_commit_transaction`, `database_rollback_transaction`, `database_disconnect` |
 | Environment | `environment_type`, `environment_is`, `environment_is_production`, `environment_is_development`, `environment_is_testing` |
 | Form | `form_validator`, `form_validator_register_rule` |
-| Globals | `globals_get`, `globals_add`, `globals_merge`, `globals_forget`, `globals_forget_many`, `globals_reset`, `globals_load_env`, `globals_env`, `globals_get_api_prefix`, `globals_is_api_request` |
-| Languages | `lg`, `language_get`, `language_load`, `ld`, `language_detect`, `language_current`, `language_default` |
-| Path | `path_root`, `path_app`, `path_app_bootable`, `path_app_helpers`, `path_app_routes`, `path_app_middlewares`, `path_app_controllers`, `path_app_models`, `path_app_views`, `path_app_views_pages`, `path_app_views_templates`, `path_system`, `path_system_interfaces`, `path_system_helpers`, `path_system_includes`, `path_public`, `path_storage`, `path_storage_sessions`, `path_storage_logs`, `path_languages`, `path_base`, `path_base_public`, `site_url` |
+| Globals | `globals_get`, `globals_add`, `globals_merge`, `globals_forget`, `globals_forget_many`, `globals_reset`, `globals_load_env`, `globals_env`, `globals_get_api_prefix`, `globals_is_api_request`, `globals_get_system_web_prefix`, `globals_get_system_api_prefix`, `globals_is_system_web_request`, `globals_is_system_api_request` |
+| Languages | `lg`, `language_get`, `language_get_by_prefix`, `language_normalize_prefix`, `language_load`, `ld`, `language_detect`, `language_current`, `language_default` |
+| Path | `path_root`, `path_app`, `path_app_bootable`, `path_app_helpers`, `path_app_languages`, `path_app_routes`, `path_app_middlewares`, `path_app_controllers`, `path_app_models`, `path_app_views`, `path_app_views_pages`, `path_app_views_templates`, `path_system`, `path_system_interfaces`, `path_system_helpers`, `path_system_languages`, `path_system_routes`, `path_system_middlewares`, `path_system_controllers`, `path_system_models`, `path_system_views`, `path_system_views_pages`, `path_system_views_templates`, `path_system_includes`, `path_public`, `path_storage`, `path_storage_sessions`, `path_storage_logs`, `path_languages`, `path_base`, `path_base_public`, `site_url` |
+| PHP autoload | `php_autoload_from`, `php_autoload_boot` |
 | Response | `response_redirect`, `response_html`, `response_text`, `response_json`, `response_xml`, `response_file` |
+| Router loader | `router_loader_load`, `router_loader_load_with_prefix`, `router_loader_load_system`, `router_loader_load_system_with_prefix`, `router_loader_dispatch` |
 | Session | `session_start_safe`, `session_has`, `session_get`, `session_set`, `session_set_many`, `session_forget`, `session_clear`, `session_save`, `session_destroy_safe`, `session_regenerate`, `session_driver`, `session_is`, `session_is_files`, `session_is_db`, `session_is_none` |
-| View | `view_share`, `view_share_many`, `view_forget`, `view_forget_many`, `view_set_template`, `view_get_template`, `view_render_page`, `view_render_html`, `view_render_vue`, `view_globals` |
+| View | `view_share`, `view_share_many`, `view_forget`, `view_forget_many`, `view_clear`, `view_set_template`, `view_get_template`, `view_render_page`, `view_render_system_page`, `view_render_html`, `view_render_vue`, `view_globals` |
 
 ## Quick Decisions
 
 | Need | Use |
 | --- | --- |
 | Render a page | `view_render_page()` + `response_html()` |
+| Render a system page | `view_render_system_page()` + `response_html()` |
 | Render an optional Vue page | `view_render_vue()` + `response_html()` |
+| Render Vue with MVC translations | `view_render_vue('users/Profile', $props, null, ['app.pages.users'])` |
 | Return JSON | `response_json()` |
 | Redirect | `response_redirect()` |
+| Open framework documentation | `/web-system` |
 | Generate an absolute URL | `site_url()` |
 | Generate an asset path | `path_base_public()` |
 | Fetch a translation | `lg()` |
+| Fetch translations by prefix | `language_get_by_prefix()` |
+| Normalize a translation prefix | `language_normalize_prefix()` |
 | Query multiple rows | `database_select()` |
 | Query one row | `database_select_row()` |
 | Run insert/update/delete | `database_statement()` |
@@ -162,7 +174,7 @@ Quick rules:
 | Architecture and bootstrap | Purpose, stack, structure, request lifecycle, and global conventions. | [01-architecture-bootstrap.md](mvc-references/01-architecture-bootstrap.md) |
 | Configuration, routes, and URLs | `.env`, web/API routes, `BASE_PATH`, assets, and URL generation. | [02-configuration-routes-urls.md](mvc-references/02-configuration-routes-urls.md) |
 | MVC layers | Controllers, models, views, templates, and the flow for creating pages. | [03-mvc-layers.md](mvc-references/03-mvc-layers.md) |
-| Languages and dynamic documentation | Translation system, `languages/*` prefixes, and the home page as documentation. | [04-languages.md](mvc-references/04-languages.md) |
+| Languages and dynamic documentation | Translation system, split app/system language roots, source prefixes, and the home page as documentation. | [04-languages.md](mvc-references/04-languages.md) |
 | Database, session, and forms | PDO, `database_*` helpers, session drivers, and `FormValidator`. | [05-database-session-forms.md](mvc-references/05-database-session-forms.md) |
 | Responses, middlewares, and bootables | `response_*` helpers, middlewares, and lightweight global initialization. | [06-responses-middlewares-bootables.md](mvc-references/06-responses-middlewares-bootables.md) |
 | Helper and system class reference | Helper index plus per-class files with namespaces, static method signatures, helper signatures, accepted arguments, and usage examples. | [07-helper-reference.md](mvc-references/07-helper-reference.md) |
@@ -175,14 +187,14 @@ Quick rules:
 The view:
 
 ```text
-app/views/pages/home.php
+system/views/pages/home.php
 ```
 
 works as dynamic framework documentation.
 
 It:
 
-- uses `lg(...)` to fetch text from `languages/doc/*`;
+- uses `lg(...)` to fetch text from `system/languages/doc/*` with `system.doc.*` keys;
 - shows a framework summary;
 - defines a `$docs` array with classes, methods, examples, and descriptions;
 - renders those entries as HTML `<details>` sections.
@@ -190,10 +202,12 @@ It:
 When adding new public framework classes, update:
 
 ```text
-app/views/pages/home.php
-languages/doc/en.json
-languages/doc/pt-br.json
+system/views/pages/home.php
+system/languages/doc/en.json
+system/languages/doc/pt-br.json
 ```
+
+The app root `/` redirects to `/web-system`. With `BASE_PATH=/php-mini-mvc`, the documentation URL is `/php-mini-mvc/web-system`.
 
 ## Main Principle
 

@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 
 const props = defineProps({
   title: {
@@ -19,6 +19,13 @@ const props = defineProps({
     default: () => ({}),
   },
 });
+
+const t = inject('t', (key) => key);
+
+function translate(key, fallback = '') {
+  const translated = t(key);
+  return translated === key ? fallback : translated;
+}
 
 const displayUser = computed(() => ({
   id: props.user?.id ?? '',
@@ -43,28 +50,30 @@ const initials = computed(() => {
 const rows = computed(() => [
   {
     key: 'id',
-    label: props.labels.id || 'ID:',
+    label: translate('app.pages.users.profile.id', props.labels.id || 'ID:'),
     value: displayUser.value.id,
   },
   {
     key: 'name',
-    label: props.labels.name || 'Name:',
+    label: translate('app.pages.users.profile.name', props.labels.name || 'Name:'),
     value: displayUser.value.name,
   },
   {
     key: 'email',
-    label: props.labels.email || 'Email:',
+    label: translate('app.pages.users.profile.email', props.labels.email || 'Email:'),
     value: displayUser.value.email,
   },
 ]);
 
 const homeUrl = computed(() => props.urls.home || '/');
+const profileTitle = computed(() => translate('app.pages.users.profile', props.title));
+const backHomeText = computed(() => translate('app.back.home', props.labels.backHome || 'Back to Home'));
 </script>
 
 <template>
   <section class="profile-page" aria-labelledby="profile-title">
     <a class="profile-back" :href="homeUrl">
-      {{ labels.backHome || 'Back to Home' }}
+      {{ backHomeText }}
     </a>
 
     <article class="profile-panel">
@@ -73,7 +82,7 @@ const homeUrl = computed(() => props.urls.home || '/');
           {{ initials }}
         </div>
         <div>
-          <h2 id="profile-title">{{ title }}</h2>
+          <h2 id="profile-title">{{ profileTitle }}</h2>
         </div>
       </div>
 

@@ -13,8 +13,8 @@ app/views/pages/products/show.php
 2. Create translations at:
 
 ```text
-languages/pages/products/pt-br.json
-languages/pages/products/en.json
+app/languages/pages/products/pt-br.json
+app/languages/pages/products/en.json
 ```
 
 3. Create the controller at:
@@ -35,11 +35,11 @@ Route example:
 $router->get('/products/{id}', [\App\Controllers\Products::class, 'show']);
 ```
 
-Because the language file is at `languages/pages/products/pt-br.json`, final keys can be:
+Because the language file is at `app/languages/pages/products/pt-br.json`, final keys can be:
 
 ```text
-pages.products.show.title
-pages.products.not-found
+app.pages.products.show.title
+app.pages.products.not-found
 ```
 
 ## Creating an API Route
@@ -76,7 +76,7 @@ With `BASE_PATH=/php-mini-mvc`, the final URL is:
 8. Create controllers in `app/Controllers`.
 9. Create models in `app/Models` when data is involved.
 10. Create views in `app/views/pages`.
-11. Create translations in `languages/...`.
+11. Create application translations in `app/languages/...` or framework/system translations in `system/languages/...`.
 12. Use `response_*`, `view_*`, `lg`, `path_base_*`, and `database_*` as the main API.
 13. Test with and without `BASE_PATH` when the project may run from a subdirectory.
 14. Validate behavior in `development` and `production`.
