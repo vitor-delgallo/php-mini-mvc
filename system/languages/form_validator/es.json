@@ -1,0 +1,14 @@
+{
+  "error.required": "Este campo es obligatorio.",
+  "error.email": "Correo electr\u00f3nico inv\u00e1lido.",
+  "error.min": "La longitud m\u00ednima es de {param} caracteres.",
+  "error.max": "La longitud m\u00e1xima es de {param} caracteres.",
+  "error.same": "Este campo debe coincidir con '{param}'.",
+  "error.numeric": "Este campo debe ser num\u00e9rico.",
+  "error.integer": "Este campo debe ser un n\u00famero entero.",
+  "error.date": "Este campo debe ser una fecha v\u00e1lida.",
+  "error.regex": "Formato inv\u00e1lido.",
+  "error.in": "Valor inv\u00e1lido.",
+  "error.invalid": "El campo es inv\u00e1lido.",
+  "error.unknown": "Regla desconocida: {rule}"
+}

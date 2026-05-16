@@ -66,6 +66,7 @@ system/
   includes/         Error and session handlers
   Interfaces/       System contracts
   languages/        Framework, docs, template, validation, and core error translations, exposed as system.*
+  Middlewares/      Framework/system route middlewares, namespace System\Middlewares
   routes/           Framework/system web.php and api.php route files
   Session/          Custom session handlers
   views/            Framework/system views and templates
@@ -121,7 +122,7 @@ Quick rules:
 - `APP_ENV`: `production`, `development`, or `testing`; fallback should be treated as `production`.
 - `BASE_PATH`: required when the app runs from a subdirectory.
 - `DEFAULT_LANGUAGE`: default language for translations.
-- `SYSTEM_TOKEN`: fixed owner-defined token for protected system API routes; empty disables those routes. Vue pages that fetch i18n directly receive it in browser boot data, so do not use it to protect private user data.
+- `SYSTEM_TOKEN`: fixed owner-defined token for protected system API routes. `System\Middlewares\SystemI18nAuth` enforces it for `/api-system/i18n`; empty disables that endpoint. Vue pages that fetch i18n directly receive it in browser boot data, so do not use it to protect private user data.
 - `APP_HELPERS_AUTOLOAD`: `true` for all app helpers, or a specific list.
 - `SESSION_DRIVER`: `files`, `db`, or `none`.
 - `DB_DRIVER`: `mysql`, `pgsql`, or `none`.

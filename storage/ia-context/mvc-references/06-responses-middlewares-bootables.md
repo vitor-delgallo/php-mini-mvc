@@ -35,11 +35,19 @@ return response_redirect('/login');
 
 ## Middlewares
 
-Middlewares live in:
+Application middlewares live in:
 
 ```text
 app/Middlewares
 ```
+
+System-owned middlewares live in:
+
+```text
+system/Middlewares
+```
+
+Use `App\Middlewares\...` for application behavior and `System\Middlewares\...` for framework/system route behavior.
 
 Example:
 
@@ -67,6 +75,24 @@ Recommendations:
 - avoid heavy global middlewares;
 - use middlewares per route or route group;
 - do not use sessions in API routes.
+
+## System I18n Auth Middleware
+
+The protected translation endpoint `/api-system/i18n` uses:
+
+```php
+System\Middlewares\SystemI18nAuth
+```
+
+This middleware owns `SYSTEM_TOKEN` validation for i18n routes:
+
+- empty or missing `SYSTEM_TOKEN` returns JSON 404 with `system_i18n_disabled`;
+- missing or invalid request token returns JSON 403 with `forbidden`;
+- `X-System-Token: <token>` is accepted;
+- `Authorization: Bearer <token>` is also accepted;
+- token comparison uses `hash_equals`.
+
+`System\Controllers\I18n` should not validate tokens directly. It should only handle `prefix`, `lang`, translation loading, and response data.
 
 ## Bootables
 

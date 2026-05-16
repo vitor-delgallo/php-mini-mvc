@@ -28,7 +28,7 @@ Important rules:
 - Environment fallback should be treated as `production`.
 - `BASE_PATH` should be used when the app runs from a subdirectory.
 - `DEFAULT_LANGUAGE` defines the default language for translations.
-- `SYSTEM_TOKEN` protects system API routes such as `/api-system/i18n`; leave it empty to disable those routes. Vue pages that fetch translations directly receive this token in browser boot data, so use it only for framework utility endpoints, not private user data.
+- `SYSTEM_TOKEN` protects system API routes such as `/api-system/i18n`; leave it empty to disable those routes. `System\Middlewares\SystemI18nAuth` enforces this token for i18n routes. Vue pages that fetch translations directly receive this token in browser boot data, so use it only for framework utility endpoints, not private user data.
 - `APP_HELPERS_AUTOLOAD` can load all app helpers or a specific list.
 - `SESSION_DRIVER` accepts `files`, `db`, or `none`.
 - `DB_DRIVER` accepts `mysql`, `pgsql`, or `none`.
@@ -140,6 +140,8 @@ X-System-Token: <SYSTEM_TOKEN>
 ```
 
 `Authorization: Bearer <SYSTEM_TOKEN>` is also accepted. If `SYSTEM_TOKEN` is empty or undefined, the endpoint is disabled and returns 404. Invalid or missing tokens return 403.
+
+Authentication is owned by `System\Middlewares\SystemI18nAuth`, which is applied only to the i18n routes in `system/routes/api.php`. `System\Controllers\I18n` should only parse `prefix` / `lang`, load translations, and return the response shape.
 
 Successful response shape:
 

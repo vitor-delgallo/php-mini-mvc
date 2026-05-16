@@ -1,0 +1,14 @@
+{
+  "system.session.driver.not-found": "Controlador de sesi\u00f3n no definido!",
+  "system.database.driver.not-found": "Controlador de conexi\u00f3n de base de datos no definido!",
+  "system.database.parameters.required.info": "No se definieron los siguientes par\u00e1metros obligatorios para la conexi\u00f3n de base de datos: {parameters}",
+  "system.database.driver.not-supported.info": "Controlador de BD no compatible: {driver}",
+  "system.database.connection.error.info": "Error de conexi\u00f3n a la base de datos: {error}",
+  "system.database.tables.error.info": "Error al crear las tablas de la base de datos: {error}",
+  "system.database.transaction.start.error": "No se pudo iniciar la transacci\u00f3n de base de datos!",
+  "system.database.transaction.commit.error": "No se pudo confirmar la transacci\u00f3n de base de datos!",
+  "system.database.transaction.rollback.error": "No se pudo revertir la transacci\u00f3n de base de datos!",
+  "system.invalid.directory.info": "Directorio inv\u00e1lido: {path}",
+  "system.http.404.title": "404 - P\u00e1gina no encontrada!",
+  "system.http.500.title": "Error interno del servidor!"
+}

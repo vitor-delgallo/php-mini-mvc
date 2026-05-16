@@ -70,7 +70,7 @@ GET /api-system/i18n?prefix=app.pages&lang=en
 X-System-Token: <SYSTEM_TOKEN>
 ```
 
-`SYSTEM_TOKEN` must be configured in `.env`; an empty token disables the endpoint. The response includes `lang`, normalized `prefix`, and `translations`.
+`SYSTEM_TOKEN` must be configured in `.env`; an empty token disables the endpoint. `System\Middlewares\SystemI18nAuth` validates `X-System-Token` or `Authorization: Bearer <token>` before the request reaches `System\Controllers\I18n`. The response includes `lang`, normalized `prefix`, and `translations`.
 
 Vue pages rendered through `view_render_vue()` can request these translations by passing i18n prefixes as the fourth renderer argument:
 
@@ -83,7 +83,7 @@ return response_html(view_render_vue(
 ));
 ```
 
-`resources/vue/main.js` fetches each prefix from `/api-system/i18n`, sends `SYSTEM_TOKEN` in the `X-System-Token` header, merges the translation maps, and provides `t(key)` to Vue components. Missing keys return the key itself so Vue can mount safely when i18n is disabled or unavailable.
+`resources/vue/main.js` fetches each prefix from `/api-system/i18n`, sends `SYSTEM_TOKEN` in the `X-System-Token` header, passes through the system i18n auth middleware, merges the translation maps, and provides `t(key)` to Vue components. Missing keys return the key itself so Vue can mount safely when i18n is disabled or unavailable.
 
 Security note: direct browser fetches expose `SYSTEM_TOKEN` in Vue boot data. Treat it as protection for framework utility endpoints, not private user data.
 

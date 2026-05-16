@@ -47,12 +47,16 @@ storage/
 
 system/
   Config/           Configuration/env resolvers
+  Controllers/      Framework/system controllers, namespace System\Controllers
   Core/             Framework core
   helpers/          Internal procedural helpers
   includes/         Error and session handlers
   Interfaces/       System contracts
   languages/        Framework, docs, template, validation, and core error translations, exposed as system.*
+  Middlewares/      Framework/system route middlewares, namespace System\Middlewares
+  routes/           Framework/system web.php and api.php route files
   Session/          Custom session handlers
+  views/            Framework/system views and templates
 ```
 
 ## General Conventions

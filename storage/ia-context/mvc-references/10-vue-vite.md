@@ -136,7 +136,7 @@ When `SYSTEM_TOKEN` is configured, the Vue boot payload includes:
 }
 ```
 
-`resources/vue/main.js` fetches each prefix before mounting, sends the token in `X-System-Token`, merges the returned translation maps, and exposes:
+`resources/vue/main.js` fetches each prefix before mounting, sends the token in `X-System-Token`, passes through `System\Middlewares\SystemI18nAuth`, merges the returned translation maps, and exposes:
 
 ```js
 app.provide('t', t);

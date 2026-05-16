@@ -18,5 +18,9 @@ $router->get('/', $systemApiHome);
 
 $systemI18n = [\System\Controllers\I18n::class, 'index'];
 
-$router->get('/i18n', $systemI18n);
-$router->get('/i18n/{prefix}', $systemI18n);
+$router->group([
+    'middleware' => [\System\Middlewares\SystemI18nAuth::class],
+], function (Router $router) use ($systemI18n) {
+    $router->get('/i18n', $systemI18n);
+    $router->get('/i18n/{prefix}', $systemI18n);
+});
