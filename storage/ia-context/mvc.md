@@ -90,7 +90,7 @@ Essential flow:
 5. Configure error display according to `APP_ENV`.
 6. Load internal helpers and app helpers according to `APP_HELPERS_AUTOLOAD`.
 7. Configure sessions: web requests use normal handlers; app and system API requests disable cookies and use `System\Session\NULLHandler`.
-8. Automatically connect to the database when `DB_DRIVER` is valid.
+8. Automatically connect to the default database when `DB_DRIVER` is valid; named database connections are opened lazily.
 9. Execute bootables in `app/Bootable`.
 10. Load `system/routes/api.php` under `/api-system`, `system/routes/web.php` under `/web-system`, `app/routes/api.php` under `/api`, or `app/routes/web.php` for normal app web routes.
 11. Dispatch the route through `RouterLoader` / `router_loader_dispatch()`. Exact prefixed root requests such as `/web-system` can match root routes declared as `/`, while non-root trailing slash behavior remains exact.
@@ -106,6 +106,7 @@ SYSTEM_TOKEN=
 APP_HELPERS_AUTOLOAD=true
 
 SESSION_DRIVER=none
+SESSION_DB=
 SESSION_PREFIX=
 SESSION_ENCRYPT_KEY=
 
@@ -116,6 +117,14 @@ DB_NAME=
 DB_USER=
 DB_PASS=
 DB_CHARSET=utf8
+
+DB_DRIVER_APP=
+DB_HOST_APP=
+DB_PORT_APP=
+DB_NAME_APP=
+DB_USER_APP=
+DB_PASS_APP=
+DB_CHARSET_APP=
 ```
 
 Quick rules:
@@ -126,14 +135,16 @@ Quick rules:
 - `SYSTEM_TOKEN`: fixed owner-defined token for protected system API routes. `System\Middlewares\SystemI18nAuth` enforces it for `/api-system/i18n`; empty disables that endpoint. Vue pages that fetch i18n directly receive it in browser boot data, so do not use it to protect private user data.
 - `APP_HELPERS_AUTOLOAD`: `true` for all app helpers, or a specific list.
 - `SESSION_DRIVER`: `files`, `db`, or `none`.
-- `DB_DRIVER`: `mysql`, `pgsql`, or `none`.
+- `SESSION_DB`: optional named connection for `SESSION_DRIVER=db`; blank uses the default `DB_*` connection.
+- `DB_DRIVER`: `mysql`, `pgsql`, or `none` for the default database connection.
+- `DB_*_<SUFFIX>`: optional named database connections. The lowercase suffix is the connection key, such as `app`, `auth`, or `robot`. Required fields per suffix are `DRIVER`, `HOST`, `NAME`, and `USER`; `PASS`, `PORT`, and `CHARSET` are optional.
 
 ## Helper Functions by Area
 
 | Area | Helpers |
 | --- | --- |
-| Database config | `database_driver`, `database_is`, `database_is_mysql`, `database_is_postgres`, `database_is_none` |
-| Database core | `database_connect`, `database_select`, `database_select_row`, `database_statement`, `database_get_last_inserted_id`, `database_is_in_transaction`, `database_start_transaction`, `database_commit_transaction`, `database_rollback_transaction`, `database_disconnect` |
+| Database config | `database_driver`, `database_is`, `database_is_mysql`, `database_is_postgres`, `database_is_none`, `database_config_permitted_drivers`, `database_config_normalize_connection_name`, `database_config_default_port`, `database_config_connection`, `database_config_connections`, `database_config_configure`, `database_config_forget_connection`, `database_connection_names`, `database_has_connection` |
+| Database core | `database_connect`, `database_configure`, `database_forget_connection`, `database_select`, `database_select_row`, `database_statement`, `database_get_last_inserted_id`, `database_is_in_transaction`, `database_start_transaction`, `database_commit_transaction`, `database_rollback_transaction`, `database_disconnect` |
 | Environment | `environment_type`, `environment_is`, `environment_is_production`, `environment_is_development`, `environment_is_testing` |
 | Form | `form_validator`, `form_validator_register_rule` |
 | Globals | `globals_get`, `globals_add`, `globals_merge`, `globals_forget`, `globals_forget_many`, `globals_reset`, `globals_load_env`, `globals_env`, `globals_get_api_prefix`, `globals_is_api_request`, `globals_get_system_web_prefix`, `globals_get_system_api_prefix`, `globals_is_system_web_request`, `globals_is_system_api_request` |
@@ -164,6 +175,8 @@ Quick rules:
 | Query multiple rows | `database_select()` |
 | Query one row | `database_select_row()` |
 | Run insert/update/delete | `database_statement()` |
+| Use a named DB connection | `database_select($sql, $params, null, 'auth')` |
+| Register a runtime DB connection | `database_configure('reporting', $config)` |
 | Validate a form | `form_validator()` |
 | Read web session data | `session_get()` / `session_has()` |
 | Share a global variable with views | `view_share()` |
@@ -207,9 +220,12 @@ When adding new public framework classes, update:
 system/views/pages/home.php
 system/languages/doc/en.json
 system/languages/doc/pt-br.json
+system/languages/doc/es.json
 ```
 
 The app root `/` redirects to `/web-system`. With `BASE_PATH=/php-mini-mvc`, the documentation URL is `/php-mini-mvc/web-system`.
+
+The system documentation template sends crawler-blocking directives through `robots`, `googlebot`, and `bingbot` meta tags, and `System\Controllers\Home` adds an `X-Robots-Tag` header with `noindex`, `nofollow`, `noarchive`, `nosnippet`, and `noimageindex`.
 
 ## Main Principle
 

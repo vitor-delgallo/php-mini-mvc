@@ -10,6 +10,7 @@ SYSTEM_TOKEN=
 APP_HELPERS_AUTOLOAD=true
 
 SESSION_DRIVER=none
+SESSION_DB=
 SESSION_PREFIX=
 SESSION_ENCRYPT_KEY=
 
@@ -20,6 +21,14 @@ DB_NAME=
 DB_USER=
 DB_PASS=
 DB_CHARSET=utf8
+
+DB_DRIVER_APP=
+DB_HOST_APP=
+DB_PORT_APP=
+DB_NAME_APP=
+DB_USER_APP=
+DB_PASS_APP=
+DB_CHARSET_APP=
 ```
 
 Important rules:
@@ -31,7 +40,10 @@ Important rules:
 - `SYSTEM_TOKEN` protects system API routes such as `/api-system/i18n`; leave it empty to disable those routes. `System\Middlewares\SystemI18nAuth` enforces this token for i18n routes. Vue pages that fetch translations directly receive this token in browser boot data, so use it only for framework utility endpoints, not private user data.
 - `APP_HELPERS_AUTOLOAD` can load all app helpers or a specific list.
 - `SESSION_DRIVER` accepts `files`, `db`, or `none`.
-- `DB_DRIVER` accepts `mysql`, `pgsql`, or `none`.
+- `SESSION_DB` optionally selects a named connection for `SESSION_DRIVER=db`; empty uses the default `DB_*` connection.
+- `DB_DRIVER` accepts `mysql`, `pgsql`, or `none` for the default connection.
+- `DB_*_<SUFFIX>` creates optional named connections such as `app`, `auth`, or `robot`. `DRIVER`, `HOST`, `NAME`, and `USER` are required per suffix; `PASS`, `PORT`, and `CHARSET` are optional.
+- Incomplete suffixed database groups are ignored. Complete suffixed groups with unsupported drivers are configuration errors.
 
 ## Routes
 

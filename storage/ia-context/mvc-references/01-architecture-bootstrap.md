@@ -97,7 +97,7 @@ General flow:
 9. Configure sessions:
    - web: use `system/includes/session_handlers.php`;
    - API: disable cookies and use `System\Session\NULLHandler`.
-10. Automatically connect to the database when `DB_DRIVER` is valid.
+10. Automatically connect to the default database when `DB_DRIVER` is valid; named database connections are opened lazily.
 11. Execute bootable classes in `app/Bootable` through `PHPAutoload::boot()` / `php_autoload_boot()`.
 12. Load routes:
    - web: `app/routes/web.php`;

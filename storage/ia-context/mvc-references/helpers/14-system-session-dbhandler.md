@@ -19,6 +19,12 @@ session_set_save_handler($handler, true);
 
 There is no procedural helper for this class. Bootstrap creates it from `system/includes/session_handlers.php` when `SESSION_DRIVER=db`.
 
+The PDO instance comes from the database connection selected for sessions:
+
+- empty `SESSION_DB` uses the default unsuffixed `DB_*` connection;
+- filled `SESSION_DB` uses that lowercase connection key, such as `app`, `auth`, or `robot`;
+- the selected connection must exist before session setup runs.
+
 ## Constructor And Method Signatures
 
 | Method | Accepts | Returns |
@@ -42,4 +48,5 @@ There is no procedural helper for this class. Bootstrap creates it from `system/
 ## Notes
 
 - The constructor calls `ensureTableExists()`, so database permissions must allow table creation.
+- DB-backed sessions fail as an internal configuration error when the selected database connection is missing, incomplete, unsupported, or disabled.
 - The PostgreSQL garbage collector SQL currently uses an interval placeholder inside a quoted interval expression; verify it before relying on PostgreSQL GC behavior.

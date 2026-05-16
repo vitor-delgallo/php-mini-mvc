@@ -42,6 +42,8 @@ Each cleaned directory must contain only:
 .gitkeep
 ```
 
+Exception: after `app/views/templates/` is cleaned, copy `system/views/templates/template.php` to `app/views/templates/template.php` so the application keeps a usable default template. That folder should contain `.gitkeep` plus the copied `template.php`.
+
 Also clean these optional project folders when they exist:
 
 ```text
@@ -106,9 +108,10 @@ The modal must:
 5. Verify each resolved path stays inside its expected base directory before deleting.
 6. Delete only files and folders inside the explicit target list.
 7. Recreate required directories and `.gitkeep` files.
-8. Rewrite `app/routes/web.php` to the redirect-only route using `\System\Core\Response::redirect('/web-system')`.
-9. Rewrite `app/routes/api.php` to a minimal safe file.
-10. Return JSON indicating success or failure.
+8. Copy `system/views/templates/template.php` to `app/views/templates/template.php` after cleaning `app/views/templates/`.
+9. Rewrite `app/routes/web.php` to the redirect-only route using `\System\Core\Response::redirect('/web-system')`.
+10. Rewrite `app/routes/api.php` to a minimal safe file.
+11. Return JSON indicating success or failure.
 
 ## Safety Rules
 
@@ -138,6 +141,7 @@ Update the home documentation and relevant MVC docs to explain:
 - The confirm button is locked for 10 seconds with a visible countdown.
 - The cleanup endpoint is system-owned and protected.
 - The app MVC folders are cleaned and contain `.gitkeep`.
+- `app/views/templates/` also receives a fresh copy of `system/views/templates/template.php`.
 - `resources/vue/pages/` and app language folders are cleaned with `.gitkeep` when they exist.
 - `storage/logs/`, `storage/sessions/`, and public asset subfolders are emptied without deleting their parent directories.
 - `app/routes/web.php` keeps only the static-class redirect to `/web-system`.

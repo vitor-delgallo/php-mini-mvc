@@ -75,6 +75,7 @@ Recommendations:
 - avoid heavy global middlewares;
 - use middlewares per route or route group;
 - do not use sessions in API routes.
+- do not create procedural helpers for middleware `handle()` methods; they are invoked by the router.
 
 ## System I18n Auth Middleware
 
@@ -93,6 +94,8 @@ This middleware owns `SYSTEM_TOKEN` validation for i18n routes:
 - token comparison uses `hash_equals`.
 
 `System\Controllers\I18n` should not validate tokens directly. It should only handle `prefix`, `lang`, translation loading, and response data.
+
+System controller actions and middleware handlers are not helper-backed APIs. Route files should reference their classes directly.
 
 ## Bootables
 
@@ -145,3 +148,5 @@ Rules:
 - use them for small configuration, shared variables, and simple initialization.
 
 Bootstrap executes bootables through `System\Core\PHPAutoload::boot()`, also exposed as `php_autoload_boot()`. Use `php_autoload_from()` only for controlled bootstrap-style directory loading.
+
+Do not create a procedural helper for `IBootable::boot()` implementations. The contract is executed through the autoload boot pipeline.

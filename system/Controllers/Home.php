@@ -7,6 +7,7 @@ use System\Core\View;
 
 class Home {
     public function index(): ResponseInterface {
-        return Response::html(View::render_system_page('home'));
+        return Response::html(View::render_system_page('home'))
+            ->withHeader('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet, noimageindex');
     }
 }

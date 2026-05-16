@@ -70,6 +70,7 @@ DEFAULT_LANGUAGE=en
 APP_HELPERS_AUTOLOAD=true
 
 SESSION_DRIVER=none
+SESSION_DB=
 SESSION_PREFIX=
 SESSION_ENCRYPT_KEY=
 
@@ -80,6 +81,14 @@ DB_NAME=
 DB_USER=
 DB_PASS=
 DB_CHARSET=utf8
+
+DB_DRIVER_APP=
+DB_HOST_APP=
+DB_PORT_APP=
+DB_NAME_APP=
+DB_USER_APP=
+DB_PASS_APP=
+DB_CHARSET_APP=
 ```
 
 Important values:
@@ -89,7 +98,9 @@ Important values:
 - `DEFAULT_LANGUAGE`: default language used by the translation system.
 - `APP_HELPERS_AUTOLOAD`: `true` to load all app helpers, or a list such as `['auth','format.php']`.
 - `SESSION_DRIVER`: `files`, `db`, or `none`.
-- `DB_DRIVER`: `mysql`, `pgsql`, or `none`.
+- `SESSION_DB`: optional named connection for `SESSION_DRIVER=db`; blank uses the default `DB_*` connection.
+- `DB_DRIVER`: `mysql`, `pgsql`, or `none` for the default database connection.
+- `DB_*_<SUFFIX>`: optional named database connections, such as `DB_DRIVER_APP`, `DB_HOST_AUTH`, or `DB_NAME_ROBOT`.
 
 ## Project Structure
 
@@ -137,7 +148,7 @@ The bootstrap:
 4. Detects whether the request is an API request.
 5. Loads system helpers and app helpers.
 6. Configures sessions for web requests, or disables cookies and uses `NULLHandler` for API requests.
-7. Connects to the database when `DB_DRIVER` is not `none`.
+7. Connects to the default database when `DB_DRIVER` is not `none`; named database connections are opened lazily.
 8. Executes bootable classes in `app/Bootable`.
 9. Loads web routes from `app/routes/web.php` or API routes from `app/routes/api.php` with the `/api` prefix.
 10. Dispatches the request through the router.
@@ -311,7 +322,26 @@ Loading priority:
 
 ## Database
 
-Set `DB_DRIVER=mysql` or `DB_DRIVER=pgsql` in `.env` and configure the remaining database variables. The bootstrap connects automatically when the driver is not `none`.
+Set `DB_DRIVER=mysql` or `DB_DRIVER=pgsql` in `.env` and configure the remaining default database variables. The bootstrap connects automatically to the default connection when the driver is not `none`.
+
+You can add named connections with uppercase suffixes. The lowercase suffix becomes the connection name:
+
+```dotenv
+DB_DRIVER_APP=mysql
+DB_HOST_APP=localhost
+DB_NAME_APP=app_db
+DB_USER_APP=app_user
+DB_PASS_APP=
+DB_PORT_APP=
+DB_CHARSET_APP=utf8mb4
+
+DB_DRIVER_AUTH=pgsql
+DB_HOST_AUTH=localhost
+DB_NAME_AUTH=auth_db
+DB_USER_AUTH=auth_user
+```
+
+For each suffixed connection, `DRIVER`, `HOST`, `NAME`, and `USER` are required. `PASS`, `PORT`, and `CHARSET` are optional. Missing or incomplete suffixed groups are ignored. Ports default to `3306` for MySQL and `5432` for PostgreSQL; charset defaults to `utf8`.
 
 Use the database helpers:
 
@@ -330,6 +360,28 @@ database_statement(
     'INSERT INTO users (name, email) VALUES (:name, :email)',
     ['name' => $name, 'email' => $email]
 );
+
+$authUsers = database_select(
+    'SELECT id, email FROM users WHERE active = ?',
+    [1],
+    null,
+    'auth'
+);
+```
+
+Connections can also be registered at runtime when they should not come from the environment:
+
+```php
+database_configure('reporting', [
+    'driver' => 'mysql',
+    'host' => '127.0.0.1',
+    'name' => 'reports',
+    'user' => 'report_user',
+]);
+
+$reports = database_select('SELECT id, title FROM reports', [], null, 'reporting');
+
+database_forget_connection('reporting');
 ```
 
 Transactions:
@@ -359,6 +411,7 @@ Configure sessions with:
 
 ```dotenv
 SESSION_DRIVER=none
+SESSION_DB=
 ```
 
 Supported drivers:
@@ -366,6 +419,8 @@ Supported drivers:
 - `files`: native file-backed sessions in `storage/sessions`.
 - `db`: database-backed sessions through `System\Session\DBHandler`.
 - `none`: session handling disabled.
+
+When `SESSION_DRIVER=db`, sessions use the default `DB_*` connection unless `SESSION_DB` names another configured connection, such as `app`, `auth`, or `robot`. If the selected connection is missing, incomplete, unsupported, or disabled, the framework treats it as an internal configuration error.
 
 Common helpers:
 

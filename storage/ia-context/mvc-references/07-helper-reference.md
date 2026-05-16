@@ -8,8 +8,8 @@ Use this file as the index. The detailed references below were checked against t
 
 | Class | Namespace | Helpers | Reference |
 | --- | --- | --- | --- |
-| Database config | `System\Config\Database` | `database_driver`, `database_is`, `database_is_mysql`, `database_is_postgres`, `database_is_none` | [01-system-config-database.md](helpers/01-system-config-database.md) |
-| Database core | `System\Core\Database` | `database_connect`, `database_select`, `database_select_row`, `database_statement`, transactions, disconnect | [02-system-core-database.md](helpers/02-system-core-database.md) |
+| Database config | `System\Config\Database` | `database_driver`, `database_is`, `database_is_mysql`, `database_is_postgres`, `database_is_none`, `database_config_*`, `database_connection_names`, `database_has_connection` | [01-system-config-database.md](helpers/01-system-config-database.md) |
+| Database core | `System\Core\Database` | `database_connect`, `database_configure`, `database_forget_connection`, `database_select`, `database_select_row`, `database_statement`, transactions, disconnect | [02-system-core-database.md](helpers/02-system-core-database.md) |
 | Environment | `System\Config\Environment` | `environment_type`, `environment_is`, `environment_is_production`, `environment_is_development`, `environment_is_testing` | [03-system-config-environment.md](helpers/03-system-config-environment.md) |
 | Globals | `System\Config\Globals` | `globals_get`, `globals_add`, `globals_merge`, `globals_forget`, `globals_reset`, `globals_env`, app and system request helpers | [04-system-config-globals.md](helpers/04-system-config-globals.md) |
 | Session config | `System\Config\Session` | `session_driver`, `session_is`, `session_is_files`, `session_is_db`, `session_is_none` | [05-system-config-session.md](helpers/05-system-config-session.md) |
@@ -26,9 +26,14 @@ Use this file as the index. The detailed references below were checked against t
 
 | Class | Namespace | Reference |
 | --- | --- | --- |
+| Documentation home controller | `System\Controllers\Home` | [04-languages.md](04-languages.md) |
+| System i18n controller | `System\Controllers\I18n` | [04-languages.md](04-languages.md) |
+| System i18n auth middleware | `System\Middlewares\SystemI18nAuth` | [06-responses-middlewares-bootables.md](06-responses-middlewares-bootables.md) |
 | Database session handler | `System\Session\DBHandler` | [14-system-session-dbhandler.md](helpers/14-system-session-dbhandler.md) |
 | Null session handler | `System\Session\NULLHandler` | [15-system-session-nullhandler.md](helpers/15-system-session-nullhandler.md) |
 | Bootable contract | `System\Interfaces\IBootable` | [16-system-interfaces-ibootable.md](helpers/16-system-interfaces-ibootable.md) |
+
+Controller actions, middleware `handle()` methods, session handler methods, and interface contracts are route/runtime integration points. They intentionally do not receive global procedural wrappers.
 
 ## Quick Decisions
 
@@ -47,6 +52,8 @@ Use this file as the index. The detailed references below were checked against t
 | Query multiple rows | `database_select()` |
 | Query one row | `database_select_row()` |
 | Run insert/update/delete | `database_statement()` |
+| Use a named DB connection | `database_select($sql, $params, null, 'auth')` |
+| Register a runtime DB connection | `database_configure('reporting', $config)` |
 | Validate a form | `form_validator()` |
 | Read web session data | `session_get()` / `session_has()` |
 | Share a global variable with views | `view_share()` |

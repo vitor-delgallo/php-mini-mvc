@@ -50,6 +50,69 @@ $docs = [
             'alt'    => "database_is_none();",
             'desc'    => 'system.doc.database.isnone.desc'
         ],
+        [
+            'name'    => "permittedDrivers()",
+            'code'    => "use System\\Config\\Database;\n\n\$drivers = Database::permittedDrivers();",
+            'comment' => 'system.doc.database.code.comment.permitteddrivers',
+            'alt'    => "\$drivers = database_config_permitted_drivers();",
+            'desc'    => 'system.doc.database.permitteddrivers.desc'
+        ],
+        [
+            'name'    => "normalizeConnectionName(?string \$connection = null)",
+            'code'    => "use System\\Config\\Database;\n\n\$connection = Database::normalizeConnectionName('AUTH');",
+            'comment' => 'system.doc.database.code.comment.normalizeconnectionname',
+            'alt'    => "\$connection = database_config_normalize_connection_name('AUTH');",
+            'desc'    => 'system.doc.database.normalizeconnectionname.desc'
+        ],
+        [
+            'name'    => "defaultPort(string \$driver)",
+            'code'    => "use System\\Config\\Database;\n\n\$port = Database::defaultPort('mysql');",
+            'comment' => 'system.doc.database.code.comment.defaultport',
+            'alt'    => "\$port = database_config_default_port('mysql');",
+            'desc'    => 'system.doc.database.defaultport.desc'
+        ],
+        [
+            'name'    => "connection(string \$connection = 'default')",
+            'code'    => "use System\\Config\\Database;\n\n\$config = Database::connection('auth');",
+            'comment' => 'system.doc.database.code.comment.connectionconfig',
+            'alt'    => "\$config = database_config_connection('auth');",
+            'desc'    => 'system.doc.database.connectionconfig.desc'
+        ],
+        [
+            'name'    => "connections()",
+            'code'    => "use System\\Config\\Database;\n\n\$connections = Database::connections();",
+            'comment' => 'system.doc.database.code.comment.connectionsconfig',
+            'alt'    => "\$connections = database_config_connections();",
+            'desc'    => 'system.doc.database.connectionsconfig.desc'
+        ],
+        [
+            'name'    => "connectionNames()",
+            'code'    => "use System\\Config\\Database;\n\n\$connections = Database::connectionNames();",
+            'comment' => 'system.doc.database.code.comment.connectionnames',
+            'alt'    => "\$connections = database_connection_names();",
+            'desc'    => 'system.doc.database.connectionnames.desc'
+        ],
+        [
+            'name'    => "hasConnection(string \$connection)",
+            'code'    => "use System\\Config\\Database;\n\nif (Database::hasConnection('auth')) {\n    // auth DB is configured\n}",
+            'comment' => 'system.doc.database.code.comment.hasconnection',
+            'alt'    => "database_has_connection('auth');",
+            'desc'    => 'system.doc.database.hasconnection.desc'
+        ],
+        [
+            'name'    => 'configure(string $connection, array $config)',
+            'code'    => "use System\\Config\\Database;\n\nDatabase::configure('reporting', [\n    'driver' => 'mysql',\n    'host' => '127.0.0.1',\n    'name' => 'reports',\n    'user' => 'report_user',\n]);",
+            'comment' => 'system.doc.database.code.comment.configconfigure',
+            'alt'    => "database_config_configure('reporting', [\n    'driver' => 'mysql',\n    'host' => '127.0.0.1',\n    'name' => 'reports',\n    'user' => 'report_user',\n]);",
+            'desc'    => 'system.doc.database.configconfigure.desc'
+        ],
+        [
+            'name'    => 'forgetConnection(string $connection)',
+            'code'    => "use System\\Config\\Database;\n\nDatabase::forgetConnection('reporting');",
+            'comment' => 'system.doc.database.code.comment.configforgetconnection',
+            'alt'    => "database_config_forget_connection('reporting');",
+            'desc'    => 'system.doc.database.configforgetconnection.desc'
+        ],
     ],
     'System\\Config\\Session' => [
         [
@@ -280,73 +343,101 @@ $docs = [
     ],
     'System\\Core\\Database' => [
         [
-            'name'    => 'connect()',
-            'code'    => "use System\\Core\\Database;\n\n\$pdo = Database::connect();",
+            'name'    => "connect(string \$connection = 'default')",
+            'code'    => "use System\\Core\\Database;\n\n\$pdo = Database::connect();\n\$auth = Database::connect('auth');",
             'comment' => 'system.doc.database.code.comment.connect',
-            'alt'    => "\$pdo = database_connect();",
+            'alt'    => "\$pdo = database_connect();\n\$auth = database_connect('auth');",
             'desc'    => 'system.doc.database.connect.desc'
         ],
         [
-            'name'    => 'statement(string $sql, array $params = [])',
-            'code'    => "use System\\Core\\Database;\n\n\$sql = \"UPDATE users SET name = :name WHERE id = :id\";\nDatabase::statement(\$sql, ['name' => 'John', 'id' => 1]);",
+            'name'    => 'configure(string $connection, array $config)',
+            'code'    => "use System\\Core\\Database;\n\nDatabase::configure('reporting', [\n    'driver' => 'mysql',\n    'host' => '127.0.0.1',\n    'name' => 'reports',\n    'user' => 'report_user',\n]);",
+            'comment' => 'system.doc.database.code.comment.configure',
+            'alt'    => "database_configure('reporting', [\n    'driver' => 'mysql',\n    'host' => '127.0.0.1',\n    'name' => 'reports',\n    'user' => 'report_user',\n]);",
+            'desc'    => 'system.doc.database.configure.desc'
+        ],
+        [
+            'name'    => 'forgetConnection(string $connection)',
+            'code'    => "use System\\Core\\Database;\n\nDatabase::forgetConnection('reporting');",
+            'comment' => 'system.doc.database.code.comment.forgetconnection',
+            'alt'    => "database_forget_connection('reporting');",
+            'desc'    => 'system.doc.database.forgetconnection.desc'
+        ],
+        [
+            'name'    => "connectionNames()",
+            'code'    => "use System\\Core\\Database;\n\n\$connections = Database::connectionNames();",
+            'comment' => 'system.doc.database.code.comment.connectionnames',
+            'alt'    => "\$connections = database_connection_names();",
+            'desc'    => 'system.doc.database.connectionnames.desc'
+        ],
+        [
+            'name'    => "hasConnection(string \$connection)",
+            'code'    => "use System\\Core\\Database;\n\nif (Database::hasConnection('auth')) {\n    // auth DB is configured\n}",
+            'comment' => 'system.doc.database.code.comment.hasconnection',
+            'alt'    => "database_has_connection('auth');",
+            'desc'    => 'system.doc.database.hasconnection.desc'
+        ],
+        [
+            'name'    => "statement(string \$sql, array \$params = [], string \$connection = 'default')",
+            'code'    => "use System\\Core\\Database;\n\n\$sql = \"UPDATE users SET name = :name WHERE id = :id\";\nDatabase::statement(\$sql, ['name' => 'John', 'id' => 1], 'app');",
             'comment' => 'system.doc.database.code.comment.statement',
-            'alt'    => "database_statement(\$sql, ['name' => 'John', 'id' => 1]);",
+            'alt'    => "database_statement(\$sql, ['name' => 'John', 'id' => 1], 'app');",
             'desc'    => 'system.doc.database.statement.desc'
         ],
         [
-            'name'    => 'select(string $sql, array $params = [], ?string $key = null)',
-            'code'    => "use System\\Core\\Database;\n\n\$sql = \"SELECT id, name FROM users WHERE active = :active\";\n\$users = Database::select(\$sql, ['active' => 1]);",
+            'name'    => "select(string \$sql, array \$params = [], ?string \$key = null, string \$connection = 'default')",
+            'code'    => "use System\\Core\\Database;\n\n\$sql = \"SELECT id, name FROM users WHERE active = :active\";\n\$users = Database::select(\$sql, ['active' => 1], null, 'app');",
             'comment' => 'system.doc.database.code.comment.select',
-            'alt'    => "\$users = database_select(\$sql, ['active' => 1]);",
+            'alt'    => "\$users = database_select(\$sql, ['active' => 1], null, 'app');",
             'desc'    => 'system.doc.database.select.desc'
         ],
         [
-            'name'    => 'selectRow(string $sql, array $params = [], ?string $key = null)',
-            'code'    => "use System\\Core\\Database;\n\n\$sql = \"SELECT id, name FROM users WHERE id = :id\";\n\$user = Database::selectRow(\$sql, ['id' => 1]);",
+            'name'    => "selectRow(string \$sql, array \$params = [], ?string \$key = null, string \$connection = 'default')",
+            'code'    => "use System\\Core\\Database;\n\n\$sql = \"SELECT id, name FROM users WHERE id = :id\";\n\$user = Database::selectRow(\$sql, ['id' => 1], null, 'auth');",
             'comment' => 'system.doc.database.code.comment.selectrow',
-            'alt'    => "\$user = database_select_row(\$sql, ['id' => 1]);",
+            'alt'    => "\$user = database_select_row(\$sql, ['id' => 1], null, 'auth');",
             'desc'    => 'system.doc.database.selectrow.desc'
         ],
         [
-            'name'    => 'getLastInsertedID()',
-            'code'    => "use System\\Core\\Database;\n\n\$sql = \"INSERT INTO users (name) VALUES (?)\";\nDatabase::statement(\$sql, ['John']);\n\$id = Database::getLastInsertedID();",
+            'name'    => "getLastInsertedID(string \$connection = 'default')",
+            'code'    => "use System\\Core\\Database;\n\n\$sql = \"INSERT INTO users (name) VALUES (?)\";\nDatabase::statement(\$sql, ['John'], 'app');\n\$id = Database::getLastInsertedID('app');",
             'comment' => 'system.doc.database.code.comment.getlastinsertedid',
-            'alt'    => "\$id = database_get_last_inserted_id();",
+            'alt'    => "\$id = database_get_last_inserted_id('app');",
             'desc'    => 'system.doc.database.getlastinsertedid.desc'
         ],
         [
-            'name'    => 'isInTransaction()',
-            'code'    => "use System\\Core\\Database;\n\nif (Database::isInTransaction()) {\n    Database::rollbackTransaction();\n}",
+            'name'    => "isInTransaction(string \$connection = 'default')",
+            'code'    => "use System\\Core\\Database;\n\nif (Database::isInTransaction('app')) {\n    Database::rollbackTransaction('app');\n}",
             'comment' => 'system.doc.database.code.comment.isintransaction',
-            'alt'    => "if (database_is_in_transaction()) {\n    database_rollback_transaction();\n}",
+            'alt'    => "if (database_is_in_transaction('app')) {\n    database_rollback_transaction('app');\n}",
             'desc'    => 'system.doc.database.isintransaction.desc'
         ],
         [
-            'name'    => 'startTransaction()',
-            'code'    => "use System\\Core\\Database;\n\nDatabase::startTransaction();\nDatabase::statement(\"UPDATE users SET active = ? WHERE id = ?\", [1, 10]);",
+            'name'    => "startTransaction(string \$connection = 'default')",
+            'code'    => "use System\\Core\\Database;\n\nDatabase::startTransaction('app');\nDatabase::statement(\"UPDATE users SET active = ? WHERE id = ?\", [1, 10], 'app');",
             'comment' => 'system.doc.database.code.comment.starttransaction',
-            'alt'    => "database_start_transaction();",
+            'alt'    => "database_start_transaction('app');",
             'desc'    => 'system.doc.database.starttransaction.desc'
         ],
         [
-            'name'    => 'commitTransaction()',
-            'code'    => "use System\\Core\\Database;\n\nDatabase::startTransaction();\nDatabase::statement(\"UPDATE users SET active = ? WHERE id = ?\", [1, 10]);\nDatabase::commitTransaction();",
+            'name'    => "commitTransaction(string \$connection = 'default')",
+            'code'    => "use System\\Core\\Database;\n\nDatabase::startTransaction('app');\nDatabase::statement(\"UPDATE users SET active = ? WHERE id = ?\", [1, 10], 'app');\nDatabase::commitTransaction('app');",
             'comment' => 'system.doc.database.code.comment.committransaction',
-            'alt'    => "database_commit_transaction();",
+            'alt'    => "database_commit_transaction('app');",
             'desc'    => 'system.doc.database.committransaction.desc'
         ],
         [
-            'name'    => 'rollbackTransaction()',
-            'code'    => "use System\\Core\\Database;\n\nDatabase::startTransaction();\nDatabase::statement(\"DELETE FROM users WHERE id = ?\", [10]);\nDatabase::rollbackTransaction();",
+            'name'    => "rollbackTransaction(string \$connection = 'default')",
+            'code'    => "use System\\Core\\Database;\n\nDatabase::startTransaction('app');\nDatabase::statement(\"DELETE FROM users WHERE id = ?\", [10], 'app');\nDatabase::rollbackTransaction('app');",
             'comment' => 'system.doc.database.code.comment.rollbacktransaction',
-            'alt'    => "database_rollback_transaction();",
+            'alt'    => "database_rollback_transaction('app');",
             'desc'    => 'system.doc.database.rollbacktransaction.desc'
         ],
         [
-            'name'    => 'disconnect()',
-            'code'    => "use System\\Core\\Database;\n\nDatabase::disconnect();",
+            'name'    => 'disconnect(?string $connection = null)',
+            'code'    => "use System\\Core\\Database;\n\nDatabase::disconnect('app');\nDatabase::disconnect();",
             'comment' => 'system.doc.database.code.comment.disconnect',
-            'alt'    => "database_disconnect();",
+            'alt'    => "database_disconnect('app');\ndatabase_disconnect();",
             'desc'    => 'system.doc.database.disconnect.desc'
         ],
     ],

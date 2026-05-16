@@ -3,6 +3,7 @@
 use System\Config\Session AS ConfigSession;
 use System\Config\Globals;
 use System\Core\Database;
+use System\Core\Language;
 use System\Core\Session;
 use System\Core\Path;
 use System\Session\DBHandler;
@@ -24,8 +25,23 @@ if (ConfigSession::isFiles()) {
 } else if (ConfigSession::isDB()) {
     // If session driver is 'db', initialize custom DBHandler
 
-    // Create a PDO connection from the application's database configuration
-    $pdo = Database::connect();
+    $sessionConnection = trim(strtolower((string) (Globals::env('SESSION_DB') ?? '')));
+    $sessionConnection = $sessionConnection === '' ? 'default' : $sessionConnection;
+
+    try {
+        if (!Database::hasConnection($sessionConnection)) {
+            throw new \RuntimeException();
+        }
+
+        // Create a PDO connection from the selected database configuration
+        $pdo = Database::connect($sessionConnection);
+    } catch (\Throwable $e) {
+        throw new \RuntimeException(
+            Language::get('system.database.default.required-for-session.error', ['connection' => $sessionConnection]),
+            0,
+            $e
+        );
+    }
 
     // Instantiate the session handler with optional prefix and encryption key
     $handler = new DBHandler(
