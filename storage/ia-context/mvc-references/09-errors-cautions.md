@@ -33,6 +33,7 @@ Rules:
 - Sessions must not be used in API routes.
 - Bootables run on every request; do not put heavy logic in them.
 - If the application is in a subdirectory, test all assets and links with `BASE_PATH`.
+- The `Remove and Clean MVC` action in `/web-system` is destructive. It deletes contents from explicit app, Vue, language, log, session, and public asset folders, rewrites app routes, and should not be triggered during routine validation unless the user explicitly wants the app skeleton cleaned.
 
 ## Rules for AI Agents
 
@@ -60,6 +61,7 @@ Specific rules:
 - Translatable text must go to `app/languages/*` for application text or `system/languages/*` for framework/system text.
 - Language keys receive the source prefix (`app.*` or `system.*`) plus any subfolder prefix.
 - Do not use a view name that comes directly from the user.
+- Do not invoke the dangerous cleanup endpoint while testing unrelated changes.
 
 ## Main Principle
 

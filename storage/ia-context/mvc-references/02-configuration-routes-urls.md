@@ -134,6 +134,14 @@ This file is loaded with the system web `/web-system` prefix. Framework-owned we
 
 Declare the route as `/`; the loader also accepts `/web-system/`.
 
+The same system web area owns the dangerous app cleanup endpoint:
+
+```text
+POST /web-system/maintenance/clean-app
+```
+
+This endpoint is implemented by `System\Controllers\Maintenance`, protected by a short-lived nonce generated on the documentation home, and must remain system-owned.
+
 With `BASE_PATH=/php-mini-mvc`, the final URL is:
 
 ```text

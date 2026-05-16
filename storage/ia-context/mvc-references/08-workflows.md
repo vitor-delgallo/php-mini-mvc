@@ -81,6 +81,62 @@ With `BASE_PATH=/php-mini-mvc`, the final URL is:
 13. Test with and without `BASE_PATH` when the project may run from a subdirectory.
 14. Validate behavior in `development` and `production`.
 
+## Dangerous App Cleanup
+
+The system documentation home at `/web-system` includes the `Remove and Clean MVC` action for preparing the application area for a fresh project.
+
+Goal:
+
+- remove example app files and generated project files;
+- keep the app skeleton directories available;
+- keep system documentation available at `/web-system`.
+
+The action is handled by:
+
+```text
+System\Controllers\Maintenance
+POST /web-system/maintenance/clean-app
+```
+
+Protection:
+
+- the endpoint only accepts POST;
+- the home page generates a short-lived nonce;
+- when `SYSTEM_TOKEN` exists, it is used to sign the nonce;
+- the SweetAlert confirmation locks the confirm button for 10 seconds.
+
+Cleaned folders:
+
+```text
+app/Bootable/
+app/Controllers/
+app/Middlewares/
+app/Models/
+app/helpers/
+app/languages/
+app/views/pages/
+app/views/templates/
+resources/vue/pages/
+languages/app/
+storage/logs/
+storage/sessions/
+public/assets/css/
+public/assets/js/
+public/assets/libs/
+public/assets/img/
+```
+
+After cleanup:
+
+- app MVC folders contain `.gitkeep`;
+- `app/views/templates/` contains `.gitkeep` plus a fresh copy of `system/views/templates/template.php`;
+- `resources/vue/pages/` and app language folders receive `.gitkeep` when cleaned;
+- `storage/logs/`, `storage/sessions/`, and selected public asset folders remain as directories but are emptied;
+- `app/routes/web.php` keeps only a root redirect to `/web-system` using `\System\Core\Response::redirect('/web-system')`;
+- `app/routes/api.php` is reset to a minimal no-route file.
+
+Do not run this action when the current app files should be preserved.
+
 ## Recommended Order for Changes
 
 1. Identify whether the change is web, API, database, view, language, session, or bootstrap related.

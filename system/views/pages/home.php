@@ -12,6 +12,179 @@
 </section>
 
 <?php
+$maintenanceCleanup = is_array($maintenanceCleanup ?? null) ? $maintenanceCleanup : null;
+$cleanupEndpoint = $maintenanceCleanup['endpoint'] ?? null;
+$cleanupNonce = $maintenanceCleanup['nonce'] ?? null;
+$cleanupTargets = [
+    'app/Bootable/',
+    'app/Controllers/',
+    'app/Middlewares/',
+    'app/Models/',
+    'app/helpers/',
+    'app/languages/',
+    'app/views/pages/',
+    'app/views/templates/',
+    'resources/vue/pages/',
+    'languages/app/',
+    'storage/logs/',
+    'storage/sessions/',
+    'public/assets/css/',
+    'public/assets/js/',
+    'public/assets/libs/',
+    'public/assets/img/',
+    'app/routes/web.php',
+    'app/routes/api.php',
+];
+$cleanupTexts = [
+    'modalTitle' => lg('system.doc.cleanup.modal.title'),
+    'warning' => lg('system.doc.cleanup.modal.warning'),
+    'routes' => lg('system.doc.cleanup.modal.routes'),
+    'confirm' => lg('system.doc.cleanup.modal.confirm'),
+    'cancel' => lg('system.doc.cleanup.modal.cancel'),
+    'successTitle' => lg('system.doc.cleanup.success.title'),
+    'successText' => lg('system.doc.cleanup.success.text'),
+    'errorTitle' => lg('system.doc.cleanup.error.title'),
+    'errorText' => lg('system.doc.cleanup.error.text'),
+    'unavailable' => lg('system.doc.cleanup.unavailable'),
+    'requestError' => lg('system.doc.cleanup.request.error'),
+];
+?>
+
+<?php if (!empty($cleanupEndpoint) && !empty($cleanupNonce)): ?>
+<style>
+    .system-cleanup-panel {
+        border: 1px solid #f1b0b7;
+        border-radius: var(--border-radius);
+        background: #fff5f5;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+
+    .system-cleanup-panel h2 {
+        margin-top: 0;
+        font-size: 1.15rem;
+    }
+
+    .system-cleanup-button {
+        border: 0;
+        border-radius: var(--border-radius);
+        background: #b42318;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 700;
+        padding: 0.75rem 1rem;
+    }
+
+    .system-cleanup-button:focus,
+    .system-cleanup-button:hover {
+        background: #8f1d14;
+    }
+</style>
+<section class="system-cleanup-panel" aria-labelledby="system-cleanup-title">
+    <h2 id="system-cleanup-title"><?= lg('system.doc.cleanup.title') ?></h2>
+    <p><?= lg('system.doc.cleanup.description') ?></p>
+    <button
+        type="button"
+        class="system-cleanup-button"
+        data-system-cleanup-trigger
+        data-endpoint="<?= htmlspecialchars($cleanupEndpoint) ?>"
+        data-nonce="<?= htmlspecialchars($cleanupNonce) ?>"
+    >
+        <?= lg('system.doc.cleanup.button') ?>
+    </button>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+(() => {
+    const button = document.querySelector('[data-system-cleanup-trigger]');
+
+    if (!button) {
+        return;
+    }
+
+    const texts = <?= json_encode($cleanupTexts, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
+    const targets = <?= json_encode($cleanupTargets, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
+
+    const escapeHtml = (value) => String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    button.addEventListener('click', () => {
+        if (!window.Swal) {
+            alert(texts.unavailable);
+            return;
+        }
+
+        let remaining = 10;
+        let countdown = null;
+        const targetList = targets.map((target) => `<li><code>${escapeHtml(target)}</code></li>`).join('');
+
+        Swal.fire({
+            title: texts.modalTitle,
+            icon: 'warning',
+            html: `<p>${escapeHtml(texts.warning)}</p><ul style="text-align:left">${targetList}</ul><p>${escapeHtml(texts.routes)}</p>`,
+            showCancelButton: true,
+            confirmButtonColor: '#b42318',
+            cancelButtonText: texts.cancel,
+            confirmButtonText: `${texts.confirm} (${remaining})`,
+            allowOutsideClick: () => !Swal.isLoading(),
+            didOpen: () => {
+                const confirmButton = Swal.getConfirmButton();
+                confirmButton.disabled = true;
+
+                countdown = window.setInterval(() => {
+                    remaining -= 1;
+                    confirmButton.textContent = remaining > 0 ? `${texts.confirm} (${remaining})` : texts.confirm;
+
+                    if (remaining <= 0) {
+                        confirmButton.disabled = false;
+                        window.clearInterval(countdown);
+                    }
+                }, 1000);
+            },
+            willClose: () => {
+                if (countdown) {
+                    window.clearInterval(countdown);
+                }
+            },
+            preConfirm: async () => {
+                const formData = new FormData();
+                formData.append('nonce', button.dataset.nonce || '');
+
+                try {
+                    const response = await fetch(button.dataset.endpoint || '', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    const payload = await response.json();
+
+                    if (!response.ok || !payload.success) {
+                        throw new Error(payload.message || payload.error || texts.requestError);
+                    }
+
+                    return payload;
+                } catch (error) {
+                    Swal.showValidationMessage(`${texts.requestError}: ${error.message}`);
+                    return false;
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(texts.successTitle, texts.successText, 'success');
+            }
+        });
+    });
+})();
+</script>
+<?php endif; ?>
+
+<?php
 // Documentation definitions for each class and its methods.
 $docs = [
     'System\\Config\\Database' => [

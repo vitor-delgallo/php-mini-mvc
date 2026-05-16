@@ -263,5 +263,19 @@
   "doc.path.code.comment.appMiddlewares": "devuelve la ruta del directorio de middlewares de la app",
   "doc.path.appMiddlewares.desc": "Devuelve la ruta absoluta del sistema de archivos a `app/Middlewares`, donde se almacenan clases middleware de ruta.",
   "doc.path.code.comment.systemInterfaces": "devuelve la ruta del directorio de interfaces del sistema",
-  "doc.path.systemInterfaces.desc": "Devuelve la ruta absoluta del sistema de archivos a `system/Interfaces`, donde viven contratos del framework como `IBootable`."
+  "doc.path.systemInterfaces.desc": "Devuelve la ruta absoluta del sistema de archivos a `system/Interfaces`, donde viven contratos del framework como `IBootable`.",
+  "doc.cleanup.title": "Limpieza peligrosa de la app",
+  "doc.cleanup.description": "Elimina archivos de ejemplo de la app, limpia carpetas seleccionadas de assets y runtime, restablece las rutas de la app y copia la plantilla del sistema a la carpeta de plantillas de la app.",
+  "doc.cleanup.button": "Remove and Clean MVC",
+  "doc.cleanup.modal.title": "¿Eliminar y limpiar el MVC de la app?",
+  "doc.cleanup.modal.warning": "Esta acción es irreversible y borra el contenido de estas rutas.",
+  "doc.cleanup.modal.routes": "La ruta web de la app se restablecerá para redirigir a /web-system, y la ruta API de la app quedará limpia.",
+  "doc.cleanup.modal.confirm": "Limpiar MVC",
+  "doc.cleanup.modal.cancel": "Cancelar",
+  "doc.cleanup.success.title": "MVC limpio",
+  "doc.cleanup.success.text": "El esqueleto de la app fue limpiado y la plantilla fue copiada.",
+  "doc.cleanup.error.title": "Falló la limpieza",
+  "doc.cleanup.error.text": "No se pudo completar la solicitud de limpieza.",
+  "doc.cleanup.unavailable": "No se pudo cargar SweetAlert.",
+  "doc.cleanup.request.error": "Falló la solicitud de limpieza"
 }

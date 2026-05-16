@@ -27,6 +27,7 @@ Keep this document short enough to remain in context by default. Open the docume
 - In route files, declare root handlers with `/`; `RouterLoader` also accepts the exact prefixed URL without a trailing slash for that root route.
 - Translatable UI text should live in `app/languages/*` or `system/languages/*` and be consumed through `lg()` with `app.*` or `system.*` keys.
 - APIs must not use sessions; the bootstrap uses `NULLHandler` for API requests.
+- The system documentation home includes a dangerous app cleanup action. It is irreversible and should only be used to reset the app skeleton for a fresh project.
 - Deliver small, testable changes that are consistent with the project's own MVC style.
 
 ## Stack and Dependencies
@@ -172,6 +173,7 @@ Quick rules:
 | Fetch a translation | `lg()` |
 | Fetch translations by prefix | `language_get_by_prefix()` |
 | Normalize a translation prefix | `language_normalize_prefix()` |
+| Reset app example files for a fresh project | `/web-system` -> `Remove and Clean MVC` |
 | Query multiple rows | `database_select()` |
 | Query one row | `database_select_row()` |
 | Run insert/update/delete | `database_statement()` |
@@ -211,6 +213,7 @@ It:
 
 - uses `lg(...)` to fetch text from `system/languages/doc/*` with `system.doc.*` keys;
 - shows a framework summary;
+- exposes the `Remove and Clean MVC` maintenance button, protected by a short-lived nonce and SweetAlert confirmation;
 - defines a `$docs` array with classes, methods, examples, and descriptions;
 - renders those entries as HTML `<details>` sections.
 
@@ -226,6 +229,8 @@ system/languages/doc/es.json
 The app root `/` redirects to `/web-system`. With `BASE_PATH=/php-mini-mvc`, the documentation URL is `/php-mini-mvc/web-system`.
 
 The system documentation template sends crawler-blocking directives through `robots`, `googlebot`, and `bingbot` meta tags, and `System\Controllers\Home` adds an `X-Robots-Tag` header with `noindex`, `nofollow`, `noarchive`, `nosnippet`, and `noimageindex`.
+
+The dangerous cleanup action is handled by `System\Controllers\Maintenance` at the system web route `/web-system/maintenance/clean-app`. It deletes only the explicit target contents documented in [08-workflows.md](mvc-references/08-workflows.md), rewrites app routes, and keeps system documentation available at `/web-system`.
 
 ## Main Principle
 

@@ -97,6 +97,19 @@ This middleware owns `SYSTEM_TOKEN` validation for i18n routes:
 
 System controller actions and middleware handlers are not helper-backed APIs. Route files should reference their classes directly.
 
+## System Maintenance Controller
+
+The dangerous cleanup button in `/web-system` posts to:
+
+```text
+System\Controllers\Maintenance
+POST /web-system/maintenance/clean-app
+```
+
+The controller owns the nonce validation, same-origin check, explicit cleanup target list, route reset, and copy of `system/views/templates/template.php` into `app/views/templates/template.php`.
+
+Do not expose this behavior from app routes and do not pass user-provided paths into the cleanup logic.
+
 ## Bootables
 
 Bootable classes live in:

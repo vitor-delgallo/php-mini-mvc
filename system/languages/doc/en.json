@@ -263,5 +263,19 @@
     "doc.path.code.comment.appMiddlewares":  "returns the app middleware directory path",
     "doc.path.appMiddlewares.desc":  "Returns the absolute filesystem path to `app/Middlewares`, where route middleware classes are stored.",
     "doc.path.code.comment.systemInterfaces":  "returns the system interface directory path",
-    "doc.path.systemInterfaces.desc":  "Returns the absolute filesystem path to `system/Interfaces`, where framework contracts such as `IBootable` are stored."
+    "doc.path.systemInterfaces.desc":  "Returns the absolute filesystem path to `system/Interfaces`, where framework contracts such as `IBootable` are stored.",
+    "doc.cleanup.title": "Dangerous app cleanup",
+    "doc.cleanup.description": "Removes example app files, clears selected asset and runtime folders, resets app routes, and copies the system template into the app template folder.",
+    "doc.cleanup.button": "Remove and Clean MVC",
+    "doc.cleanup.modal.title": "Remove and clean the app MVC?",
+    "doc.cleanup.modal.warning": "This action is irreversible and deletes the contents of these paths.",
+    "doc.cleanup.modal.routes": "The app web route will be reset to redirect to /web-system, and the app API route will be cleared.",
+    "doc.cleanup.modal.confirm": "Clean MVC",
+    "doc.cleanup.modal.cancel": "Cancel",
+    "doc.cleanup.success.title": "MVC cleaned",
+    "doc.cleanup.success.text": "The app skeleton was cleaned and the template was copied.",
+    "doc.cleanup.error.title": "Cleanup failed",
+    "doc.cleanup.error.text": "The cleanup request could not be completed.",
+    "doc.cleanup.unavailable": "SweetAlert could not be loaded.",
+    "doc.cleanup.request.error": "Cleanup request failed"
 }
