@@ -24,6 +24,7 @@ Keep this document short enough to remain in context by default. Open the docume
 - Prefer Bootstrap 5 and vanilla JavaScript for traditional front-end work.
 - Use prepared statements whenever SQL is involved; never concatenate user input directly into queries.
 - Preserve `BASE_PATH` compatibility; assets should use `path_base_public()` and absolute URLs should use `site_url()`.
+- In route files, declare root handlers with `/`; `RouterLoader` also accepts the exact prefixed URL without a trailing slash for that root route.
 - Translatable UI text should live in `app/languages/*` or `system/languages/*` and be consumed through `lg()` with `app.*` or `system.*` keys.
 - APIs must not use sessions; the bootstrap uses `NULLHandler` for API requests.
 - Deliver small, testable changes that are consistent with the project's own MVC style.
@@ -92,7 +93,7 @@ Essential flow:
 8. Automatically connect to the database when `DB_DRIVER` is valid.
 9. Execute bootables in `app/Bootable`.
 10. Load `system/routes/api.php` under `/api-system`, `system/routes/web.php` under `/web-system`, `app/routes/api.php` under `/api`, or `app/routes/web.php` for normal app web routes.
-11. Dispatch the route through `RouterLoader` / `router_loader_dispatch()`.
+11. Dispatch the route through `RouterLoader` / `router_loader_dispatch()`. Exact prefixed root requests such as `/web-system` can match root routes declared as `/`, while non-root trailing slash behavior remains exact.
 12. Return HTML 404 for missing routes and HTML 500 for general errors; outside production, show details and write the daily log.
 
 ## Main `.env` Variables

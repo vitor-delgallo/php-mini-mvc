@@ -40,5 +40,7 @@ router_loader_dispatch();
 
 - Route files receive `$router` in local scope.
 - `loadWithPrefix()` normalizes the prefix with one leading slash and no trailing slash.
+- Root handlers should be declared with `/`. For prefixed route files, `RouterLoader` also lets the exact prefix URL without a trailing slash match that root route when no explicit `''` route exists.
+- This root-prefix normalization is intentionally narrow: non-root routes such as `/api-system/i18n/` do not match `/api-system/i18n` unless declared separately.
 - `public/index.php` loads system API routes under `/api-system`, system web routes under `/web-system`, app API routes under `/api`, or app web routes for normal app web requests.
 - The helpers are direct wrappers around the static methods and are intended for route/bootstrap code that prefers the procedural helper API.

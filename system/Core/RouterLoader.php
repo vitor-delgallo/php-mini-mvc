@@ -24,6 +24,13 @@ class RouterLoader {
     private static Router $router;
 
     /**
+     * Root route prefixes that may receive a trailing slash during dispatch.
+     *
+     * @var array<string, bool>
+     */
+    private static array $rootPrefixes = [];
+
+    /**
      * Initializes the router if not already started.
      */
     private static function startRouter(): void {
@@ -51,6 +58,82 @@ class RouterLoader {
     }
 
     /**
+     * Normalizes a route group prefix.
+     *
+     * @param string $prefix Group prefix.
+     * @return string
+     */
+    private static function normalizePrefix(string $prefix): string {
+        $prefix = rtrim($prefix, "/");
+        $prefix = ltrim($prefix, "/");
+
+        return "/" . $prefix;
+    }
+
+    /**
+     * Tracks a prefix whose root route may be declared as "/".
+     *
+     * @param string $prefix Final URL prefix including BASE_PATH when present.
+     */
+    private static function trackRootPrefix(string $prefix): void {
+        $prefix = "/" . trim($prefix, "/");
+
+        if ($prefix === "/") {
+            return;
+        }
+
+        self::$rootPrefixes[$prefix] = true;
+    }
+
+    /**
+     * Checks if the router has a route path registered.
+     *
+     * @param string $path Route path.
+     * @return bool
+     */
+    private static function hasRoutePath(string $path): bool {
+        foreach (self::$router->all() as $route) {
+            if ($route->getPath() === $path) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Allows "/prefix" to match a root route declared as "/prefix/".
+     *
+     * This intentionally applies only to exact tracked root prefixes, not to
+     * every route with or without a trailing slash.
+     *
+     * @return bool True when REQUEST_URI was changed.
+     */
+    private static function normalizeRootPrefixRequest(): bool {
+        if (empty($_SERVER["REQUEST_URI"]) || empty(self::$rootPrefixes)) {
+            return false;
+        }
+
+        $requestUri = (string) $_SERVER["REQUEST_URI"];
+        $requestPath = parse_url($requestUri, PHP_URL_PATH);
+
+        if (!is_string($requestPath) || !isset(self::$rootPrefixes[$requestPath])) {
+            return false;
+        }
+
+        $trailingSlashPath = $requestPath . "/";
+
+        if (self::hasRoutePath($requestPath) || !self::hasRoutePath($trailingSlashPath)) {
+            return false;
+        }
+
+        $query = parse_url($requestUri, PHP_URL_QUERY);
+        $_SERVER["REQUEST_URI"] = $trailingSlashPath . (is_string($query) && $query !== "" ? "?" . $query : "");
+
+        return true;
+    }
+
+    /**
      * Loads a route file from the given directory with access to the global router ($router).
      *
      * @param string $routesPath Absolute path to the routes directory.
@@ -63,7 +146,10 @@ class RouterLoader {
 
         // Makes $router available inside the route file
         if(!empty(Path::basePath())) {
-            $router->group(['prefix' => Path::basePath()], function (Router $group) use ($routesPath, $file) {
+            $basePath = Path::basePath();
+            self::trackRootPrefix($basePath);
+
+            $router->group(['prefix' => $basePath], function (Router $group) use ($routesPath, $file) {
                 $router = $group; // shadow $router inside scope
                 include_once $routesPath . "/" . $file . ".php";
             });
@@ -86,12 +172,12 @@ class RouterLoader {
         $file = self::normalizeRouteFile($file);
         $main = self::$router;
 
-        $prefix = rtrim($prefix, "/");
-        $prefix = ltrim($prefix, "/");
-        $prefix = "/" . $prefix;
+        $prefix = self::normalizePrefix($prefix);
+        $fullPrefix = Path::basePath() . $prefix;
+        self::trackRootPrefix($fullPrefix);
 
         // Creates a group with prefix and exposes it as $router
-        $main->group(['prefix' => Path::basePath() . $prefix], function (Router $router) use ($routesPath, $file) {
+        $main->group(['prefix' => $fullPrefix], function (Router $router) use ($routesPath, $file) {
             include_once $routesPath . "/" . $file . ".php";
         });
 
@@ -147,6 +233,20 @@ class RouterLoader {
      */
     public static function dispatch(): void {
         self::startRouter();
-        self::$router->dispatch();
+
+        $originalRequestUri = $_SERVER["REQUEST_URI"] ?? null;
+        $requestWasNormalized = self::normalizeRootPrefixRequest();
+
+        try {
+            self::$router->dispatch();
+        } finally {
+            if ($requestWasNormalized) {
+                if ($originalRequestUri === null) {
+                    unset($_SERVER["REQUEST_URI"]);
+                } else {
+                    $_SERVER["REQUEST_URI"] = $originalRequestUri;
+                }
+            }
+        }
     }
 }

@@ -43,6 +43,16 @@ Each route file receives a local variable:
 $router
 ```
 
+Declare root handlers with `/`:
+
+```php
+$router->get('/', $handler);
+```
+
+When a route file is loaded under a prefix, `RouterLoader` lets that root handler match both the exact prefix URL and the same URL with a trailing slash. For example, a `/` route under `/web-system` matches both `/web-system` and `/web-system/`.
+
+This normalization is limited to exact root-prefix routes. Non-root routes keep exact trailing-slash behavior.
+
 ## App Web Routes
 
 File:
@@ -110,6 +120,8 @@ This file is loaded with the system web `/web-system` prefix. Framework-owned we
 /web-system
 ```
 
+Declare the route as `/`; the loader also accepts `/web-system/`.
+
 With `BASE_PATH=/php-mini-mvc`, the final URL is:
 
 ```text
@@ -131,6 +143,8 @@ With `BASE_PATH=/php-mini-mvc`, a system API route at `/health` would be availab
 ```text
 /php-mini-mvc/api-system/health
 ```
+
+A system API home route should be declared as `/`; the loader also accepts `/api-system` without requiring a duplicate `''` route.
 
 The protected system i18n endpoint exposes selected translations for system consumers:
 
@@ -244,3 +258,5 @@ router_loader_dispatch();
 ```
 
 Use app route helpers for files in `app/routes` and system route helpers for files in `system/routes`. Prefixes are normalized by the loader and must still preserve `BASE_PATH` compatibility.
+
+For prefixed route files, declare root routes with `/`. `RouterLoader` tracks the loaded prefix and lets the exact prefix URL without a trailing slash dispatch to that root route when no explicit `''` route exists.
