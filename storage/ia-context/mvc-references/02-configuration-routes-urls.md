@@ -7,6 +7,7 @@ APP_ENV=development
 BASE_PATH=/php-mini-mvc
 DEFAULT_LANGUAGE=en
 SYSTEM_TOKEN=
+SYSTEM_HELPERS_AUTOLOAD=true
 APP_HELPERS_AUTOLOAD=true
 
 SESSION_DRIVER=none
@@ -38,7 +39,8 @@ Important rules:
 - `BASE_PATH` should be used when the app runs from a subdirectory.
 - `DEFAULT_LANGUAGE` defines the default language for translations.
 - `SYSTEM_TOKEN` protects system API routes such as `/api-system/i18n`; leave it empty to disable those routes. `System\Middlewares\SystemI18nAuth` enforces this token for i18n routes. Vue pages that fetch translations directly receive this token in browser boot data, so use it only for framework utility endpoints, not private user data.
-- `APP_HELPERS_AUTOLOAD` can load all app helpers or a specific list.
+- `SYSTEM_HELPERS_AUTOLOAD` controls optional helper wrappers from `system/helpers`. It accepts `true`, `1`, `all`, `*`, a list such as `['response','view.php']`, or disabled values such as `false`, `0`, `none`, `off`, `no`, or empty.
+- `APP_HELPERS_AUTOLOAD` controls helpers from `app/helpers` with the same strategy.
 - `SESSION_DRIVER` accepts `files`, `db`, or `none`.
 - `SESSION_DB` optionally selects a named connection for `SESSION_DRIVER=db`; empty uses the default `DB_*` connection.
 - `DB_DRIVER` accepts `mysql`, `pgsql`, or `none` for the default connection.
@@ -77,7 +79,7 @@ The app root redirects to the framework documentation home:
 
 ```php
 $router->get('/', function () {
-    return response_redirect('/web-system');
+    return \System\Core\Response::redirect('/web-system');
 });
 ```
 
@@ -193,7 +195,15 @@ Successful response shape:
 
 When the project runs from a subdirectory, configure `BASE_PATH` in `.env`.
 
-To generate compatible URLs and paths, prefer:
+To generate compatible URLs and paths, framework runtime should use:
+
+```php
+\System\Core\Path::basePath();
+\System\Core\Path::basePathPublic();
+\System\Core\Path::siteURL();
+```
+
+Optional helper shortcuts when enabled:
 
 ```php
 path_base();
@@ -257,7 +267,7 @@ path_base_public();
 site_url();
 ```
 
-Use `path_base_public()` for public assets and `site_url()` for absolute URLs.
+Use `Path::basePathPublic()` / `path_base_public()` for public assets and `Path::siteURL()` / `site_url()` for absolute URLs.
 
 ## Route Loader Helpers
 

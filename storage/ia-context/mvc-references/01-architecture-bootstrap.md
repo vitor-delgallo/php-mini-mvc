@@ -68,7 +68,8 @@ system/
 - Controllers must return `Psr\Http\Message\ResponseInterface`.
 - Views should be simple and focused on presentation.
 - Models should concentrate data access.
-- Procedural helpers are the recommended short API for views, controllers, and middlewares.
+- Procedural helpers are optional convenience APIs for app code when enabled.
+- Framework runtime code uses static `System\...` classes directly and must not depend on system helpers being loaded.
 - Avoid large dependencies for small problems.
 - Do not use jQuery, React, Vue, or Angular without an explicit need.
 - Prefer Bootstrap 5 and vanilla JavaScript for traditional front-end work.
@@ -92,17 +93,17 @@ General flow:
 4. Read variables from `.env`.
 5. Detect whether the request is an API request with `Globals::isApiRequest()`.
 6. Configure error display according to `APP_ENV`.
-7. Load internal helpers from `system/helpers` through `PHPAutoload::from()` / `php_autoload_from()`.
-8. Load app helpers according to `APP_HELPERS_AUTOLOAD`.
+7. Load system helpers from `system/helpers` according to `SYSTEM_HELPERS_AUTOLOAD`.
+8. Load app helpers from `app/helpers` according to `APP_HELPERS_AUTOLOAD`.
 9. Configure sessions:
    - web: use `system/includes/session_handlers.php`;
    - API: disable cookies and use `System\Session\NULLHandler`.
 10. Automatically connect to the default database when `DB_DRIVER` is valid; named database connections are opened lazily.
-11. Execute bootable classes in `app/Bootable` through `PHPAutoload::boot()` / `php_autoload_boot()`.
+11. Execute bootable classes in `app/Bootable` through `PHPAutoload::boot()`.
 12. Load routes:
    - web: `app/routes/web.php`;
    - API: `app/routes/api.php` with the `/api` prefix.
-13. Dispatch the route through `RouterLoader` / `router_loader_dispatch()`.
+13. Dispatch the route through `RouterLoader`.
 14. On `RouteNotFoundException`, return HTML 404.
 15. On other errors, return HTML 500; outside production, show details and write the daily log.
 

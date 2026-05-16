@@ -14,7 +14,7 @@ Namespace:
 namespace App\Controllers;
 ```
 
-Controllers must return a PSR-7 response, usually through `response_*()` helpers.
+Controllers must return a PSR-7 response through `System\Core\Response` or `response_*()` helpers when helpers are enabled.
 
 Framework-owned controllers can live in:
 
@@ -31,6 +31,8 @@ namespace App\Controllers;
 
 use App\Models\ProductModel;
 use Psr\Http\Message\ResponseInterface;
+use System\Core\Response;
+use System\Core\View;
 
 class Products
 {
@@ -40,13 +42,13 @@ class Products
         $product = $model->find($id);
 
         if (!$product) {
-            return response_html(
-                view_render_html('<h1>Not found</h1>'),
+            return Response::html(
+                View::render_html('<h1>Not found</h1>'),
                 404
             );
         }
 
-        return response_html(view_render_page('products/show', [
+        return Response::html(View::render_page('products/show', [
             'product' => $product,
             'title' => 'Product',
         ]));
@@ -58,7 +60,7 @@ Important patterns:
 
 - do not print HTML directly in the controller;
 - do not use `echo` as the final response;
-- return `response_html()`, `response_json()`, `response_redirect()`, etc.;
+- return `Response::html()`, `Response::json()`, `Response::redirect()`, etc.; helpers are optional shortcuts when enabled;
 - delegate data queries to models;
 - delegate HTML to views.
 
@@ -139,13 +141,13 @@ app/views/templates/template.php
 Page rendering:
 
 ```php
-view_render_page('user-profile', ['user' => $user]);
+View::render_page('user-profile', ['user' => $user]);
 ```
 
-Equivalent core method:
+Optional helper shortcut:
 
 ```php
-View::render_page('home', $data);
+view_render_page('home', $data);
 ```
 
 Flow:
@@ -166,7 +168,7 @@ It is served through `system/routes/web.php` at `/web-system`. The app root `/` 
 Raw HTML rendering:
 
 ```php
-view_render_html('<h1>OK</h1>');
+View::render_html('<h1>OK</h1>');
 ```
 
 Use this for simple cases, error pages, or small HTML blocks.
@@ -174,13 +176,13 @@ Use this for simple cases, error pages, or small HTML blocks.
 Optional Vue rendering:
 
 ```php
-return response_html(view_render_vue('account/Profile', [
+return Response::html(View::render_vue('account/Profile', [
     'title' => 'Account',
     'user' => ['name' => 'Vitor'],
 ]));
 ```
 
-Vue rendering is opt-in. PHP pages and PHP templates remain the default MVC flow unless a route explicitly calls `view_render_vue()` or `View::render_vue()`.
+Vue rendering is opt-in. PHP pages and PHP templates remain the default MVC flow unless a route explicitly calls `View::render_vue()` or the optional `view_render_vue()` helper.
 
 Rules:
 
@@ -189,7 +191,7 @@ Rules:
 - The entrypoint is relative to `resources/vue`; `null` uses `main.js`.
 - Data passed from PHP becomes props for the Vue page component.
 - The PHP template still owns the HTML shell, layout, footer, and asset loading.
-- Public asset URLs must stay compatible with `BASE_PATH`; use `path_base_public()` and `site_url()` instead of hardcoded `/public/...` URLs.
+- Public asset URLs must stay compatible with `BASE_PATH`; use `Path::basePathPublic()` and `Path::siteURL()` or their helper shortcuts instead of hardcoded `/public/...` URLs.
 
 ## View Helpers
 

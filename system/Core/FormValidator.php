@@ -223,25 +223,25 @@ class FormValidator
                     switch ($ruleName) {
                         case 'required':
                             if (is_null($value) || trim((string)$value) === '') {
-                                $this->addError($path, lg('system.form_validator.error.required'));
+                                $this->addError($path, Language::get('system.form_validator.error.required'));
                             }
                             break;
 
                         case 'email':
                             if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                                $this->addError($path, lg('system.form_validator.error.email'));
+                                $this->addError($path, Language::get('system.form_validator.error.email'));
                             }
                             break;
 
                         case 'min':
                             if (strlen((string)$value) < (int)$param) {
-                                $this->addError($path, lg('system.form_validator.error.min', ['param' => $param]));
+                                $this->addError($path, Language::get('system.form_validator.error.min', ['param' => $param]));
                             }
                             break;
 
                         case 'max':
                             if (strlen((string)$value) > (int)$param) {
-                                $this->addError($path, lg('system.form_validator.error.max', ['param' => $param]));
+                                $this->addError($path, Language::get('system.form_validator.error.max', ['param' => $param]));
                             }
                             break;
 
@@ -249,38 +249,38 @@ class FormValidator
                             $other = $this->resolveFieldPath($source, $param);
                             $otherValue = reset($other);
                             if ($otherValue !== $value) {
-                                $this->addError($path, lg('system.form_validator.error.same', ['param' => $param]));
+                                $this->addError($path, Language::get('system.form_validator.error.same', ['param' => $param]));
                             }
                             break;
 
                         case 'numeric':
                             if (!is_numeric($value)) {
-                                $this->addError($path, lg('system.form_validator.error.numeric'));
+                                $this->addError($path, Language::get('system.form_validator.error.numeric'));
                             }
                             break;
 
                         case 'integer':
                             if (filter_var($value, FILTER_VALIDATE_INT) === false) {
-                                $this->addError($path, lg('system.form_validator.error.integer'));
+                                $this->addError($path, Language::get('system.form_validator.error.integer'));
                             }
                             break;
 
                         case 'date':
                             if (strtotime((string)$value) === false) {
-                                $this->addError($path, lg('system.form_validator.error.date'));
+                                $this->addError($path, Language::get('system.form_validator.error.date'));
                             }
                             break;
 
                         case 'regex':
                             if (!preg_match($param, (string)$value)) {
-                                $this->addError($path, lg('system.form_validator.error.regex'));
+                                $this->addError($path, Language::get('system.form_validator.error.regex'));
                             }
                             break;
 
                         case 'in':
                             $allowed = explode(',', $param);
                             if (!in_array((string)$value, $allowed, true)) {
-                                $this->addError($path, lg('system.form_validator.error.in'));
+                                $this->addError($path, Language::get('system.form_validator.error.in'));
                             }
                             break;
 
@@ -290,12 +290,12 @@ class FormValidator
                                 $result = $fn($value, $param, $path, $source);
 
                                 if ($result === false) {
-                                    $this->addError($path, lg('system.form_validator.error.invalid'));
+                                    $this->addError($path, Language::get('system.form_validator.error.invalid'));
                                 } elseif (is_string($result)) {
                                     $this->addError($path, $result);
                                 }
                             } else {
-                                $this->addError($path, lg('system.form_validator.error.unknown', ['rule' => $ruleName]));
+                                $this->addError($path, Language::get('system.form_validator.error.unknown', ['rule' => $ruleName]));
                             }
                             break;
                     }

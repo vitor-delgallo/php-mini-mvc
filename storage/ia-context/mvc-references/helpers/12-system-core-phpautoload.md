@@ -32,6 +32,6 @@ php_autoload_boot();
 
 ## Notes
 
-- `from()` is used during bootstrap to load system helpers and app helpers.
+- `from()` is used during bootstrap to load system helpers and app helpers according to `SYSTEM_HELPERS_AUTOLOAD` and `APP_HELPERS_AUTOLOAD`.
 - `boot()` assumes the bootable class namespace matches `App\Bootable\...` and the file path.
-- The helpers are thin wrappers for bootstrap and internal setup flows; they do not add state or change inclusion order.
+- The helpers are thin optional wrappers. Bootstrap and framework runtime code should call `PHPAutoload` directly.

@@ -1,6 +1,7 @@
 <?php
 
 use MiladRahimi\PhpRouter\Router;
+use System\Core\Response;
 
 /**
  * @var MiladRahimi\PhpRouter\Router $router
@@ -8,7 +9,7 @@ use MiladRahimi\PhpRouter\Router;
  * Responsible for dispatching HTTP requests to the appropriate route handler.
  */
 $router->get('/', function () {
-    return response_redirect('/web-system');
+    return Response::redirect('/web-system');
 });
 $router->group(['middleware' => [\App\Middlewares\Example::class], 'prefix' => '/admin'], function(Router $router) {
     $router->get('/users/{id}', [\App\Controllers\User::class, 'showPage']);

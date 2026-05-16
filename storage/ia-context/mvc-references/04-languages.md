@@ -8,7 +8,20 @@ Main class:
 System\Core\Language
 ```
 
-Helpers:
+Static API:
+
+```php
+Language::get('system.template.framework.name');
+Language::get('system.database.connection.error.info', ['error' => $message]);
+Language::getByPrefix('app.pages', 'en');
+Language::normalizePrefix('app.pages');
+Language::load('pt-br');
+Language::currentLang();
+Language::defaultLang();
+Language::detect();
+```
+
+Optional helpers when `SYSTEM_HELPERS_AUTOLOAD` loads `language.php`:
 
 ```php
 lg('system.template.framework.name');
@@ -31,7 +44,7 @@ language_detect();
 4. Files in subfolders also receive a prefix based on the relative path after the source prefix.
 5. Keys that already start with the source prefix are not prefixed again.
 6. All JSON files found are merged into a flat array.
-7. Placeholders such as `{name}` are replaced by values from the array passed to `lg()`.
+7. Placeholders such as `{name}` are replaced by values from the array passed to `Language::get()` or `lg()`.
 
 ## Prefix Examples
 
@@ -51,14 +64,14 @@ system/languages/form_validator/pt-br.json       -> system.form_validator.error.
 3. `DEFAULT_LANGUAGE`.
 4. If nothing is found, translations are empty and the current language is `null`.
 
-If the key does not exist, `lg()` returns `null`. In HTML, ensure the key exists or handle a fallback.
+If the key does not exist, `Language::get()` / `lg()` returns `null`. In HTML, ensure the key exists or handle a fallback.
 
 ## Prefix Filtering API
 
-Use `Language::getByPrefix()` or `language_get_by_prefix()` when a consumer needs a subset of translations:
+Use `Language::getByPrefix()` or `language_get_by_prefix()` when helpers are enabled and a consumer needs a subset of translations:
 
 ```php
-$translations = language_get_by_prefix('app.pages', 'en');
+$translations = Language::getByPrefix('app.pages', 'en');
 ```
 
 The prefix is normalized through `Language::normalizePrefix()` / `language_normalize_prefix()`, so `app.pages` and `app.pages.` both return keys such as `app.pages.users.profile`. Full keys are preserved in the returned array.
@@ -72,10 +85,10 @@ X-System-Token: <SYSTEM_TOKEN>
 
 `SYSTEM_TOKEN` must be configured in `.env`; an empty token disables the endpoint. `System\Middlewares\SystemI18nAuth` validates `X-System-Token` or `Authorization: Bearer <token>` before the request reaches `System\Controllers\I18n`. The response includes `lang`, normalized `prefix`, and `translations`.
 
-Vue pages rendered through `view_render_vue()` can request these translations by passing i18n prefixes as the fourth renderer argument:
+Vue pages rendered through `View::render_vue()` or `view_render_vue()` can request these translations by passing i18n prefixes as the fourth renderer argument:
 
 ```php
-return response_html(view_render_vue(
+return Response::html(View::render_vue(
     'users/Profile',
     ['user' => $user],
     null,
@@ -94,5 +107,5 @@ When creating or changing visible text:
 - prefer app-owned keys in `app/languages/*` and framework-owned keys in `system/languages/*`;
 - use `app.*` for application text and `system.*` for framework, documentation, template, validation, and core error text;
 - keep subdirectory prefixes consistent with the folder;
-- use `lg()` in views;
+- use `Language::get()` in framework/runtime views, or `lg()` in app views when helpers are enabled;
 - avoid loose strings when the text is part of the public interface.

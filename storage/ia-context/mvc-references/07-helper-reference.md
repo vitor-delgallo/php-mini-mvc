@@ -1,6 +1,8 @@
 # Helper And System Class Reference
 
-Internal helpers are loaded before routes and are the recommended short API for views, controllers, and middlewares.
+System helpers are optional convenience wrappers. `SYSTEM_HELPERS_AUTOLOAD` controls which files from `system/helpers` are loaded, independently from `APP_HELPERS_AUTOLOAD`.
+
+Framework runtime code should use static `System\...` classes directly. Application code may still use helpers for concise views, controllers, and middlewares when the relevant helper files are enabled.
 
 Use this file as the index. The detailed references below were checked against the current `system/` source files and list both static class usage and procedural helper usage when a helper exists.
 
@@ -28,6 +30,7 @@ Use this file as the index. The detailed references below were checked against t
 | --- | --- | --- |
 | Documentation home controller | `System\Controllers\Home` | [04-languages.md](04-languages.md) |
 | System i18n controller | `System\Controllers\I18n` | [04-languages.md](04-languages.md) |
+| System maintenance controller | `System\Controllers\Maintenance` | [06-responses-middlewares-bootables.md](06-responses-middlewares-bootables.md) |
 | System i18n auth middleware | `System\Middlewares\SystemI18nAuth` | [06-responses-middlewares-bootables.md](06-responses-middlewares-bootables.md) |
 | Database session handler | `System\Session\DBHandler` | [14-system-session-dbhandler.md](helpers/14-system-session-dbhandler.md) |
 | Null session handler | `System\Session\NULLHandler` | [15-system-session-nullhandler.md](helpers/15-system-session-nullhandler.md) |
@@ -39,15 +42,15 @@ Controller actions, middleware `handle()` methods, session handler methods, and 
 
 | Need | Use |
 | --- | --- |
-| Render a page | `view_render_page()` + `response_html()` |
-| Render a system page | `view_render_system_page()` + `response_html()` |
-| Render an optional Vue page | `view_render_vue()` + `response_html()` |
-| Return JSON | `response_json()` |
-| Redirect | `response_redirect()` |
-| Generate an absolute URL | `site_url()` |
-| Generate an asset path | `path_base_public()` |
-| Fetch a translation | `lg()` |
-| Normalize a translation prefix | `language_normalize_prefix()` |
+| Render a page | `System\Core\View::render_page()` + `System\Core\Response::html()`; helpers are optional shortcuts |
+| Render a system page | `System\Core\View::render_system_page()` + `System\Core\Response::html()` |
+| Render an optional Vue page | `System\Core\View::render_vue()` + `System\Core\Response::html()` |
+| Return JSON | `System\Core\Response::json()` |
+| Redirect | `System\Core\Response::redirect()` |
+| Generate an absolute URL | `System\Core\Path::siteURL()` |
+| Generate an asset path | `System\Core\Path::basePathPublic()` |
+| Fetch a translation | `System\Core\Language::get()` |
+| Normalize a translation prefix | `System\Core\Language::normalizePrefix()` |
 | Load a route file | `router_loader_load()` / `router_loader_load_with_prefix()` |
 | Query multiple rows | `database_select()` |
 | Query one row | `database_select_row()` |
@@ -61,7 +64,7 @@ Controller actions, middleware `handle()` methods, session handler methods, and 
 
 ## Usage Guidance
 
-- Prefer helpers in views, controllers, and middlewares when they already exist.
-- Use static class methods when no helper exists or when the class method is clearer for bootstrap/internal code.
+- Prefer static class methods for framework runtime, bootstrap, system controllers, middlewares, templates, and shipped examples.
+- Use helpers in application code only when their autoload strategy enables them.
 - Avoid duplicating a helper in the app when the same behavior already exists in `system/helpers`.
 - Before adding a dependency or new helper, check whether the existing helpers and system classes already solve the case.

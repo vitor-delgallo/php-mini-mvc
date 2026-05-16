@@ -14,10 +14,10 @@ Keep this document short enough to remain in context by default. Open the docume
 - The project is a **PHP 8.2+** MVC mini-framework for landing pages, institutional websites, small systems, simple APIs, and traditional front-end work.
 - Preserve the `app/`, `system/`, `public/`, and `storage/` structure, including split language roots under `app/languages/` and `system/languages/`.
 - Use `App\...` namespaces for application code and `System\...` namespaces for framework code.
-- Controllers must return `Psr\Http\Message\ResponseInterface`, usually through `response_*()` helpers.
+- Controllers must return `Psr\Http\Message\ResponseInterface`, through `System\Core\Response` or `response_*()` helpers when helpers are enabled.
 - Views should focus on presentation; do not put business logic in them.
 - Models should concentrate data access, queries, and simple persistence rules.
-- Procedural helpers are the recommended short API for views, controllers, and middlewares.
+- Procedural helpers are optional convenience APIs. Framework runtime code should use static `System\...` classes directly, while app code may use helpers when autoloaded.
 - Before creating a new function, class, or dependency, look for an existing helper, core class, or internal pattern.
 - Do not convert the project to Laravel, Symfony, Slim, React, Vue, Angular, or another larger framework without an explicit request.
 - Vue/Vite support is optional and should only be used when a route explicitly calls the Vue renderer.
@@ -25,7 +25,7 @@ Keep this document short enough to remain in context by default. Open the docume
 - Use prepared statements whenever SQL is involved; never concatenate user input directly into queries.
 - Preserve `BASE_PATH` compatibility; assets should use `path_base_public()` and absolute URLs should use `site_url()`.
 - In route files, declare root handlers with `/`; `RouterLoader` also accepts the exact prefixed URL without a trailing slash for that root route.
-- Translatable UI text should live in `app/languages/*` or `system/languages/*` and be consumed through `lg()` with `app.*` or `system.*` keys.
+- Translatable UI text should live in `app/languages/*` or `system/languages/*` and be consumed through `System\Core\Language::get()` or `lg()` when helpers are enabled.
 - APIs must not use sessions; the bootstrap uses `NULLHandler` for API requests.
 - The system documentation home includes a dangerous app cleanup action. It is irreversible and should only be used to reset the app skeleton for a fresh project.
 - Deliver small, testable changes that are consistent with the project's own MVC style.
@@ -89,7 +89,7 @@ Essential flow:
 3. Run `Globals::loadEnv()` and read `.env`.
 4. Detect app API, system API, and system web requests with `Globals`.
 5. Configure error display according to `APP_ENV`.
-6. Load internal helpers and app helpers according to `APP_HELPERS_AUTOLOAD`.
+6. Load system helpers according to `SYSTEM_HELPERS_AUTOLOAD` and app helpers according to `APP_HELPERS_AUTOLOAD`.
 7. Configure sessions: web requests use normal handlers; app and system API requests disable cookies and use `System\Session\NULLHandler`.
 8. Automatically connect to the default database when `DB_DRIVER` is valid; named database connections are opened lazily.
 9. Execute bootables in `app/Bootable`.
@@ -104,6 +104,7 @@ APP_ENV=development
 BASE_PATH=/php-mini-mvc
 DEFAULT_LANGUAGE=en
 SYSTEM_TOKEN=
+SYSTEM_HELPERS_AUTOLOAD=true
 APP_HELPERS_AUTOLOAD=true
 
 SESSION_DRIVER=none
@@ -134,7 +135,8 @@ Quick rules:
 - `BASE_PATH`: required when the app runs from a subdirectory.
 - `DEFAULT_LANGUAGE`: default language for translations.
 - `SYSTEM_TOKEN`: fixed owner-defined token for protected system API routes. `System\Middlewares\SystemI18nAuth` enforces it for `/api-system/i18n`; empty disables that endpoint. Vue pages that fetch i18n directly receive it in browser boot data, so do not use it to protect private user data.
-- `APP_HELPERS_AUTOLOAD`: `true` for all app helpers, or a specific list.
+- `SYSTEM_HELPERS_AUTOLOAD`: `true` for all system helpers, a specific list such as `['response','view.php']`, or disabled values such as `false`, `0`, `none`, `off`, `no`, or empty.
+- `APP_HELPERS_AUTOLOAD`: `true` for all app helpers, a specific list, or disabled values such as `false`, `0`, `none`, `off`, `no`, or empty.
 - `SESSION_DRIVER`: `files`, `db`, or `none`.
 - `SESSION_DB`: optional named connection for `SESSION_DRIVER=db`; blank uses the default `DB_*` connection.
 - `DB_DRIVER`: `mysql`, `pgsql`, or `none` for the default database connection.
@@ -161,18 +163,19 @@ Quick rules:
 
 | Need | Use |
 | --- | --- |
-| Render a page | `view_render_page()` + `response_html()` |
-| Render a system page | `view_render_system_page()` + `response_html()` |
-| Render an optional Vue page | `view_render_vue()` + `response_html()` |
+| Render a page | `System\Core\View::render_page()` + `System\Core\Response::html()`; helper shortcuts may be used when enabled |
+| Render a system page | `System\Core\View::render_system_page()` + `System\Core\Response::html()` |
+| Render an optional Vue page | `System\Core\View::render_vue()` + `System\Core\Response::html()` |
 | Render Vue with MVC translations | `view_render_vue('users/Profile', $props, null, ['app.pages.users'])` |
-| Return JSON | `response_json()` |
-| Redirect | `response_redirect()` |
+| Return JSON | `System\Core\Response::json()` |
+| Redirect | `System\Core\Response::redirect()` |
 | Open framework documentation | `/web-system` |
-| Generate an absolute URL | `site_url()` |
-| Generate an asset path | `path_base_public()` |
-| Fetch a translation | `lg()` |
-| Fetch translations by prefix | `language_get_by_prefix()` |
-| Normalize a translation prefix | `language_normalize_prefix()` |
+| Generate an absolute URL | `System\Core\Path::siteURL()` |
+| Generate an asset path | `System\Core\Path::basePathPublic()` |
+| Fetch a translation | `System\Core\Language::get()` |
+| Fetch translations by prefix | `System\Core\Language::getByPrefix()` |
+| Normalize a translation prefix | `System\Core\Language::normalizePrefix()` |
+| Write framework runtime code | Static `System\...` classes directly |
 | Reset app example files for a fresh project | `/web-system` -> `Remove and Clean MVC` |
 | Query multiple rows | `database_select()` |
 | Query one row | `database_select_row()` |
@@ -211,8 +214,9 @@ works as dynamic framework documentation.
 
 It:
 
-- uses `lg(...)` to fetch text from `system/languages/doc/*` with `system.doc.*` keys;
+- uses `System\Core\Language::get(...)` to fetch text from `system/languages/doc/*` with `system.doc.*` keys;
 - shows a framework summary;
+- documents helper loading through `SYSTEM_HELPERS_AUTOLOAD` and `APP_HELPERS_AUTOLOAD`;
 - exposes the `Remove and Clean MVC` maintenance button, protected by a short-lived nonce and SweetAlert confirmation;
 - defines a `$docs` array with classes, methods, examples, and descriptions;
 - renders those entries as HTML `<details>` sections.

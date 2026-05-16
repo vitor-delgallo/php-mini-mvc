@@ -1,10 +1,14 @@
 <?php
+use System\Config\Globals;
+use System\Core\Language;
+use System\Core\Path;
+
 $vueRender = (!empty($vue) && is_array($vue)) ? $vue : null;
 $vueAssets = null;
 
 if ($vueRender !== null) {
     $vueEntrypoint = trim((string) ($vueRender['entrypoint'] ?? 'main.js'), '/');
-    $viteDevServer = function_exists('globals_env') ? trim((string) (globals_env('VITE_DEV_SERVER') ?? '')) : '';
+    $viteDevServer = trim((string) (Globals::env('VITE_DEV_SERVER') ?? ''));
 
     if ($viteDevServer !== '') {
         $viteDevServer = rtrim($viteDevServer, '/');
@@ -15,7 +19,7 @@ if ($vueRender !== null) {
             'css' => [],
         ];
     } else {
-        $manifestPath = path_public() . '/build/.vite/manifest.json';
+        $manifestPath = Path::public() . '/build/.vite/manifest.json';
 
         if (!is_file($manifestPath)) {
             throw new \RuntimeException('Vite manifest not found for Vue rendering. Run `npm run build` or configure VITE_DEV_SERVER.');
@@ -31,7 +35,7 @@ if ($vueRender !== null) {
             throw new \RuntimeException("Vite entrypoint `{$manifestKey}` was not found in the manifest.");
         }
 
-        $assetBase = rtrim(path_base_public(), '/') . '/build/';
+        $assetBase = rtrim(Path::basePathPublic(), '/') . '/build/';
         $vueAssets = [
             'dev' => false,
             'entrypoint' => $assetBase . ltrim($manifest[$manifestKey]['file'], '/'),
@@ -51,7 +55,7 @@ if ($vueRender !== null) {
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
     <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
     <meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
-    <title><?= htmlspecialchars($title ?? lg("system.template.framework.name")) ?></title>
+    <title><?= htmlspecialchars($title ?? Language::get("system.template.framework.name")) ?></title>
     <?php if (!empty($vueAssets['css'])): ?>
         <?php foreach ($vueAssets['css'] as $cssFile): ?>
             <link rel="stylesheet" href="<?= htmlspecialchars($cssFile) ?>">
@@ -176,7 +180,7 @@ if ($vueRender !== null) {
 <body>
     <header>
         <div class="container">
-            <h1><?= htmlspecialchars($title ?? lg("system.template.framework.name")) ?></h1>
+            <h1><?= htmlspecialchars($title ?? Language::get("system.template.framework.name")) ?></h1>
         </div>
     </header>
     <main>
@@ -210,7 +214,7 @@ if ($vueRender !== null) {
     </main>
     <footer>
         <div class="container">
-            &copy; <?= date('Y') . " - " . lg("system.template.framework.name") . " - " . lg("system.template.framework.simple.description") ?>
+            &copy; <?= date('Y') . " - " . Language::get("system.template.framework.name") . " - " . Language::get("system.template.framework.simple.description") ?>
         </div>
     </footer>
 </body>

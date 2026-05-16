@@ -1,13 +1,14 @@
 <?php
 
 use MiladRahimi\PhpRouter\Router;
+use System\Core\Response;
 
 /**
  * @var Router $router
  * The framework/system API router instance.
  */
 $router->get('/', function () {
-    return response_json([
+    return Response::json([
         'source' => 'system',
         'type' => 'api',
     ]);

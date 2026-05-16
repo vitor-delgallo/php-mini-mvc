@@ -8,7 +8,7 @@ Main class:
 System\Core\Response
 ```
 
-Helpers:
+Framework runtime code should call `System\Core\Response` directly. Optional helpers are available when `SYSTEM_HELPERS_AUTOLOAD` loads `response.php`:
 
 ```php
 response_redirect($uri = '', $method = 'auto', $code = null);
@@ -22,16 +22,16 @@ response_file($filePath, $downloadName, $hashFile, $contentType = 'application/o
 Examples:
 
 ```php
-return response_html(view_render_page('user-profile'));
+return \System\Core\Response::html(\System\Core\View::render_page('user-profile'));
 
-return response_json([
+return \System\Core\Response::json([
     'status' => 'ok',
 ]);
 
-return response_redirect('/login');
+return \System\Core\Response::redirect('/login');
 ```
 
-`response_redirect('/login')` turns relative paths into absolute URLs using `Path::siteURL()`.
+`Response::redirect('/login')` and `response_redirect('/login')` turn relative paths into absolute URLs using `Path::siteURL()`.
 
 ## Middlewares
 

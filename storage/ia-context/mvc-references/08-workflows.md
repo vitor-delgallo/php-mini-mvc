@@ -50,10 +50,13 @@ Example:
 
 ```php
 // app/routes/api.php
+use System\Config\Environment;
+use System\Core\Response;
+
 $router->get('/health', function () {
-    return response_json([
+    return Response::json([
         'status' => 'ok',
-        'env' => environment_type(),
+        'env' => Environment::env(),
     ]);
 });
 ```
@@ -77,7 +80,7 @@ With `BASE_PATH=/php-mini-mvc`, the final URL is:
 9. Create models in `app/Models` when data is involved.
 10. Create views in `app/views/pages`.
 11. Create application translations in `app/languages/...` or framework/system translations in `system/languages/...`.
-12. Use `response_*`, `view_*`, `lg`, `path_base_*`, and `database_*` as the main API.
+12. Use `System\Core\Response`, `System\Core\View`, `System\Core\Language`, `System\Core\Path`, and `System\Core\Database` as the main API. Helper shortcuts are optional when enabled.
 13. Test with and without `BASE_PATH` when the project may run from a subdirectory.
 14. Validate behavior in `development` and `production`.
 

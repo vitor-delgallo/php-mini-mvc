@@ -15,6 +15,57 @@ use System\Core\Database;
 use System\Core\Language;
 use System\Session\NULLHandler;
 
+/**
+ * Loads helper files from a directory according to an autoload strategy.
+ *
+ * Supported values:
+ * - true, 1, all, *: loads every helper file
+ * - ['name','other.php']: loads only selected helper files
+ * - false, 0, none, off, no, or empty: loads no helper files
+ */
+$loadHelperFiles = static function (string $directory, mixed $autoloadStrategy): void {
+    $autoloadRaw = trim((string) ($autoloadStrategy ?? 'true'));
+    $autoloadNormalized = strtolower($autoloadRaw);
+
+    if (in_array($autoloadNormalized, ['true', '1', 'all', '*'], true)) {
+        PHPAutoload::from($directory);
+        return;
+    }
+
+    if ($autoloadRaw === '' || in_array($autoloadNormalized, ['false', '0', 'none', 'off', 'no'], true)) {
+        return;
+    }
+
+    $helpersToLoad = [];
+
+    if (str_starts_with($autoloadRaw, '[') && str_ends_with($autoloadRaw, ']')) {
+        $autoloadRaw = trim($autoloadRaw, "[] \t\n\r\0\x0B");
+        if ($autoloadRaw !== '') {
+            $helpersToLoad = preg_split('/\s*,\s*/', $autoloadRaw) ?: [];
+        }
+    } else {
+        $helpersToLoad = [$autoloadRaw];
+    }
+
+    foreach ($helpersToLoad as $helper) {
+        $helper = trim((string) $helper);
+        $helper = trim($helper, "\"'");
+
+        if ($helper === '') {
+            continue;
+        }
+
+        if (!str_ends_with(strtolower($helper), '.php')) {
+            $helper .= '.php';
+        }
+
+        $helperPath = rtrim($directory, '/\\') . DIRECTORY_SEPARATOR . $helper;
+        if (is_file($helperPath)) {
+            include_once $helperPath;
+        }
+    }
+};
+
 // Includes custom error handlers (e.g. set_error_handler, shutdown_function)
 include_once Path::systemIncludes() . '/error_handlers.php';
 
@@ -38,49 +89,9 @@ try {
         error_reporting(E_ALL);
     }
 
-    // Autoloads all system helper files
-    PHPAutoload::from(Path::systemHelpers());
-
-    // Autoloads application-specific helper files
-    // APP_HELPERS_AUTOLOAD=true loads all helpers (default behavior)
-    // APP_HELPERS_AUTOLOAD=['helper_a','helper_b.php'] loads only selected helpers
-    $appHelpersAutoload = Globals::env('APP_HELPERS_AUTOLOAD') ?? 'true';
-    $appHelpersAutoloadNormalized = strtolower(trim((string) $appHelpersAutoload));
-
-    if (in_array($appHelpersAutoloadNormalized, ['true', '1', 'all', '*'], true)) {
-        PHPAutoload::from(Path::appHelpers());
-    } else {
-        $helpersRaw = trim((string) $appHelpersAutoload);
-        $helpersToLoad = [];
-
-        // Supports: ['my_helper','other_helper.php'] or ["my_helper"]
-        if (str_starts_with($helpersRaw, '[') && str_ends_with($helpersRaw, ']')) {
-            $helpersRaw = trim($helpersRaw, "[] \t\n\r\0\x0B");
-            if (!empty($helpersRaw)) {
-                $helpersToLoad = preg_split('/\s*,\s*/', $helpersRaw) ?: [];
-            }
-        } elseif (!empty($helpersRaw)) {
-            // Supports single helper value
-            $helpersToLoad = [$helpersRaw];
-        }
-
-        foreach ($helpersToLoad as $helper) {
-            $helper = trim((string) $helper);
-            $helper = trim($helper, "\"'");
-            if (empty($helper)) {
-                continue;
-            }
-
-            if (!str_ends_with(strtolower($helper), '.php')) {
-                $helper .= '.php';
-            }
-
-            $helperPath = Path::appHelpers() . '/' . $helper;
-            if (is_file($helperPath)) {
-                include_once $helperPath;
-            }
-        }
-    }
+    // Autoloads helper files according to each helper root strategy.
+    $loadHelperFiles(Path::systemHelpers(), Globals::env('SYSTEM_HELPERS_AUTOLOAD') ?? 'true');
+    $loadHelperFiles(Path::appHelpers(), Globals::env('APP_HELPERS_AUTOLOAD') ?? 'true');
 
     // Init session only if needed
     if (!$isApiRequest) {

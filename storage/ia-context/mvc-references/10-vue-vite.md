@@ -2,7 +2,7 @@
 
 Vue/Vite support is optional. The default MVC flow remains PHP routes, PHP controllers, PHP page views, and PHP templates.
 
-Use Vue only when a route explicitly renders a Vue page through `view_render_vue()` or `System\Core\View::render_vue()`.
+Use Vue only when a route explicitly renders a Vue page through `System\Core\View::render_vue()` or the optional `view_render_vue()` helper.
 
 ## Involved Files
 
@@ -26,26 +26,27 @@ public/build/assets/
 
 ## Rendering From A Route
 
-Use the helper from a web route and wrap the HTML string in `response_html()`:
+Use the static renderer from a web route and wrap the HTML string in `Response::html()`:
 
 ```php
+use System\Core\Response;
+use System\Core\View;
+
 $router->get('/account', function () {
-    return response_html(view_render_vue('account/Profile', [
+    return Response::html(View::render_vue('account/Profile', [
         'title' => 'Account',
         'user' => ['name' => 'Vitor'],
     ], null, ['app.pages.account']));
 });
 ```
 
-Equivalent static class usage:
+Optional helper shortcut when system helpers are enabled:
 
 ```php
-use System\Core\View;
-
-$html = View::render_vue('account/Profile', [
+return response_html(view_render_vue('account/Profile', [
     'title' => 'Account',
     'user' => ['name' => 'Vitor'],
-], null, ['app.pages.account']);
+], null, ['app.pages.account']));
 ```
 
 ## Page And Props Rules
@@ -67,7 +68,7 @@ resources/vue/pages/account/Profile.vue
 Expected route argument:
 
 ```php
-view_render_vue('account/Profile', ['title' => 'Account']);
+View::render_vue('account/Profile', ['title' => 'Account']);
 ```
 
 ## Default Entrypoint
@@ -92,7 +93,7 @@ translations
 Pass a third argument when a route needs a different Vite entrypoint:
 
 ```php
-return response_html(view_render_vue(
+return Response::html(View::render_vue(
     'admin/Users',
     ['title' => 'Users'],
     'admin.js',
@@ -113,7 +114,7 @@ If a custom entrypoint is used in production, it must also be present in the Vit
 Vue pages can request translations from the protected system i18n API by passing one prefix or a list of prefixes as the fourth renderer argument:
 
 ```php
-return response_html(view_render_vue(
+return Response::html(View::render_vue(
     'users/Profile',
     ['user' => $user],
     null,

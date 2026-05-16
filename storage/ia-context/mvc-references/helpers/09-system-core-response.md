@@ -39,5 +39,5 @@ return response_json(['ok' => true]);
 
 ## Notes
 
-- Controllers should return `Psr\Http\Message\ResponseInterface`; helpers are the shortest way to do that.
+- Controllers should return `Psr\Http\Message\ResponseInterface`; framework runtime should call `Response` directly, and helpers are optional shortcuts for app code when enabled.
 - For `response_json()`, strings are treated as already-encoded JSON and are not encoded again.

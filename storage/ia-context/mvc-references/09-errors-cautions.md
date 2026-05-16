@@ -52,7 +52,7 @@ When receiving a task in this project:
 Specific rules:
 
 - Controllers must return `ResponseInterface`.
-- Views may use procedural helpers.
+- Views may use procedural helpers only when their autoload strategy enables them; framework runtime views should use static system classes directly.
 - Models must concentrate queries, business rules, and data access.
 - APIs should be stateless or use tokens, not sessions.
 - SQL must use parameters/prepared statements.

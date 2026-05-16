@@ -1,14 +1,27 @@
+<?php
+use System\Core\Language;
+?>
+
 <!-- Introductory section describing the framework -->
 <section>
-    <p><strong><?= lg("system.template.framework.name") ?></strong> <?= lg("system.doc.body.details") ?></p>
+    <p><strong><?= Language::get("system.template.framework.name") ?></strong> <?= Language::get("system.doc.body.details") ?></p>
     <ul>
-        <li>✅ <?= lg("system.doc.features.routes") ?></li>
-        <li>✅ <?= lg("system.doc.features.templates") ?></li>
-        <li>✅ <?= lg("system.doc.features.helpers") ?></li>
-        <li>✅ <?= lg("system.doc.features.simple") ?></li>
+        <li>✅ <?= Language::get("system.doc.features.routes") ?></li>
+        <li>✅ <?= Language::get("system.doc.features.templates") ?></li>
+        <li>✅ <?= Language::get("system.doc.features.helpers") ?></li>
+        <li>✅ <?= Language::get("system.doc.features.simple") ?></li>
     </ul>
-    <p><?= lg("system.doc.description.purpose") ?></p>
-    <p><?= lg("system.doc.create.landingpage") ?></p>
+    <p><?= Language::get("system.doc.description.purpose") ?></p>
+    <p><?= Language::get("system.doc.create.landingpage") ?></p>
+</section>
+
+<section>
+    <h2><?= Language::get("system.doc.helper_loading.title") ?></h2>
+    <ul>
+        <li><?= Language::get("system.doc.helper_loading.system") ?></li>
+        <li><?= Language::get("system.doc.helper_loading.app") ?></li>
+        <li><?= Language::get("system.doc.helper_loading.runtime") ?></li>
+    </ul>
 </section>
 
 <?php
@@ -36,17 +49,17 @@ $cleanupTargets = [
     'app/routes/api.php',
 ];
 $cleanupTexts = [
-    'modalTitle' => lg('system.doc.cleanup.modal.title'),
-    'warning' => lg('system.doc.cleanup.modal.warning'),
-    'routes' => lg('system.doc.cleanup.modal.routes'),
-    'confirm' => lg('system.doc.cleanup.modal.confirm'),
-    'cancel' => lg('system.doc.cleanup.modal.cancel'),
-    'successTitle' => lg('system.doc.cleanup.success.title'),
-    'successText' => lg('system.doc.cleanup.success.text'),
-    'errorTitle' => lg('system.doc.cleanup.error.title'),
-    'errorText' => lg('system.doc.cleanup.error.text'),
-    'unavailable' => lg('system.doc.cleanup.unavailable'),
-    'requestError' => lg('system.doc.cleanup.request.error'),
+    'modalTitle' => Language::get('system.doc.cleanup.modal.title'),
+    'warning' => Language::get('system.doc.cleanup.modal.warning'),
+    'routes' => Language::get('system.doc.cleanup.modal.routes'),
+    'confirm' => Language::get('system.doc.cleanup.modal.confirm'),
+    'cancel' => Language::get('system.doc.cleanup.modal.cancel'),
+    'successTitle' => Language::get('system.doc.cleanup.success.title'),
+    'successText' => Language::get('system.doc.cleanup.success.text'),
+    'errorTitle' => Language::get('system.doc.cleanup.error.title'),
+    'errorText' => Language::get('system.doc.cleanup.error.text'),
+    'unavailable' => Language::get('system.doc.cleanup.unavailable'),
+    'requestError' => Language::get('system.doc.cleanup.request.error'),
 ];
 ?>
 
@@ -81,8 +94,8 @@ $cleanupTexts = [
     }
 </style>
 <section class="system-cleanup-panel" aria-labelledby="system-cleanup-title">
-    <h2 id="system-cleanup-title"><?= lg('system.doc.cleanup.title') ?></h2>
-    <p><?= lg('system.doc.cleanup.description') ?></p>
+    <h2 id="system-cleanup-title"><?= Language::get('system.doc.cleanup.title') ?></h2>
+    <p><?= Language::get('system.doc.cleanup.description') ?></p>
     <button
         type="button"
         class="system-cleanup-button"
@@ -90,7 +103,7 @@ $cleanupTexts = [
         data-endpoint="<?= htmlspecialchars($cleanupEndpoint) ?>"
         data-nonce="<?= htmlspecialchars($cleanupNonce) ?>"
     >
-        <?= lg('system.doc.cleanup.button') ?>
+        <?= Language::get('system.doc.cleanup.button') ?>
     </button>
 </section>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -464,7 +477,7 @@ $docs = [
     'System\\Core\\PHPAutoload' => [
         [
             'name'    => 'from(string $directory)',
-            'code'    => "use System\\Core\\PHPAutoload;\n\nPHPAutoload::from(path_app_helpers());",
+            'code'    => "use System\\Core\\Path;\nuse System\\Core\\PHPAutoload;\n\nPHPAutoload::from(Path::appHelpers());",
             'comment' => 'system.doc.autoload.code.comment.from',
             'alt'    => "php_autoload_from(path_app_helpers());",
             'desc'    => 'system.doc.autoload.from.desc'
@@ -1103,7 +1116,7 @@ $docs = [
         ],
         [
             'name'    => 'registerRule(string $name, callable $callback)',
-            'code'    => "use System\\Core\\FormValidator;\n\n// Using the class directly\nFormValidator::registerRule('cpf', function(\$value) {\n    return preg_match('/^\\d{11}$/', \$value)\n        ? true\n        : lg('system.doc.form_validator.code.comment.cpf.error');\n});",
+            'code'    => "use System\\Core\\FormValidator;\nuse System\\Core\\Language;\n\n// Using the class directly\nFormValidator::registerRule('cpf', function(\$value) {\n    return preg_match('/^\\d{11}$/', \$value)\n        ? true\n        : Language::get('system.doc.form_validator.code.comment.cpf.error');\n});",
             'comment' => '',
             'alt'    => "form_validator_register_rule('cpf', function(\$value) {\n    return preg_match('/^\\d{11}$/', \$value)\n        ? true\n        : lg('system.doc.form_validator.code.comment.cpf.error');\n});",
             'desc'    => 'system.doc.form_validator.register_rule.desc'
@@ -1155,11 +1168,11 @@ $docs = [
         <details>
             <summary><?= $method['name'] ?></summary>
             <pre><code>
-<?= $method['code'] ?><?php if (!empty($method['comment'])): ?> // <?= lg($method['comment']) ?><?php endif; ?>
+<?= $method['code'] ?><?php if (!empty($method['comment'])): ?> // <?= Language::get($method['comment']) ?><?php endif; ?>
             </code></pre>
-            <?= lg("system.doc.alternatively") ?>
+            <?= Language::get("system.doc.alternatively") ?>
             <pre><code><?= $method['alt'] ?></code></pre>
-            <footer><em><?= lg($method['desc']) ?></em></footer>
+            <footer><em><?= Language::get($method['desc']) ?></em></footer>
         </details>
         <?php endforeach; ?>
     </details>
