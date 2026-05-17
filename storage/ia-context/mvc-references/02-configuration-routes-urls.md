@@ -9,6 +9,8 @@ DEFAULT_LANGUAGE=en
 SYSTEM_TOKEN=
 SYSTEM_HELPERS_AUTOLOAD=true
 APP_HELPERS_AUTOLOAD=true
+APP_KEY=
+VITE_DEV_SERVER=
 
 SESSION_DRIVER=none
 SESSION_DB=
@@ -41,6 +43,8 @@ Important rules:
 - `SYSTEM_TOKEN` protects system API routes such as `/api-system/i18n`; leave it empty to disable those routes. `System\Middlewares\SystemI18nAuth` enforces this token for i18n routes. Vue pages that fetch translations directly receive this token in browser boot data, so use it only for framework utility endpoints, not private user data.
 - `SYSTEM_HELPERS_AUTOLOAD` controls optional helper wrappers from `system/helpers`. It accepts `true`, `1`, `all`, `*`, a list such as `['response','view.php']`, or disabled values such as `false`, `0`, `none`, `off`, `no`, or empty.
 - `APP_HELPERS_AUTOLOAD` controls helpers from `app/helpers` with the same strategy.
+- `APP_KEY` is optional and is currently used by framework code only as a fallback signer for the dangerous cleanup nonce when `SYSTEM_TOKEN` is empty.
+- `VITE_DEV_SERVER` is optional and only affects Vue renders in development; when set, templates load Vite assets from that URL.
 - `SESSION_DRIVER` accepts `files`, `db`, or `none`.
 - `SESSION_DB` optionally selects a named connection for `SESSION_DRIVER=db`; empty uses the default `DB_*` connection.
 - `DB_DRIVER` accepts `mysql`, `pgsql`, or `none` for the default connection.
@@ -221,6 +225,8 @@ In views, for assets:
 Do not write fixed absolute paths such as `/assets/...` when the project may run from a subdirectory.
 
 `BASE_PATH` also applies to route prefixes. For example, `/api`, `/web-system`, and `/api-system` become `/php-mini-mvc/api`, `/php-mini-mvc/web-system`, and `/php-mini-mvc/api-system` when `BASE_PATH=/php-mini-mvc`.
+
+Current host/proxy caution: `Path::siteURL()` builds absolute URLs from request server values and currently reads `HTTP_X_FORWARDED_PROTO` and `HTTP_X_FORWARDED_HOST` when those headers are present. Until trusted-proxy handling is implemented, do not treat generated absolute URLs or redirects as trusted in deployments where clients can spoof forwarded headers.
 
 ## Main Path Helpers
 

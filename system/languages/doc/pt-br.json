@@ -235,13 +235,13 @@
     "doc.view.code.comment.clear":  "remove todas as variáveis compartilhadas da view",
     "doc.view.clear.desc":  "Limpa todas as variáveis compartilhadas da view. Use em testes ou fluxos isolados que não podem herdar estado anterior.",
     "doc.view.code.comment.setTemplate":  "seleciona o template de layout para renders",
-    "doc.view.setTemplate.desc":  "Define o caminho do template relativo a `app/views/templates`, com ou sem `.php`. Valores vazios usam fallback para `/template.php`.",
+    "doc.view.setTemplate.desc":  "Define o caminho do template relativo a `app/views/templates`, com ou sem `.php`. Valores vazios usam fallback para `/template.php`. Caminhos absolutos, traversal, bytes nulos e extensões inesperadas são rejeitados.",
     "doc.view.code.comment.getTemplate":  "retorna o caminho normalizado do template atual",
     "doc.view.getTemplate.desc":  "Retorna o caminho do template atual, inicializando com `/template.php` quando nenhum template foi selecionado.",
     "doc.view.code.comment.renderPage":  "renderiza uma view de página dentro do template",
-    "doc.view.renderPage.desc":  "Renderiza uma página de `app/views/pages` dentro do template atual e retorna a string HTML final. Passe `$data` para variáveis locais.",
+    "doc.view.renderPage.desc":  "Renderiza um caminho de página validado de `app/views/pages` dentro do template atual e retorna a string HTML final. Use caminhos relativos definidos pelo controller, como `user-profile` ou `products/show`, e passe `$data` para variáveis locais.",
     "doc.view.code.comment.renderSystemPage":  "renderiza uma view de página do sistema dentro do template do sistema",
-    "doc.view.renderSystemPage.desc":  "Renderiza uma página de `system/views/pages` dentro do template do sistema e retorna a string HTML final. Passe `$data` para variáveis locais.",
+    "doc.view.renderSystemPage.desc":  "Renderiza um caminho de página validado de `system/views/pages` dentro do template do sistema e retorna a string HTML final. Use caminhos relativos definidos pelo controller e passe `$data` para variáveis locais.",
     "doc.view.code.comment.renderHtml":  "renderiza HTML bruto dentro do template",
     "doc.view.renderHtml.desc":  "Renderiza uma string HTML bruta dentro do template atual e retorna a string HTML final. Útil para conteúdo gerado que ainda precisa do layout.",
     "doc.view.code.comment.renderVue":  "renderiza uma página Vue opcional dentro do template PHP",
@@ -281,5 +281,6 @@
     "doc.cleanup.error.title": "Falha na limpeza",
     "doc.cleanup.error.text": "A requisição de limpeza não pôde ser concluída.",
     "doc.cleanup.unavailable": "SweetAlert não pôde ser carregado.",
-    "doc.cleanup.request.error": "Falha na requisição de limpeza"
+    "doc.cleanup.request.error": "Falha na requisição de limpeza",
+    "doc.cleanup.manual_guard": "Trava manual de segurança: esta ação está bloqueada por um return direto em System\\Controllers\\Maintenance::cleanApp(). Remova esse return manualmente somente quando quiser executar a limpeza."
 }

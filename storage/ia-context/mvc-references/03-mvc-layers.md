@@ -142,6 +142,7 @@ Page rendering:
 
 ```php
 View::render_page('user-profile', ['user' => $user]);
+View::render_page('products/show', ['product' => $product]);
 ```
 
 Optional helper shortcut:
@@ -154,8 +155,12 @@ Flow:
 
 1. Merge global view variables with `$data`.
 2. Run `extract(...)`.
-3. Include the current template.
-4. The template includes the page in `app/views/pages/$page.php`.
+3. Validate and resolve the page path inside the expected pages directory.
+4. Validate and resolve the current template path inside the expected templates directory.
+5. Include the resolved template.
+6. The template includes only the resolved page file path provided by `View`.
+
+PHP page and template names must be developer-owned relative paths such as `user-profile` or `products/show`. `View` rejects absolute paths, `.` and `..` segments, null bytes, unexpected extensions, and resolved files outside the expected view directories. Do not pass raw route, query string, or form input directly as a view name.
 
 System pages are rendered by system controllers through `View::render_system_page()`. The framework documentation home lives at:
 
@@ -192,6 +197,7 @@ Rules:
 - Data passed from PHP becomes props for the Vue page component.
 - The PHP template still owns the HTML shell, layout, footer, and asset loading.
 - Public asset URLs must stay compatible with `BASE_PATH`; use `Path::basePathPublic()` and `Path::siteURL()` or their helper shortcuts instead of hardcoded `/public/...` URLs.
+- PHP page/template names are validated before include operations. Use route/controller decisions to choose them, not direct user input.
 
 ## View Helpers
 

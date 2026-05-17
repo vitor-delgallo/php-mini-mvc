@@ -27,13 +27,17 @@ Rules:
 
 ## Current Points of Attention
 
-- `View::render_page()` and `template.php` include view files without explicit existence validation.
+- `View::render_page()`, `View::render_system_page()`, and `View::setTemplate()` validate PHP view paths before include operations. Keep view names as developer-owned relative paths, not user-provided input.
 - `Language::get()` returns `null` when the key does not exist.
 - `Response::json()` accepts a string as raw JSON, but does not automatically validate whether the string is valid JSON.
 - Sessions must not be used in API routes.
 - Bootables run on every request; do not put heavy logic in them.
 - If the application is in a subdirectory, test all assets and links with `BASE_PATH`.
+- `Path::siteURL()` currently trusts request host/proxy headers enough to use forwarded host/proto values when present. Treat this as a deployment caution until trusted-proxy handling is implemented.
+- Session storage handlers are configured by the framework, but hardened cookie flags are not set by `system/includes/session_handlers.php` yet. Configure PHP session cookie settings for auth-sensitive apps.
+- DB session encryption uses the versioned authenticated `v2` format when `SESSION_ENCRYPT_KEY` is filled. Older deterministic AES-CBC encrypted session rows are intentionally not readable and should be cleared after upgrading.
 - The `Remove and Clean MVC` action in `/web-system` is destructive. It deletes contents from explicit app, Vue, language, log, session, and public asset folders, rewrites app routes, and should not be triggered during routine validation unless the user explicitly wants the app skeleton cleaned.
+- The dangerous cleanup action is blocked by a direct manual safety `return` in `System\Controllers\Maintenance::cleanApp()`. Remove that return only when intentionally cleaning a fresh project skeleton, then add it back or otherwise protect the endpoint.
 
 ## Rules for AI Agents
 

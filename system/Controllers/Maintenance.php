@@ -42,6 +42,12 @@ class Maintenance
         }
 
         try {
+            // Manual safety guard: remove this return only when intentionally running the cleanup tool for a fresh project.
+            return Response::json([
+                'success' => false,
+                'error' => 'manual_cleanup_guard',
+            ], 423);
+
             $result = self::cleanupAppSkeleton();
 
             return Response::json([

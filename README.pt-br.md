@@ -153,6 +153,19 @@ O bootstrap:
 9. Carrega rotas web de `app/routes/web.php` ou rotas API de `app/routes/api.php` com prefixo `/api`.
 10. Despacha a requisição pelo router.
 
+## Documentação do Sistema e Limpeza
+
+A documentação do framework fica disponível em `/web-system`.
+
+A home de documentação inclui a ação `Remove and Clean MVC` para preparar a área da aplicação para um projeto novo. Essa ação é destrutiva, por isso fica bloqueada por um `return` manual de segurança em:
+
+```text
+system/Controllers/Maintenance.php
+System\Controllers\Maintenance::cleanApp()
+```
+
+Para executar a limpeza de forma intencional, abra esse método e remova manualmente o `return` direto antes da chamada de limpeza. Depois de usar, coloque o `return` de volta ou mantenha o endpoint protegido.
+
 ## Rotas
 
 As rotas usam `miladrahimi/phprouter`. Cada arquivo de rota recebe uma variável local `$router`.
@@ -412,6 +425,7 @@ Configure sessões com:
 ```dotenv
 SESSION_DRIVER=none
 SESSION_DB=
+SESSION_ENCRYPT_KEY=
 ```
 
 Drivers suportados:
@@ -421,6 +435,8 @@ Drivers suportados:
 - `none`: sessão desabilitada.
 
 Quando `SESSION_DRIVER=db`, as sessões usam a conexão padrão `DB_*`, a menos que `SESSION_DB` informe uma conexão configurada, como `app`, `auth` ou `robot`. Se a conexão selecionada estiver ausente, incompleta, sem suporte ou desativada, o framework trata como erro interno de configuração.
+
+`SESSION_ENCRYPT_KEY` é opcional e só se aplica a `SESSION_DRIVER=db`. Deixe vazio para armazenar payloads de sessão no DB sem criptografia. Quando preenchido, use pelo menos 32 caracteres aleatórios; o handler de DB criptografa os payloads com formato versionado e autenticado usando libsodium quando disponível, ou OpenSSL AES-256-GCM/AES-256-CBC com HMAC como fallback. Linhas antigas de sessão criptografadas pelo formato AES-CBC determinístico anterior não são lidas; limpe as sessões antigas do DB após atualizar.
 
 Helpers comuns:
 

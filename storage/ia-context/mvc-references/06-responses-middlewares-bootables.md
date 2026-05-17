@@ -108,6 +108,10 @@ POST /web-system/maintenance/clean-app
 
 The controller owns the nonce validation, same-origin check, explicit cleanup target list, route reset, and copy of `system/views/templates/template.php` into `app/views/templates/template.php`.
 
+Nonce signing uses `SYSTEM_TOKEN` when configured, then `APP_KEY` when configured, then a path-derived fallback intended only as a last-resort development value.
+
+The cleanup call is blocked by a direct manual safety `return` inside `System\Controllers\Maintenance::cleanApp()`. Remove that return only when intentionally preparing a fresh project, then add it back or protect the endpoint before exposing the project.
+
 Do not expose this behavior from app routes and do not pass user-provided paths into the cleanup logic.
 
 ## Bootables

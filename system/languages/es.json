@@ -1,5 +1,7 @@
 {
   "system.session.driver.not-found": "Controlador de sesi\u00f3n no definido!",
+  "system.session.encrypt-key.invalid": "SESSION_ENCRYPT_KEY debe tener al menos 32 caracteres cuando la encriptaci\u00f3n de sesi\u00f3n en base de datos est\u00e1 habilitada.",
+  "system.session.encryption.error": "No se pudieron encriptar los datos de sesi\u00f3n.",
   "system.database.driver.not-found": "Controlador de conexi\u00f3n de base de datos no definido!",
   "system.database.parameters.required.info": "No se definieron los siguientes par\u00e1metros obligatorios para la conexi\u00f3n de base de datos: {parameters}",
   "system.database.default.required-for-session.error": "Las sesiones respaldadas por base de datos requieren una conexi\u00f3n de base de datos v\u00e1lida: {connection}",

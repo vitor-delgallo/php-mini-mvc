@@ -13,6 +13,7 @@ use System\Core\View;
 
 View::setTemplate('template');
 $html = View::render_page('user-profile', ['user' => $user]);
+$nested = View::render_page('products/show', ['product' => $product]);
 ```
 
 ## Helper Usage
@@ -50,14 +51,18 @@ view_clear();
 - System page files live under `system/views/pages`.
 - Vue page files live under `resources/vue/pages`.
 - `setTemplate(null)` or an empty value resolves to `/template.php`.
+- PHP page and template paths are validated before include operations.
+- Valid PHP view paths are relative names such as `user-profile` or `products/show`.
+- Absolute paths, `.` and `..` segments, null bytes, unexpected extensions, and files outside the expected view directories are rejected.
 - Passed `$data` is merged with shared globals and extracted into view scope.
 - Vue `$data` is serialized as props/input for the Vue page, and `null` entrypoint resolves to `main.js`.
-- Vue i18n prefixes are serialized into the boot payload only for Vue renders. When `SYSTEM_TOKEN` is configured, `resources/vue/main.js` fetches `/api-system/i18n` with `X-System-Token` and provides `t(key)` to components.
+- Vue i18n prefixes are serialized into the boot payload by the active app template's Vue branch. The current `app/views/templates/template.php` includes `i18n`; preserve that field when replacing or resetting the template. When `SYSTEM_TOKEN` is configured, `resources/vue/main.js` fetches `/api-system/i18n` with `X-System-Token` and provides `t(key)` to components.
 
 ## Notes
 
-- The internal template expects `$page` or `$html` to be available and decide how to include/render content.
+- The internal template receives a resolved `$__viewPageFile` and includes that path instead of reconstructing the path from user-facing values.
 - Use `response_html(view_render_page(...))` in controllers when returning full pages.
+- Do not pass raw route, query string, or form input directly to `render_page()`, `render_system_page()`, or `setTemplate()`.
 - Use `response_html(view_render_system_page(...))` in system controllers when returning framework-owned pages such as `/web-system`.
 - Use `response_html(view_render_vue(...))` only for routes that intentionally opt in to Vue/Vite.
 - Vue/Vite asset URLs must preserve `BASE_PATH` compatibility through `path_base_public()` and `site_url()` rules.

@@ -16,6 +16,7 @@ Keep this document short enough to remain in context by default. Open the docume
 - Use `App\...` namespaces for application code and `System\...` namespaces for framework code.
 - Controllers must return `Psr\Http\Message\ResponseInterface`, through `System\Core\Response` or `response_*()` helpers when helpers are enabled.
 - Views should focus on presentation; do not put business logic in them.
+- PHP view page and template names must be developer-owned relative paths. `System\Core\View` rejects absolute paths, traversal, null bytes, unexpected extensions, and files outside the expected view directories before including PHP files.
 - Models should concentrate data access, queries, and simple persistence rules.
 - Procedural helpers are optional convenience APIs. Framework runtime code should use static `System\...` classes directly, while app code may use helpers when autoloaded.
 - Before creating a new function, class, or dependency, look for an existing helper, core class, or internal pattern.
@@ -24,10 +25,12 @@ Keep this document short enough to remain in context by default. Open the docume
 - Prefer Bootstrap 5 and vanilla JavaScript for traditional front-end work.
 - Use prepared statements whenever SQL is involved; never concatenate user input directly into queries.
 - Preserve `BASE_PATH` compatibility; assets should use `path_base_public()` and absolute URLs should use `site_url()`.
+- `site_url()` / `Path::siteURL()` currently derives protocol and host from request server headers, including forwarded headers when present. Until trusted-proxy handling is implemented, avoid using generated absolute URLs as a security boundary in deployments where clients can spoof host/proxy headers.
 - In route files, declare root handlers with `/`; `RouterLoader` also accepts the exact prefixed URL without a trailing slash for that root route.
 - Translatable UI text should live in `app/languages/*` or `system/languages/*` and be consumed through `System\Core\Language::get()` or `lg()` when helpers are enabled.
 - APIs must not use sessions; the bootstrap uses `NULLHandler` for API requests.
-- The system documentation home includes a dangerous app cleanup action. It is irreversible and should only be used to reset the app skeleton for a fresh project.
+- Session storage drivers are selected by the framework, but cookie hardening flags still depend on PHP/default deployment configuration unless explicitly added in code.
+- The system documentation home includes a dangerous app cleanup action. It is irreversible, currently blocked by a direct manual safety `return` in `System\Controllers\Maintenance::cleanApp()`, and should only be unblocked to reset the app skeleton for a fresh project.
 - Deliver small, testable changes that are consistent with the project's own MVC style.
 
 ## Stack and Dependencies
@@ -37,6 +40,7 @@ Keep this document short enough to remain in context by default. Open the docume
 - **PSR-4** autoloading for the `App\` and `System\` namespaces
 - **miladrahimi/phprouter** for routing
 - **Laminas Diactoros** for PSR-7 responses
+- **Laminas HttpHandlerRunner** is installed as a dependency, but the current bootstrap still emits exception responses manually and relies on the router dispatch flow for normal requests.
 - **vlucas/phpdotenv** for environment variables
 - **PDO** for database access
 
@@ -106,6 +110,8 @@ DEFAULT_LANGUAGE=en
 SYSTEM_TOKEN=
 SYSTEM_HELPERS_AUTOLOAD=true
 APP_HELPERS_AUTOLOAD=true
+APP_KEY=
+VITE_DEV_SERVER=
 
 SESSION_DRIVER=none
 SESSION_DB=
@@ -137,8 +143,11 @@ Quick rules:
 - `SYSTEM_TOKEN`: fixed owner-defined token for protected system API routes. `System\Middlewares\SystemI18nAuth` enforces it for `/api-system/i18n`; empty disables that endpoint. Vue pages that fetch i18n directly receive it in browser boot data, so do not use it to protect private user data.
 - `SYSTEM_HELPERS_AUTOLOAD`: `true` for all system helpers, a specific list such as `['response','view.php']`, or disabled values such as `false`, `0`, `none`, `off`, `no`, or empty.
 - `APP_HELPERS_AUTOLOAD`: `true` for all app helpers, a specific list, or disabled values such as `false`, `0`, `none`, `off`, `no`, or empty.
+- `APP_KEY`: optional project secret. Current framework code uses it only as a fallback signer for the dangerous cleanup nonce when `SYSTEM_TOKEN` is empty, before falling back to a path-derived development value.
+- `VITE_DEV_SERVER`: optional Vue-only development URL. When set, the PHP template loads Vite client and Vue entrypoints from that server instead of `public/build/.vite/manifest.json`.
 - `SESSION_DRIVER`: `files`, `db`, or `none`.
 - `SESSION_DB`: optional named connection for `SESSION_DRIVER=db`; blank uses the default `DB_*` connection.
+- `SESSION_ENCRYPT_KEY`: optional for `SESSION_DRIVER=db`; when filled, it must have at least 32 random characters and stores DB session payloads with a versioned authenticated encryption format. Older deterministic AES-CBC encrypted session rows are not compatible and should be cleared after upgrading.
 - `DB_DRIVER`: `mysql`, `pgsql`, or `none` for the default database connection.
 - `DB_*_<SUFFIX>`: optional named database connections. The lowercase suffix is the connection key, such as `app`, `auth`, or `robot`. Required fields per suffix are `DRIVER`, `HOST`, `NAME`, and `USER`; `PASS`, `PORT`, and `CHARSET` are optional.
 
@@ -217,7 +226,7 @@ It:
 - uses `System\Core\Language::get(...)` to fetch text from `system/languages/doc/*` with `system.doc.*` keys;
 - shows a framework summary;
 - documents helper loading through `SYSTEM_HELPERS_AUTOLOAD` and `APP_HELPERS_AUTOLOAD`;
-- exposes the `Remove and Clean MVC` maintenance button, protected by a short-lived nonce and SweetAlert confirmation;
+- exposes the `Remove and Clean MVC` maintenance button, protected by a short-lived nonce, SweetAlert confirmation, and a direct manual safety `return` that must be removed in `System\Controllers\Maintenance::cleanApp()` before intentional use;
 - defines a `$docs` array with classes, methods, examples, and descriptions;
 - renders those entries as HTML `<details>` sections.
 
@@ -234,7 +243,7 @@ The app root `/` redirects to `/web-system`. With `BASE_PATH=/php-mini-mvc`, the
 
 The system documentation template sends crawler-blocking directives through `robots`, `googlebot`, and `bingbot` meta tags, and `System\Controllers\Home` adds an `X-Robots-Tag` header with `noindex`, `nofollow`, `noarchive`, `nosnippet`, and `noimageindex`.
 
-The dangerous cleanup action is handled by `System\Controllers\Maintenance` at the system web route `/web-system/maintenance/clean-app`. It deletes only the explicit target contents documented in [08-workflows.md](mvc-references/08-workflows.md), rewrites app routes, and keeps system documentation available at `/web-system`.
+The dangerous cleanup action is handled by `System\Controllers\Maintenance` at the system web route `/web-system/maintenance/clean-app`. It is blocked by default by a direct safety `return` inside `cleanApp()`. To run it intentionally, remove that return manually before triggering the action. When unblocked, it deletes only the explicit target contents documented in [08-workflows.md](mvc-references/08-workflows.md), rewrites app routes, and keeps system documentation available at `/web-system`.
 
 ## Main Principle
 

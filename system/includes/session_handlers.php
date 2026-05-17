@@ -47,7 +47,7 @@ if (ConfigSession::isFiles()) {
     $handler = new DBHandler(
         $pdo,
         Globals::env('SESSION_PREFIX'), // optional
-        Globals::env('SESSION_ENCRYPT_KEY') // optional (32 chars)
+        Globals::env('SESSION_ENCRYPT_KEY') // optional, at least 32 random characters when filled
     );
 
     // Register the custom session handler

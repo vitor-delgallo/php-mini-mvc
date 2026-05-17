@@ -235,13 +235,13 @@
     "doc.view.code.comment.clear":  "removes all shared view variables",
     "doc.view.clear.desc":  "Clears every shared view variable. Use it in tests or isolated render flows that must not inherit previous state.",
     "doc.view.code.comment.setTemplate":  "selects the layout template for renders",
-    "doc.view.setTemplate.desc":  "Sets the template path relative to `app/views/templates`, with or without `.php`. Empty values fall back to `/template.php`.",
+    "doc.view.setTemplate.desc":  "Sets the template path relative to `app/views/templates`, with or without `.php`. Empty values fall back to `/template.php`. Absolute paths, traversal, null bytes, and unexpected extensions are rejected.",
     "doc.view.code.comment.getTemplate":  "returns the current normalized template path",
     "doc.view.getTemplate.desc":  "Returns the current template path, initializing it to `/template.php` when no template has been selected.",
     "doc.view.code.comment.renderPage":  "renders a page view inside the template",
-    "doc.view.renderPage.desc":  "Renders a page from `app/views/pages` inside the current template and returns the final HTML string. Pass `$data` for local variables.",
+    "doc.view.renderPage.desc":  "Renders a validated page path from `app/views/pages` inside the current template and returns the final HTML string. Use developer-owned relative paths such as `user-profile` or `products/show`, and pass `$data` for local variables.",
     "doc.view.code.comment.renderSystemPage":  "renders a system page view inside the system template",
-    "doc.view.renderSystemPage.desc":  "Renders a page from `system/views/pages` inside the system template and returns the final HTML string. Pass `$data` for local variables.",
+    "doc.view.renderSystemPage.desc":  "Renders a validated page path from `system/views/pages` inside the system template and returns the final HTML string. Use developer-owned relative paths and pass `$data` for local variables.",
     "doc.view.code.comment.renderHtml":  "renders raw HTML inside the template",
     "doc.view.renderHtml.desc":  "Renders a raw HTML string inside the current template and returns the final HTML string. Useful for generated content that still needs the layout.",
     "doc.view.code.comment.renderVue":  "renders an optional Vue page inside the PHP template",
@@ -281,5 +281,6 @@
     "doc.cleanup.error.title": "Cleanup failed",
     "doc.cleanup.error.text": "The cleanup request could not be completed.",
     "doc.cleanup.unavailable": "SweetAlert could not be loaded.",
-    "doc.cleanup.request.error": "Cleanup request failed"
+    "doc.cleanup.request.error": "Cleanup request failed",
+    "doc.cleanup.manual_guard": "Manual safety lock: this action is blocked by a direct return in System\\Controllers\\Maintenance::cleanApp(). Remove that return manually only when you intentionally want to run the cleanup."
 }

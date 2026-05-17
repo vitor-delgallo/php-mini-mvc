@@ -39,5 +39,7 @@ $userId = session_get('user_id');
 
 ## Notes
 
-- Most methods call `Session::start()` first, so they can throw when sessions are disabled or the request is an API request.
+- Most methods call `Session::start()` first, so they can throw when sessions are disabled or when the current request is blocked from normal session use.
+- App and system API requests are made stateless during bootstrap through `NULLHandler`; do not use session helpers in API routes.
+- Cookie security flags are not configured by `Session` itself. Use PHP/deployment settings or add explicit framework handling before auth-sensitive session use.
 - Session driver checks such as `session_is_db()` belong to `System\Config\Session`; see [05-system-config-session.md](05-system-config-session.md).

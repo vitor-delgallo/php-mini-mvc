@@ -12,6 +12,11 @@ use System\Core\Language;
  * with optional encryption and prefix support.
  */
 class DBHandler implements SessionHandlerInterface {
+    private const ENCRYPTION_FORMAT = 'v2';
+    private const ENCRYPTION_MIN_KEY_LENGTH = 32;
+    private const OPENSSL_GCM_CIPHER = 'aes-256-gcm';
+    private const OPENSSL_CBC_CIPHER = 'aes-256-cbc';
+
     /**
      * PDO connection instance used to interact with the database.
      */
@@ -30,8 +35,8 @@ class DBHandler implements SessionHandlerInterface {
     private string $prefix;
 
     /**
-     * Optional encryption key for securing session data at rest.
-     * When set, session payloads are encrypted using AES-256-CBC.
+     * Optional derived binary encryption key for securing session data at rest.
+     * When set, session payloads are encrypted with authenticated encryption.
      */
     private ?string $encryptionKey;
 
@@ -42,7 +47,7 @@ class DBHandler implements SessionHandlerInterface {
         $this->pdo = $pdo;
         $this->driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
         $this->prefix = $prefix ?? '';
-        $this->encryptionKey = $encryptionKey;
+        $this->encryptionKey = self::resolveEncryptionKey($encryptionKey);
 
         $this->ensureTableExists();
     }
@@ -160,22 +165,210 @@ class DBHandler implements SessionHandlerInterface {
     }
 
     /**
-     * Encrypts session data using AES-256-CBC and base64 encoding.
+     * Encrypts session data using a versioned authenticated format.
      */
     private function encrypt(string $data): string {
-        if(empty($data)) {
+        if ($data === '' || $this->encryptionKey === null) {
             return "";
         }
-        return base64_encode(openssl_encrypt($data, 'aes-256-cbc', $this->encryptionKey, 0, substr($this->encryptionKey, 0, 16)));
+
+        if (self::canUseSodium()) {
+            $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+            $ciphertext = sodium_crypto_secretbox($data, $nonce, $this->encryptionKey);
+
+            return implode(':', [
+                self::ENCRYPTION_FORMAT,
+                'sodium',
+                self::encode($nonce),
+                self::encode($ciphertext),
+            ]);
+        }
+
+        if (in_array(self::OPENSSL_GCM_CIPHER, openssl_get_cipher_methods(), true)) {
+            $nonce = random_bytes(12);
+            $tag = '';
+            $ciphertext = openssl_encrypt(
+                $data,
+                self::OPENSSL_GCM_CIPHER,
+                $this->encryptionKey,
+                OPENSSL_RAW_DATA,
+                $nonce,
+                $tag,
+                self::ENCRYPTION_FORMAT . ':gcm',
+                16
+            );
+
+            if (!is_string($ciphertext) || $tag === '') {
+                throw new \RuntimeException(Language::get('system.session.encryption.error') ?? 'Session encryption failed.');
+            }
+
+            return implode(':', [
+                self::ENCRYPTION_FORMAT,
+                'gcm',
+                self::encode($nonce),
+                self::encode($tag),
+                self::encode($ciphertext),
+            ]);
+        }
+
+        $ivLength = openssl_cipher_iv_length(self::OPENSSL_CBC_CIPHER);
+        if ($ivLength === false) {
+            throw new \RuntimeException(Language::get('system.session.encryption.error') ?? 'Session encryption failed.');
+        }
+
+        $iv = random_bytes($ivLength);
+        $ciphertext = openssl_encrypt(
+            $data,
+            self::OPENSSL_CBC_CIPHER,
+            $this->encryptionKey,
+            OPENSSL_RAW_DATA,
+            $iv
+        );
+
+        if (!is_string($ciphertext)) {
+            throw new \RuntimeException(Language::get('system.session.encryption.error') ?? 'Session encryption failed.');
+        }
+
+        $mac = hash_hmac('sha256', self::ENCRYPTION_FORMAT . ':cbc:' . $iv . $ciphertext, $this->encryptionKey, true);
+
+        return implode(':', [
+            self::ENCRYPTION_FORMAT,
+            'cbc',
+            self::encode($iv),
+            self::encode($ciphertext),
+            self::encode($mac),
+        ]);
     }
 
     /**
      * Decrypts previously encrypted session data.
      */
     private function decrypt(string $data): string {
-        if(empty($data)) {
+        if ($data === '' || $this->encryptionKey === null) {
             return "";
         }
-        return openssl_decrypt(base64_decode($data), 'aes-256-cbc', $this->encryptionKey, 0, substr($this->encryptionKey, 0, 16)) ?: '';
+
+        $parts = explode(':', $data);
+        if (($parts[0] ?? '') !== self::ENCRYPTION_FORMAT) {
+            return '';
+        }
+
+        return match ($parts[1] ?? '') {
+            'sodium' => $this->decryptSodium($parts),
+            'gcm' => $this->decryptGcm($parts),
+            'cbc' => $this->decryptCbc($parts),
+            default => '',
+        };
+    }
+
+    private static function resolveEncryptionKey(?string $encryptionKey): ?string {
+        $encryptionKey = is_string($encryptionKey) ? trim($encryptionKey) : '';
+
+        if ($encryptionKey === '') {
+            return null;
+        }
+
+        if (strlen($encryptionKey) < self::ENCRYPTION_MIN_KEY_LENGTH) {
+            throw new \RuntimeException(Language::get('system.session.encrypt-key.invalid') ?? 'Invalid session encryption key.');
+        }
+
+        return hash('sha256', $encryptionKey, true);
+    }
+
+    private static function canUseSodium(): bool {
+        return function_exists('sodium_crypto_secretbox')
+            && function_exists('sodium_crypto_secretbox_open')
+            && defined('SODIUM_CRYPTO_SECRETBOX_NONCEBYTES');
+    }
+
+    private static function encode(string $value): string {
+        return base64_encode($value);
+    }
+
+    private static function decode(string $value): ?string {
+        $decoded = base64_decode($value, true);
+
+        return is_string($decoded) ? $decoded : null;
+    }
+
+    /**
+     * @param array<int, string> $parts
+     */
+    private function decryptSodium(array $parts): string {
+        if (!self::canUseSodium() || count($parts) !== 4) {
+            return '';
+        }
+
+        $nonce = self::decode($parts[2]);
+        $ciphertext = self::decode($parts[3]);
+
+        if ($nonce === null || $ciphertext === null) {
+            return '';
+        }
+
+        $plaintext = sodium_crypto_secretbox_open($ciphertext, $nonce, $this->encryptionKey);
+
+        return is_string($plaintext) ? $plaintext : '';
+    }
+
+    /**
+     * @param array<int, string> $parts
+     */
+    private function decryptGcm(array $parts): string {
+        if (count($parts) !== 5 || !in_array(self::OPENSSL_GCM_CIPHER, openssl_get_cipher_methods(), true)) {
+            return '';
+        }
+
+        $nonce = self::decode($parts[2]);
+        $tag = self::decode($parts[3]);
+        $ciphertext = self::decode($parts[4]);
+
+        if ($nonce === null || $tag === null || $ciphertext === null) {
+            return '';
+        }
+
+        $plaintext = openssl_decrypt(
+            $ciphertext,
+            self::OPENSSL_GCM_CIPHER,
+            $this->encryptionKey,
+            OPENSSL_RAW_DATA,
+            $nonce,
+            $tag,
+            self::ENCRYPTION_FORMAT . ':gcm'
+        );
+
+        return is_string($plaintext) ? $plaintext : '';
+    }
+
+    /**
+     * @param array<int, string> $parts
+     */
+    private function decryptCbc(array $parts): string {
+        if (count($parts) !== 5) {
+            return '';
+        }
+
+        $iv = self::decode($parts[2]);
+        $ciphertext = self::decode($parts[3]);
+        $mac = self::decode($parts[4]);
+
+        if ($iv === null || $ciphertext === null || $mac === null) {
+            return '';
+        }
+
+        $expectedMac = hash_hmac('sha256', self::ENCRYPTION_FORMAT . ':cbc:' . $iv . $ciphertext, $this->encryptionKey, true);
+        if (!hash_equals($expectedMac, $mac)) {
+            return '';
+        }
+
+        $plaintext = openssl_decrypt(
+            $ciphertext,
+            self::OPENSSL_CBC_CIPHER,
+            $this->encryptionKey,
+            OPENSSL_RAW_DATA,
+            $iv
+        );
+
+        return is_string($plaintext) ? $plaintext : '';
     }
 }

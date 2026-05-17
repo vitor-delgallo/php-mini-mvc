@@ -60,6 +60,7 @@ $cleanupTexts = [
     'errorText' => Language::get('system.doc.cleanup.error.text'),
     'unavailable' => Language::get('system.doc.cleanup.unavailable'),
     'requestError' => Language::get('system.doc.cleanup.request.error'),
+    'manualGuard' => Language::get('system.doc.cleanup.manual_guard'),
 ];
 ?>
 
@@ -96,6 +97,7 @@ $cleanupTexts = [
 <section class="system-cleanup-panel" aria-labelledby="system-cleanup-title">
     <h2 id="system-cleanup-title"><?= Language::get('system.doc.cleanup.title') ?></h2>
     <p><?= Language::get('system.doc.cleanup.description') ?></p>
+    <p><strong><?= Language::get('system.doc.cleanup.manual_guard') ?></strong></p>
     <button
         type="button"
         class="system-cleanup-button"
@@ -178,6 +180,10 @@ $cleanupTexts = [
                     const payload = await response.json();
 
                     if (!response.ok || !payload.success) {
+                        if (payload.error === 'manual_cleanup_guard') {
+                            throw new Error(texts.manualGuard);
+                        }
+
                         throw new Error(payload.message || payload.error || texts.requestError);
                     }
 

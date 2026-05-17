@@ -153,6 +153,19 @@ The bootstrap:
 9. Loads web routes from `app/routes/web.php` or API routes from `app/routes/api.php` with the `/api` prefix.
 10. Dispatches the request through the router.
 
+## System Documentation and Cleanup
+
+The framework documentation is available at `/web-system`.
+
+The documentation home includes the `Remove and Clean MVC` action to prepare the application area for a fresh project. This action is destructive, so it is blocked by a manual safety return inside:
+
+```text
+system/Controllers/Maintenance.php
+System\Controllers\Maintenance::cleanApp()
+```
+
+To run the cleanup intentionally, open that method and manually remove the direct safety `return` before the cleanup call. Add the return back or keep the endpoint protected after using it.
+
 ## Routing
 
 Routes use `miladrahimi/phprouter`. Each route file receives a local `$router` variable.
@@ -412,6 +425,7 @@ Configure sessions with:
 ```dotenv
 SESSION_DRIVER=none
 SESSION_DB=
+SESSION_ENCRYPT_KEY=
 ```
 
 Supported drivers:
@@ -421,6 +435,8 @@ Supported drivers:
 - `none`: session handling disabled.
 
 When `SESSION_DRIVER=db`, sessions use the default `DB_*` connection unless `SESSION_DB` names another configured connection, such as `app`, `auth`, or `robot`. If the selected connection is missing, incomplete, unsupported, or disabled, the framework treats it as an internal configuration error.
+
+`SESSION_ENCRYPT_KEY` is optional and only applies to `SESSION_DRIVER=db`. Leave it blank to store DB session payloads unencrypted. When filled, use at least 32 random characters; the DB handler encrypts payloads with a versioned authenticated format using libsodium when available, otherwise OpenSSL AES-256-GCM or AES-256-CBC with HMAC. Older encrypted DB session rows from the previous deterministic AES-CBC format are not read; clear existing encrypted session rows after upgrading.
 
 Common helpers:
 

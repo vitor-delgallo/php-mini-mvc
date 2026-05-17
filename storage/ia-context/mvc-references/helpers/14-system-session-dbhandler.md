@@ -29,7 +29,7 @@ The PDO instance comes from the database connection selected for sessions:
 
 | Method | Accepts | Returns |
 | --- | --- | --- |
-| `__construct(PDO $pdo, ?string $prefix = null, ?string $encryptionKey = null)` | PDO connection, optional session ID prefix, optional AES-256-CBC encryption key. | A session handler instance. Also creates the `sessions` table if needed. |
+| `__construct(PDO $pdo, ?string $prefix = null, ?string $encryptionKey = null)` | PDO connection, optional session ID prefix, optional encryption key with at least 32 characters when filled. | A session handler instance. Also creates the `sessions` table if needed. |
 | `open($path, $name): bool` | Native PHP session open arguments. Not used by this implementation. | `true`. |
 | `close(): bool` | No arguments. | `true`. |
 | `read($id): string` | Session ID without prefix. | Session payload string, decrypted when an encryption key is configured. |
@@ -43,7 +43,8 @@ The PDO instance comes from the database connection selected for sessions:
 - Applies `$prefix` to stored session IDs.
 - Stores `data`, `ip`, `user_agent`, and `updated_at`.
 - Uses MySQL `ON DUPLICATE KEY UPDATE` or PostgreSQL `ON CONFLICT`.
-- Optional encryption uses `openssl_encrypt()` with `aes-256-cbc` and the first 16 characters of the key as IV.
+- Optional encryption uses the versioned `v2` authenticated format: libsodium `secretbox` when available, OpenSSL AES-256-GCM when available, or OpenSSL AES-256-CBC with HMAC as a fallback.
+- Tampered encrypted payloads fail closed and read as an empty session. Rows encrypted by the older deterministic AES-CBC format are intentionally not readable after the v2 upgrade.
 
 ## Notes
 

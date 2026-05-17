@@ -1,4 +1,6 @@
 {
+  "system.session.encrypt-key.invalid": "SESSION_ENCRYPT_KEY deve ter pelo menos 32 caracteres quando a criptografia de sess\u00e3o em banco estiver habilitada.",
+  "system.session.encryption.error": "N\u00e3o foi poss\u00edvel criptografar os dados da sess\u00e3o.",
   "system.session.driver.not-found": "Driver da sessão não definido!",
   "system.database.driver.not-found": "Driver de conexão com o banco de dados não definido!",
   "system.database.parameters.required.info": "Os seguintes parâmetros obrigatórios para conexão com o banco de dados não foram definidos: {parameters}",

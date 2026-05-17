@@ -58,6 +58,7 @@ return response_html(view_render_vue('account/Profile', [
 - The optional fourth argument accepts one i18n prefix or a list of prefixes requested by the Vue page.
 - `resources/vue/App.vue` loads pages with `import.meta.glob('./pages/**/*.vue')`.
 - The PHP template still controls the full HTML shell and decides where the Vue mount is printed.
+- The active app template must serialize the `i18n` boot payload for Vue translation fetches to run. The current `app/views/templates/template.php` does this in its Vue branch.
 
 Example file:
 
@@ -161,6 +162,8 @@ const t = inject('t', (key) => key);
 If i18n is disabled, the token is empty, a fetch fails, or a key is missing, Vue still mounts and `t(key)` returns the key itself.
 
 Security note: frontend i18n fetches expose `SYSTEM_TOKEN` to the browser. Use this token only for framework utility endpoints such as translation subsets, not private user data. Use a server-side proxy or authenticated app endpoint for stronger protection.
+
+Template caution: `View::render_vue()` renders through the current app template. If `app/views/templates/template.php` is replaced, reset by the cleanup tool, or copied from `system/views/templates/template.php`, preserve the Vue branch that serializes `page`, `props`, `meta`, and `i18n` into `#php-mini-mvc-vue-data`.
 
 ## Development And Production Assets
 

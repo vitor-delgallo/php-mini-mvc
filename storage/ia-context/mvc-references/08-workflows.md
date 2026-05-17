@@ -105,8 +105,17 @@ Protection:
 
 - the endpoint only accepts POST;
 - the home page generates a short-lived nonce;
-- when `SYSTEM_TOKEN` exists, it is used to sign the nonce;
+- nonce signing uses `SYSTEM_TOKEN` when configured, then `APP_KEY` when configured, then a path-derived fallback intended only as a last-resort development value;
 - the SweetAlert confirmation locks the confirm button for 10 seconds.
+- the destructive cleanup call is blocked by a direct manual safety `return` in `System\Controllers\Maintenance::cleanApp()`.
+
+Manual unlock:
+
+1. Open `system/Controllers/Maintenance.php`.
+2. Find `System\Controllers\Maintenance::cleanApp()`.
+3. Remove the direct safety `return` immediately before the `cleanupAppSkeleton()` call.
+4. Run the cleanup intentionally from `/web-system`.
+5. Add the safety return back or protect the endpoint before exposing the project again.
 
 Cleaned folders:
 
@@ -120,7 +129,6 @@ app/languages/
 app/views/pages/
 app/views/templates/
 resources/vue/pages/
-languages/app/
 storage/logs/
 storage/sessions/
 public/assets/css/
@@ -134,6 +142,7 @@ After cleanup:
 - app MVC folders contain `.gitkeep`;
 - `app/views/templates/` contains `.gitkeep` plus a fresh copy of `system/views/templates/template.php`;
 - `resources/vue/pages/` and app language folders receive `.gitkeep` when cleaned;
+- legacy `languages/app/` is skipped unless that old root exists; runtime translations use `app/languages/` and `system/languages/`;
 - `storage/logs/`, `storage/sessions/`, and selected public asset folders remain as directories but are emptied;
 - `app/routes/web.php` keeps only a root redirect to `/web-system` using `\System\Core\Response::redirect('/web-system')`;
 - `app/routes/api.php` is reset to a minimal no-route file.

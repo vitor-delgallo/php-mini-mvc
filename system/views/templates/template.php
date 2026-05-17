@@ -186,10 +186,10 @@ if ($vueRender !== null) {
     <main>
         <div class="container">
             <?php
-            if (!empty($page)) {
-                include $__viewPagesPath . '/' . $page . '.php';
-            } elseif (!empty($html)) {
-                echo $html;
+            if (!empty($__viewPageFile)) {
+                include $__viewPageFile;
+            } elseif ($__viewHtml !== null) {
+                echo $__viewHtml;
             } elseif ($vueRender !== null) {
                 $vueBootPayload = [
                     'page' => $vueRender['page'] ?? '',

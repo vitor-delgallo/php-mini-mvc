@@ -1,5 +1,7 @@
 {
   "system.session.driver.not-found": "Session driver not defined!",
+  "system.session.encrypt-key.invalid": "SESSION_ENCRYPT_KEY must have at least 32 characters when DB session encryption is enabled.",
+  "system.session.encryption.error": "Unable to encrypt session data.",
   "system.database.driver.not-found": "Database connection driver not defined!",
   "system.database.parameters.required.info": "The following required parameters for database connection were not defined: {parameters}",
   "system.database.default.required-for-session.error": "Database-backed sessions require a valid database connection: {connection}",

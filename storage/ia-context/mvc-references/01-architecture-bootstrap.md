@@ -19,6 +19,7 @@ The goal is to keep the structure simple, predictable, low-dependency, and easy 
 - **PSR-4** for `App\` and `System\`
 - **miladrahimi/phprouter** for routes
 - **Laminas Diactoros** for PSR-7 responses
+- **Laminas HttpHandlerRunner** is installed, but the current bootstrap still emits exception responses manually and lets the router dispatch normal responses.
 - **vlucas/phpdotenv** for `.env`
 - **PDO** for database access
 
@@ -91,18 +92,20 @@ General flow:
 2. Include `system/includes/error_handlers.php`.
 3. Run `Globals::loadEnv()`.
 4. Read variables from `.env`.
-5. Detect whether the request is an API request with `Globals::isApiRequest()`.
+5. Detect request area with `Globals::isSystemApiRequest()`, `Globals::isSystemWebRequest()`, and `Globals::isApiRequest()`.
 6. Configure error display according to `APP_ENV`.
 7. Load system helpers from `system/helpers` according to `SYSTEM_HELPERS_AUTOLOAD`.
 8. Load app helpers from `app/helpers` according to `APP_HELPERS_AUTOLOAD`.
 9. Configure sessions:
    - web: use `system/includes/session_handlers.php`;
-   - API: disable cookies and use `System\Session\NULLHandler`.
+   - app and system API: disable cookies/trans SID and use `System\Session\NULLHandler`.
 10. Automatically connect to the default database when `DB_DRIVER` is valid; named database connections are opened lazily.
 11. Execute bootable classes in `app/Bootable` through `PHPAutoload::boot()`.
 12. Load routes:
-   - web: `app/routes/web.php`;
-   - API: `app/routes/api.php` with the `/api` prefix.
+   - system API request: `system/routes/api.php` with the `/api-system` prefix;
+   - system web request: `system/routes/web.php` with the `/web-system` prefix;
+   - app API request: `app/routes/api.php` with the `/api` prefix;
+   - normal app web request: `app/routes/web.php`.
 13. Dispatch the route through `RouterLoader`.
 14. On `RouteNotFoundException`, return HTML 404.
 15. On other errors, return HTML 500; outside production, show details and write the daily log.

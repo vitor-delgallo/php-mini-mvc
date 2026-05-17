@@ -2,6 +2,7 @@
 namespace System\Core;
 
 use InvalidArgumentException;
+use RuntimeException;
 use System\Config\Globals;
 
 /**
@@ -85,33 +86,8 @@ class View {
      * @param string|null $relativePath Path relative to the templates directory.
      */
     public static function setTemplate(?string $relativePath = null): void {
-        // Use provided template path or default to empty string
-        self::$template = $relativePath ?? "";
-
-        // Remove trailing slashes or backslashes
-        self::$template = rtrim(self::$template, "/");
-        self::$template = rtrim(self::$template, "\\");
-
-        // If ends with ".php", remove the extension
-        if (str_ends_with(self::$template, ".php")) {
-            self::$template = substr(self::$template, 0, -4);
-        }
-
-        // Remove leading slashes or backslashes
-        self::$template = ltrim(self::$template, "/");
-        self::$template = ltrim(self::$template, "\\");
-
-        // Normalize directory separators to forward slashes
-        self::$template = str_replace("\\", "/", self::$template);
-
-        // Final path formatting:
-        // - If template is still empty, fallback to "/template.php"
-        // - Otherwise, prepend "/" and append ".php" extension
-        if(empty(self::$template)) {
-            self::$template = "/template.php";
-        } else {
-            self::$template = "/" . self::$template . ".php";
-        }
+        $template = self::normalizePhpViewPath($relativePath, 'template', true);
+        self::$template = "/" . $template . ".php";
     }
 
     /**
@@ -149,7 +125,18 @@ class View {
         extract(array_merge(self::getGlobals(), $data));
 
         $__viewPagesPath = $pagesPath ?? Path::appViewsPages();
-        $__viewTemplatePath = ($templatesPath ?? Path::appViewsTemplates()) . self::getTemplate();
+        $__viewTemplatesPath = $templatesPath ?? Path::appViewsTemplates();
+        $__viewPage = $page !== null ? self::normalizePhpViewPath($page, 'page') : null;
+        $__viewPageFile = $__viewPage !== null
+            ? self::resolvePhpViewFile($__viewPagesPath, $__viewPage, 'page')
+            : null;
+        $__viewHtml = $html;
+        $__viewTemplate = self::normalizePhpViewPath(ltrim(self::getTemplate(), '/'), 'template', true);
+        $__viewTemplatePath = self::resolvePhpViewFile($__viewTemplatesPath, $__viewTemplate, 'template');
+
+        // Keep legacy template variables available without letting render data override internal paths.
+        $page = $__viewPage;
+        $html = $__viewHtml;
 
         // Start output buffering to capture the output of the included template
         ob_start();
@@ -159,6 +146,87 @@ class View {
 
         // Return the rendered HTML as a string
         return ob_get_clean();
+    }
+
+    /**
+     * Normalize a PHP page/template path and reject traversal or absolute paths.
+     */
+    private static function normalizePhpViewPath(?string $path, string $label, bool $allowDefault = false): string {
+        if ($path === null || trim($path) === '') {
+            if ($allowDefault) {
+                return 'template';
+            }
+
+            throw new InvalidArgumentException("Invalid {$label} path.");
+        }
+
+        if (str_contains($path, "\0")) {
+            throw new InvalidArgumentException("Invalid {$label} path.");
+        }
+
+        $normalized = str_replace("\\", "/", trim($path));
+
+        if (
+            $normalized === '' ||
+            str_starts_with($normalized, '/') ||
+            str_starts_with($normalized, '//') ||
+            preg_match('#^[A-Za-z]:/#', $normalized)
+        ) {
+            throw new InvalidArgumentException("Invalid {$label} path.");
+        }
+
+        $normalized = trim($normalized, '/');
+        $normalized = preg_replace('#/+#', '/', $normalized) ?? '';
+
+        $extension = pathinfo($normalized, PATHINFO_EXTENSION);
+        if ($extension !== '') {
+            if (strtolower($extension) !== 'php') {
+                throw new InvalidArgumentException("Invalid {$label} path extension.");
+            }
+
+            $normalized = substr($normalized, 0, -1 * (strlen($extension) + 1));
+        }
+
+        $segments = explode('/', $normalized);
+        foreach ($segments as $segment) {
+            if (
+                $segment === '' ||
+                $segment === '.' ||
+                $segment === '..' ||
+                !preg_match('/^[A-Za-z0-9_-]+$/', $segment)
+            ) {
+                throw new InvalidArgumentException("Invalid {$label} path.");
+            }
+        }
+
+        return implode('/', $segments);
+    }
+
+    /**
+     * Resolve a normalized PHP view path and ensure it remains inside the base directory.
+     */
+    private static function resolvePhpViewFile(string $basePath, string $relativePath, string $label): string {
+        $base = realpath($basePath);
+
+        if ($base === false || !is_dir($base)) {
+            throw new RuntimeException("Invalid {$label} base path.");
+        }
+
+        $candidate = $base . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativePath) . '.php';
+        $resolved = realpath($candidate);
+
+        if ($resolved === false || !is_file($resolved) || !self::isPathInside($resolved, $base)) {
+            throw new RuntimeException("Invalid {$label} file.");
+        }
+
+        return $resolved;
+    }
+
+    private static function isPathInside(string $path, string $basePath): bool {
+        $normalizedPath = str_replace("\\", "/", $path);
+        $normalizedBase = rtrim(str_replace("\\", "/", $basePath), '/') . '/';
+
+        return str_starts_with($normalizedPath, $normalizedBase);
     }
 
     /**

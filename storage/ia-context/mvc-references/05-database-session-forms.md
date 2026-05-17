@@ -134,6 +134,20 @@ When `SESSION_DRIVER=db`, the selected database connection comes from `SESSION_D
 
 If DB sessions are enabled and the selected connection is missing, incomplete, unsupported, or `none`, the bootstrap throws a translated internal configuration error.
 
+DB session payload encryption is optional:
+
+```dotenv
+SESSION_ENCRYPT_KEY=
+```
+
+When `SESSION_ENCRYPT_KEY` is empty, DB session payloads are stored without encryption. When filled, it must contain at least 32 random characters. The DB handler derives binary key material from that value and writes encrypted payloads with a versioned authenticated format:
+
+- libsodium `secretbox` when the PHP sodium extension is available;
+- otherwise OpenSSL AES-256-GCM when available;
+- otherwise OpenSSL AES-256-CBC with HMAC authentication.
+
+Tampered encrypted payloads fail closed and read as an empty session. Existing rows encrypted by the older deterministic AES-CBC format are not readable by the authenticated format; clear old encrypted rows from the `sessions` table after upgrading. This encryption protects stored session payloads at rest, but it does not replace authorization checks or login/session regeneration rules.
+
 Helpers:
 
 ```php
@@ -162,7 +176,9 @@ session_regenerate();
 session_save();
 ```
 
-Important: **do not use sessions in API routes**. The bootstrap uses `NULLHandler` for APIs, and `Session::start()` blocks APIs through `Globals::isApiRequest()`.
+Important: **do not use sessions in API routes**. The bootstrap treats both app and system API requests as stateless by registering `NULLHandler` and disabling cookies/trans SID before route dispatch.
+
+Current cookie caution: the bootstrap selects the storage handler and disables cookies for API requests, but it does not yet set hardened PHP cookie defaults such as `session.cookie_secure`, `session.cookie_httponly`, or `session.cookie_samesite`. Configure those at deployment level or add explicit framework handling before relying on sessions for authentication-sensitive flows.
 
 ## FormValidator
 

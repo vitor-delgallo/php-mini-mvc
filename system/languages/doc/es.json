@@ -235,13 +235,13 @@
   "doc.view.code.comment.clear": "elimina todas las variables compartidas de vista",
   "doc.view.clear.desc": "Limpia todas las variables compartidas de vista. \u00dasalo en pruebas o flujos de render aislados que no deben heredar estado anterior.",
   "doc.view.code.comment.setTemplate": "selecciona la plantilla de layout para renders",
-  "doc.view.setTemplate.desc": "Define la ruta de plantilla relativa a `app/views/templates`, con o sin `.php`. Los valores vac\u00edos vuelven a `/template.php`.",
+  "doc.view.setTemplate.desc": "Define la ruta de plantilla relativa a `app/views/templates`, con o sin `.php`. Los valores vac\u00edos vuelven a `/template.php`. Se rechazan rutas absolutas, traversal, bytes nulos y extensiones inesperadas.",
   "doc.view.code.comment.getTemplate": "devuelve la ruta de plantilla normalizada actual",
   "doc.view.getTemplate.desc": "Devuelve la ruta de plantilla actual, inicializ\u00e1ndola en `/template.php` cuando no se ha seleccionado ninguna plantilla.",
   "doc.view.code.comment.renderPage": "renderiza una vista de p\u00e1gina dentro de la plantilla",
-  "doc.view.renderPage.desc": "Renderiza una p\u00e1gina desde `app/views/pages` dentro de la plantilla actual y devuelve el string HTML final. Pasa `$data` para variables locales.",
+  "doc.view.renderPage.desc": "Renderiza una ruta de p\u00e1gina validada desde `app/views/pages` dentro de la plantilla actual y devuelve el string HTML final. Usa rutas relativas definidas por el controller, como `user-profile` o `products/show`, y pasa `$data` para variables locales.",
   "doc.view.code.comment.renderSystemPage": "renderiza una vista de p\u00e1gina del sistema dentro de la plantilla del sistema",
-  "doc.view.renderSystemPage.desc": "Renderiza una p\u00e1gina desde `system/views/pages` dentro de la plantilla del sistema y devuelve el string HTML final. Pasa `$data` para variables locales.",
+  "doc.view.renderSystemPage.desc": "Renderiza una ruta de p\u00e1gina validada desde `system/views/pages` dentro de la plantilla del sistema y devuelve el string HTML final. Usa rutas relativas definidas por el controller y pasa `$data` para variables locales.",
   "doc.view.code.comment.renderHtml": "renderiza HTML crudo dentro de la plantilla",
   "doc.view.renderHtml.desc": "Renderiza un string HTML crudo dentro de la plantilla actual y devuelve el string HTML final. \u00datil para contenido generado que a\u00fan necesita el layout.",
   "doc.view.code.comment.renderVue": "renderiza una p\u00e1gina Vue opcional dentro de la plantilla PHP",
@@ -281,5 +281,6 @@
   "doc.cleanup.error.title": "Falló la limpieza",
   "doc.cleanup.error.text": "No se pudo completar la solicitud de limpieza.",
   "doc.cleanup.unavailable": "No se pudo cargar SweetAlert.",
-  "doc.cleanup.request.error": "Falló la solicitud de limpieza"
+  "doc.cleanup.request.error": "Falló la solicitud de limpieza",
+  "doc.cleanup.manual_guard": "Bloqueo manual de seguridad: esta acción está bloqueada por un return directo en System\\Controllers\\Maintenance::cleanApp(). Elimina ese return manualmente solo cuando quieras ejecutar la limpieza."
 }
