@@ -27,8 +27,6 @@ This file controls project planning and execution.
 - Every plan must list application files or directories to inspect before editing.
 - Every plan must list likely files to create or change. If exact files are not knowable yet, list the decision that must be answered first.
 - Every plan must define expected QA evidence before delivery.
-- Every plan that affects packages must read `storage/ia-context/package.md` and prefer the mandatory package baseline.
-- Every plan that affects database behavior must read `storage/ia-context/database_standards.md` and the focused database reference files.
 - At the end of executed work, update `storage/ia-context` files when implementation changes project standards, database shape, roadmap status, or reusable knowledge.
 
 ## Required Plan Sections
