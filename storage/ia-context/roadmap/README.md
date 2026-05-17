@@ -1,26 +1,61 @@
-# Roadmap
+# Roadmap Workflow
 
-This directory stores the implementation roadmap for the project.
+This file controls project planning and execution.
 
-## How to Use This Roadmap
+## Core Rule
 
-1. Choose the task from the roadmap summary below.
-2. Open the linked task plan in `storage/ia-context/roadmap/references/`.
-3. Read the specific task plan before starting any implementation work.
-4. After reading the task plan, check `storage/ia-context/mvc.md` for the project context needed to implement that task.
-5. Treat each task plan as standalone. Do not assume knowledge from previous roadmap plans.
+- Do not infer missing requirements in roadmap work.
+- Planning may contain open questions from the AI.
+- Any unresolved open question blocks approval and execution.
+- If a user says to approve a plan without answering existing questions, ask again before approval. Do not mark it approved and do not execute it.
+- If the user wants the AI to decide, the roadmap must record the exact delegated decision and the user must approve that recorded decision before execution.
 
-## File Rules
+## Status Tags
 
-- Keep this README as the roadmap summary.
-- Store detailed task plans in `storage/ia-context/roadmap/references/`.
-- Write all roadmap files in English.
-- Keep each file small, with a maximum of 200 lines.
-- Update this README whenever a new roadmap task plan is added.
-- Each task plan must include enough context to be executed independently.
+- `[PLANNING]`: the task is still being shaped, may contain AI questions, and must not be executed.
+- `[APPROVED]`: the only status that makes a task actionable.
+- `[CONCLUDED]`: the task has been completed and must not be selected as next work.
+- `[EXAMPLE]`: documentation example only. It shows the expected format and must never be executed as project work.
 
-## Roadmap Summary
+## Workflow
 
+- For any request related to roadmap, planning, next tasks, backlog, or implementation order, read this file first.
+- Detailed plans live in `storage/ia-context/roadmap/references/`.
+- Use numeric kebab-case names such as `001-create-login.md` or `002-configure-user-session.md`.
+- Every plan must be self-contained and readable by an AI that knows nothing except the context files named in the plan.
+- Every plan must list required context files to read first.
+- Every plan must list application files or directories to inspect before editing.
+- Every plan must list likely files to create or change. If exact files are not knowable yet, list the decision that must be answered first.
+- Every plan must define expected QA evidence before delivery.
+- Every plan that affects packages must read `storage/ia-context/package.md` and prefer the mandatory package baseline.
+- Every plan that affects database behavior must read `storage/ia-context/database_standards.md` and the focused database reference files.
+- At the end of executed work, update `storage/ia-context` files when implementation changes project standards, database shape, roadmap status, or reusable knowledge.
+
+## Required Plan Sections
+
+Each roadmap reference must include these sections:
+
+- `Status`
+- `Goal`
+- `Context Files To Read First`
+- `Files Or Directories To Inspect`
+- `Open Questions For User`
+- `Implementation Steps`
+- `Expected QA Evidence`
+- `Files Likely To Change`
+- `Approval Notes`
+
+## Open Questions Protocol
+
+- Use `Open Questions For User` for any unclear requirement.
+- Keep questions concrete and answerable.
+- Do not hide assumptions in implementation steps.
+- Do not convert a `[PLANNING]` item to `[APPROVED]` while `Open Questions For User` contains unanswered items.
+- If answers change the plan, update the plan first, then ask for approval of the updated plan.
+
+## Items
+
+- `[EXAMPLE]` [Example roadmap plan](roadmap-references/001-example.md): demonstrates the expected structure for a plan, including required context reads, open questions, execution steps, QA evidence, and approval notes. It is not real project work.
 - [CONCLUDED] [Document Missing DB Helpers in Home](references/001-document-missing-db-helpers-in-home.md): Add missing `System\Core\Database` helper documentation to the home view, whether it is still in `app/views/pages/home.php` or already moved to `system/views/pages/home.php`.
 - [CONCLUDED] [Improve Home Function Documentation](references/002-improve-home-function-documentation.md): Improve the home page documentation so each function explains purpose, usage, return behavior, and practical constraints more clearly.
 - [CONCLUDED] [Add Optional Vue Vite Resource Structure](references/003-add-optional-vue-vite-resource-structure.md): Add the optional `resources/vue/` structure, default `App.vue`, default `main.js`, page folder, and minimal Vite build conventions.
@@ -39,6 +74,6 @@ This directory stores the implementation roadmap for the project.
 - [CONCLUDED] [Refactor Away System Helper Runtime Usage](references/015-refactor-away-system-helper-runtime-usage.md): Refactor runtime code to use static system classes directly and add `SYSTEM_HELPERS_AUTOLOAD` with app-helper-style selection.
 - [CONCLUDED] [Add Multiple Database Connections](references/017-add-multiple-database-connections.md): Add suffixed `DB_*_<NAME>` environment groups, runtime-defined connection configs, and optional `SESSION_DB` selection for lazy named PDO connections.
 - [CONCLUDED] [Harden View Path Resolution](references/018-harden-view-path-resolution.md): Validate PHP view page and template paths before include operations to prevent traversal-based local file inclusion.
-- [Harden Site URL Host Handling](references/019-harden-site-url-host-handling.md): Stop trusting forwarded host/proto headers by default and add explicit trusted-proxy handling for `siteURL()`.
-- [Harden Session Cookie Options](references/020-harden-session-cookie-options.md): Configure safe PHP session cookie defaults before `session_start()` while preserving API stateless behavior.
+- [PLANNING] [Harden Site URL Host Handling](references/019-harden-site-url-host-handling.md): Stop trusting forwarded host/proto headers by default and add explicit trusted-proxy handling for `siteURL()`.
+- [PLANNING] [Harden Session Cookie Options](references/020-harden-session-cookie-options.md): Configure safe PHP session cookie defaults before `session_start()` while preserving API stateless behavior.
 - [CONCLUDED] [Replace DB Session Encryption](references/021-replace-db-session-encryption.md): Replace deterministic AES-CBC DB session encryption with authenticated encryption and clear migration rules.
