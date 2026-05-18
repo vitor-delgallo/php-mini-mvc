@@ -24,6 +24,9 @@ This file controls project planning and execution.
 - Use numeric kebab-case names such as `001-create-login.md` or `002-configure-user-session.md`.
 - Every plan must be self-contained and readable by an AI that knows nothing except the context files named in the plan.
 - Every plan must list required context files to read first.
+- Every plan must define a `Skills To Use` section.
+- For `Skills To Use`, inspect all Codex global skills and project-installed skills, then list only the skills that make sense for the task described by the plan.
+- If a skill listed in a plan is not found, stop the plan, do not approve or execute it, and tell the user that the plan stopped because the missing skill was not found.
 - Every plan must list application files or directories to inspect before editing.
 - Every plan must list likely files to create or change. If exact files are not knowable yet, list the decision that must be answered first.
 - Every plan must define expected QA evidence before delivery.
@@ -36,6 +39,7 @@ Each roadmap reference must include these sections:
 - `Status`
 - `Goal`
 - `Context Files To Read First`
+- `Skills To Use`
 - `Files Or Directories To Inspect`
 - `Open Questions For User`
 - `Implementation Steps`
@@ -51,9 +55,16 @@ Each roadmap reference must include these sections:
 - Do not convert a `[PLANNING]` item to `[APPROVED]` while `Open Questions For User` contains unanswered items.
 - If answers change the plan, update the plan first, then ask for approval of the updated plan.
 
+## Skills Protocol
+
+- Check Codex global skills and project-installed skills before approving or executing a roadmap item.
+- Match skills to the concrete work in the plan, such as Vue work, Vite work, browser verification, document generation, spreadsheet work, or other specialized tasks.
+- Do not list unrelated skills only because they are installed.
+- If a listed skill is unavailable, keep the item planning-only, stop the plan, and report the missing skill to the user.
+
 ## Items
 
-- `[EXAMPLE]` [Example roadmap plan](roadmap-references/001-example.md): demonstrates the expected structure for a plan, including required context reads, open questions, execution steps, QA evidence, and approval notes. It is not real project work.
+- `[EXAMPLE]` [Example roadmap plan](references/001-example.md): demonstrates the expected structure for a plan, including required context reads, skills selection, open questions, execution steps, QA evidence, and approval notes. It is not real project work.
 - [CONCLUDED] [Document Missing DB Helpers in Home](references/001-document-missing-db-helpers-in-home.md): Add missing `System\Core\Database` helper documentation to the home view, whether it is still in `app/views/pages/home.php` or already moved to `system/views/pages/home.php`.
 - [CONCLUDED] [Improve Home Function Documentation](references/002-improve-home-function-documentation.md): Improve the home page documentation so each function explains purpose, usage, return behavior, and practical constraints more clearly.
 - [CONCLUDED] [Add Optional Vue Vite Resource Structure](references/003-add-optional-vue-vite-resource-structure.md): Add the optional `resources/vue/` structure, default `App.vue`, default `main.js`, page folder, and minimal Vite build conventions.

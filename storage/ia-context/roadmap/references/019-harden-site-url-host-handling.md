@@ -1,5 +1,7 @@
 # Harden Site URL Host Handling
 
+Status: `[PLANNING]`
+
 ## Goal
 
 Prevent generated absolute URLs from trusting spoofable request headers by default.
@@ -10,6 +12,11 @@ Prevent generated absolute URLs from trusting spoofable request headers by defau
 - Then read `storage/ia-context/mvc.md`.
 - Inspect `System\Core\Path`, `System\Config\Globals`, `.env.example`, root READMEs, URL/helper docs, and any tests or scripts used for URL behavior.
 - Do not read `.env`.
+
+## Skills To Use
+
+- `playwright` from Codex global skills: use for browser verification that `/web-system` still loads and URL behavior remains usable after the PHP changes.
+- Before approval or execution, verify that each listed skill exists in Codex global skills or project-installed skills. If any listed skill is missing, stop the plan and tell the user the plan stopped because that skill was not found.
 
 ## Problem
 

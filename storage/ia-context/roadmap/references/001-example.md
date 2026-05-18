@@ -14,11 +14,19 @@ Create an example authenticated profile screen that displays the current user, l
 - `storage/ia-context/project.md`
 - `storage/ia-context/package.md`
 - `storage/ia-context/database_standards.md`
-- `storage/ia-context/roadmap.md`
+- `storage/ia-context/roadmap/README.md`
 - `storage/ia-context/project-references/001-security-baseline.md`
 - `storage/ia-context/project-references/002-temporal-api-and-ui-normalization.md`
 - `storage/ia-context/project-references/003-frontend-i18n-foundation.md`
 - `storage/ia-context/project-references/004-user-feedback-and-confirmations.md`
+
+## Skills To Use
+
+- `vue` from Codex global skills: use if the profile screen is implemented as a Vue page or component.
+- `vue-best-practices` from Codex global skills: use for Vue Composition API, `<script setup>`, and component structure decisions.
+- `vue-testing-best-practices` from Codex global skills: use for Vue component test planning when front-end behavior changes.
+- `playwright` from Codex global skills: use for browser flow verification on desktop and mobile.
+- Before approval or execution, verify that each listed skill exists in Codex global skills or project-installed skills. If any listed skill is missing, stop the plan and tell the user the plan stopped because that skill was not found.
 
 ## Files Or Directories To Inspect
 

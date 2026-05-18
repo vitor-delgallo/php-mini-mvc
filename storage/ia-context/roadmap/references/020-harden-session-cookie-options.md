@@ -1,5 +1,7 @@
 # Harden Session Cookie Options
 
+Status: `[PLANNING]`
+
 ## Goal
 
 Apply secure PHP session cookie defaults before `session_start()` for web requests.
@@ -10,6 +12,11 @@ Apply secure PHP session cookie defaults before `session_start()` for web reques
 - Then read `storage/ia-context/mvc.md`.
 - Inspect `System\Config\Session`, `System\Core\Session`, `system/includes/session_handlers.php`, session helpers, `.env.example`, root READMEs, and session MVC references.
 - Do not read `.env`.
+
+## Skills To Use
+
+- `playwright` from Codex global skills: use for browser verification that `/web-system` still loads after session cookie option changes.
+- Before approval or execution, verify that each listed skill exists in Codex global skills or project-installed skills. If any listed skill is missing, stop the plan and tell the user the plan stopped because that skill was not found.
 
 ## Problem
 
