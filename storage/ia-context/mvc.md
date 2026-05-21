@@ -196,6 +196,61 @@ Quick rules:
 | Share a global variable with views | `view_share()` |
 | Lightweight global initialization | Class in `app/Bootable` implementing `IBootable` |
 
+## Creating Vue Pages In This MVC
+
+Vue pages are opt-in. A route must explicitly select a template prepared for Vue and then call `View::render_vue()` or `view_render_vue()`.
+
+Before creating page files, understand the framework and resource pieces involved:
+
+```text
+system/Core/View.php
+system/helpers/view.php
+system/views/templates/
+resources/vue/App.vue
+resources/vue/main.js
+resources/vue/pages/
+```
+
+- `System\Core\View::render_vue()` prepares a Vue boot payload with `page`, `props`, `meta`, and optional `i18n` information.
+- `view_render_vue()` is only a helper shortcut for the same renderer when helpers are enabled.
+- `system/views/templates/` contains framework template examples for server-rendered view shells. A Vue-ready template must follow the same server-rendered shell idea, but it also needs the Vue mount and boot payload contract.
+- `resources/vue/main.js` is the default Vite entrypoint used when the renderer entrypoint argument is `null`.
+- `resources/vue/App.vue` receives the boot payload and resolves the requested page with `import.meta.glob('./pages/**/*.vue')`.
+- `resources/vue/pages/` stores Vue single-file components that can be selected by developer-owned route or controller code.
+
+Generic flow for a new Vue page:
+
+1. Decide whether the route really needs Vue. Normal PHP pages should stay on the PHP view renderer.
+2. Create the Vue SFC under `resources/vue/pages/`, for example `resources/vue/pages/examples/Example.vue`.
+3. Keep the component focused. Use `<script setup>`, pass data as props, and derive display values with `computed` instead of doing work directly in the template.
+4. Make sure the selected PHP template handles Vue boot data. It must print a `#php-mini-mvc-vue` mount element and a JSON script with `page`, `props`, `meta`, and `i18n` under `#php-mini-mvc-vue-data`.
+5. In developer-owned route or controller code, select a Vue-ready template if the current template is not Vue-ready.
+6. Return `Response::html(View::render_vue('examples/Example', $props))`.
+7. Do not build the Vue page name from request, query-string, database, log, upload, or other user-controlled data. Page names must be explicit route/controller decisions.
+8. Pass only server-owned, intentionally public props to the browser. Treat database text as untrusted and render it through Vue interpolation, not `v-html`.
+9. Run `npm run build` for manifest-based production rendering, or configure `VITE_DEV_SERVER` during development.
+
+Theoretical route/controller example:
+
+```php
+use System\Core\Response;
+use System\Core\View;
+
+$router->get('/example/vue', static function () {
+    View::setTemplate('vue-ready-template');
+
+    return Response::html(View::render_vue('examples/Example', [
+        'title' => 'Example Vue page',
+    ]));
+});
+```
+
+The shared `resources/vue/App.vue` uses `import.meta.glob('./pages/**/*.vue')`, so the route argument `examples/Example` resolves to:
+
+```text
+resources/vue/pages/examples/Example.vue
+```
+
 ## Document Summary
 
 | Name | Description | Document |

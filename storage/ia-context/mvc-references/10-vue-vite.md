@@ -12,9 +12,9 @@ resources/vue/main.js
 resources/vue/pages/
 vite.config.js
 package.json
-app/views/templates/template.php
 system/Core/View.php
 system/helpers/view.php
+system/views/templates/
 ```
 
 Build output:
@@ -35,7 +35,7 @@ use System\Core\View;
 $router->get('/account', function () {
     return Response::html(View::render_vue('account/Profile', [
         'title' => 'Account',
-        'user' => ['name' => 'Vitor'],
+        'user' => ['name' => 'desenvolvedor'],
     ], null, ['app.pages.account']));
 });
 ```
@@ -45,7 +45,7 @@ Optional helper shortcut when system helpers are enabled:
 ```php
 return response_html(view_render_vue('account/Profile', [
     'title' => 'Account',
-    'user' => ['name' => 'Vitor'],
+    'user' => ['name' => 'desenvolvedor'],
 ], null, ['app.pages.account']));
 ```
 
@@ -58,7 +58,7 @@ return response_html(view_render_vue('account/Profile', [
 - The optional fourth argument accepts one i18n prefix or a list of prefixes requested by the Vue page.
 - `resources/vue/App.vue` loads pages with `import.meta.glob('./pages/**/*.vue')`.
 - The PHP template still controls the full HTML shell and decides where the Vue mount is printed.
-- The active app template must serialize the `i18n` boot payload for Vue translation fetches to run. The current `app/views/templates/template.php` does this in its Vue branch.
+- The selected PHP template must serialize the `i18n` boot payload for Vue translation fetches to run.
 
 Example file:
 
@@ -88,6 +88,34 @@ pageProps
 meta
 translations
 ```
+
+## PHP Template Contract
+
+`View::render_vue()` renders through the currently selected PHP template. The template can follow the same server-rendered shell pattern used by framework templates under:
+
+```text
+system/views/templates/
+```
+
+A Vue-ready template must provide:
+
+```text
+#php-mini-mvc-vue
+#php-mini-mvc-vue-data
+```
+
+The JSON script under `#php-mini-mvc-vue-data` must include:
+
+```text
+page
+props
+meta
+i18n
+```
+
+It must also load either the Vite development client and entrypoint from `VITE_DEV_SERVER`, or the built assets from `public/build/.vite/manifest.json`.
+
+When creating a project template from a framework template example, preserve this Vue boot contract. Without the mount element, JSON boot payload, and Vite entrypoint, `resources/vue/main.js` cannot mount the requested page.
 
 ## Custom Entrypoint
 
@@ -161,9 +189,7 @@ const t = inject('t', (key) => key);
 
 If i18n is disabled, the token is empty, a fetch fails, or a key is missing, Vue still mounts and `t(key)` returns the key itself.
 
-Security note: frontend i18n fetches expose `SYSTEM_TOKEN` to the browser. Use this token only for framework utility endpoints such as translation subsets, not private user data. Use a server-side proxy or authenticated app endpoint for stronger protection.
-
-Template caution: `View::render_vue()` renders through the current app template. If `app/views/templates/template.php` is replaced, reset by the cleanup tool, or copied from `system/views/templates/template.php`, preserve the Vue branch that serializes `page`, `props`, `meta`, and `i18n` into `#php-mini-mvc-vue-data`.
+Security note: frontend i18n fetches expose `SYSTEM_TOKEN` to the browser. Use this token only for framework utility endpoints such as translation subsets, not private user data. Use a server-side proxy or authenticated project endpoint for stronger protection.
 
 ## Development And Production Assets
 
