@@ -168,11 +168,15 @@ class Globals {
      * @return bool
      */
     private static function isRequestForPrefix(string $prefix): bool {
-        $uri = $_SERVER['REQUEST_URI'] ?? '/';
-        $base = self::env('BASE_PATH') ?? '';
-        $cleanUri = str_replace($base, '', $uri);
+        $path = parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH);
+        $path = is_string($path) && $path !== '' ? $path : '/';
 
-        return !!preg_match('#^' . preg_quote($prefix) . '(/|$)#', $cleanUri);
+        $base = Path::basePath();
+        if ($base !== '' && str_starts_with($path, $base)) {
+            $path = substr($path, strlen($base)) ?: '/';
+        }
+
+        return (bool) preg_match('#^' . preg_quote($prefix, '#') . '(/|$)#', $path);
     }
 
     /**

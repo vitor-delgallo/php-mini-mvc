@@ -92,7 +92,10 @@ class RouterLoader {
      * @return bool
      */
     private static function hasRoutePath(string $path): bool {
-        foreach (self::$router->all() as $route) {
+        // phprouter's Repository::all() emits warnings when no route has been registered yet
+        $routes = @self::$router->all();
+
+        foreach (is_array($routes) ? $routes : [] as $route) {
             if ($route->getPath() === $path) {
                 return true;
             }
@@ -227,6 +230,7 @@ class RouterLoader {
      *
      * - Builds the PSR-7 ServerRequest from PHP globals
      * - Removes base path from URI if configured
+     * - Answers HEAD through the matching GET route, with the same headers and no body
      * - Resolves the route and returns a PSR-7 Response
      *
      * @throws Throwable
@@ -236,10 +240,20 @@ class RouterLoader {
 
         $originalRequestUri = $_SERVER["REQUEST_URI"] ?? null;
         $requestWasNormalized = self::normalizeRootPrefixRequest();
+        $isHead = strtoupper((string) ($_SERVER["REQUEST_METHOD"] ?? "GET")) === "HEAD";
+
+        if ($isHead) {
+            $_SERVER["REQUEST_METHOD"] = "GET";
+            ob_start();
+        }
 
         try {
             self::$router->dispatch();
         } finally {
+            if ($isHead) {
+                ob_end_clean();
+                $_SERVER["REQUEST_METHOD"] = "HEAD";
+            }
             if ($requestWasNormalized) {
                 if ($originalRequestUri === null) {
                     unset($_SERVER["REQUEST_URI"]);

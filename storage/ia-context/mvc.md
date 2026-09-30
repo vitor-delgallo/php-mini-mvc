@@ -25,12 +25,14 @@ Keep this document short enough to remain in context by default. Open the docume
 - Prefer Bootstrap 5 and vanilla JavaScript for traditional front-end work.
 - Use prepared statements whenever SQL is involved; never concatenate user input directly into queries.
 - Preserve `BASE_PATH` compatibility; assets should use `path_base_public()` and absolute URLs should use `site_url()`.
-- `site_url()` / `Path::siteURL()` currently derives protocol and host from request server headers, including forwarded headers when present. Until trusted-proxy handling is implemented, avoid using generated absolute URLs as a security boundary in deployments where clients can spoof host/proxy headers.
+- `site_url()` / `Path::siteURL()` derives protocol and host from the request. `X-Forwarded-Host` / `X-Forwarded-Proto` are honoured only when `REMOTE_ADDR` is listed in `TRUSTED_PROXIES`; the `Host` header itself is still whatever the client sent, so an app that needs a fixed canonical origin should configure it in its own `.env`.
+- `RouterLoader::dispatch()` answers `HEAD` through the matching `GET` route (same headers, body discarded); routes do not need a separate `HEAD` definition.
 - In route files, declare root handlers with `/`; `RouterLoader` also accepts the exact prefixed URL without a trailing slash for that root route.
 - Translatable UI text should live in `app/languages/*` or `system/languages/*` and be consumed through `System\Core\Language::get()` or `lg()` when helpers are enabled.
 - APIs must not use sessions; the bootstrap uses `NULLHandler` for API requests.
 - Session storage drivers are selected by the framework, but cookie hardening flags still depend on PHP/default deployment configuration unless explicitly added in code.
-- The system documentation home includes a dangerous app cleanup action. It is irreversible, currently blocked by a direct manual safety `return` in `System\Controllers\Maintenance::cleanApp()`, and should only be unblocked to reset the app skeleton for a fresh project.
+- The system web area (`/web-system`) is open in development only; elsewhere `System\Middlewares\SystemWebAuth` requires `SYSTEM_TOKEN` and answers 404 without it.
+- The system documentation home includes a dangerous app cleanup action. It is irreversible, currently blocked by a direct manual safety `return` in `System\Controllers\Maintenance::cleanApp()`, and should only be unblocked to reset the app skeleton for a fresh project. Its nonce is signed with `SYSTEM_TOKEN` (then `APP_KEY`) read through `Globals::env()`, and requests without `Origin`/`Referer` are refused.
 - Deliver small, testable changes that are consistent with the project's own MVC style.
 
 ## Stack and Dependencies
@@ -99,13 +101,14 @@ Essential flow:
 9. Execute bootables in `app/Bootable`.
 10. Load `system/routes/api.php` under `/api-system`, `system/routes/web.php` under `/web-system`, `app/routes/api.php` under `/api`, or `app/routes/web.php` for normal app web routes.
 11. Dispatch the route through `RouterLoader` / `router_loader_dispatch()`. Exact prefixed root requests such as `/web-system` can match root routes declared as `/`, while non-root trailing slash behavior remains exact.
-12. Return HTML 404 for missing routes and HTML 500 for general errors; outside production, show details and write the daily log.
+12. Return HTML 404 for missing routes and HTML 500 for general errors; the daily log is always written, details are shown only outside production.
 
 ## Main `.env` Variables
 
 ```dotenv
 APP_ENV=development
 BASE_PATH=/php-mini-mvc
+TRUSTED_PROXIES=
 DEFAULT_LANGUAGE=en
 SYSTEM_TOKEN=
 SYSTEM_HELPERS_AUTOLOAD=true
@@ -139,11 +142,12 @@ Quick rules:
 
 - `APP_ENV`: `production`, `development`, or `testing`; fallback should be treated as `production`.
 - `BASE_PATH`: required when the app runs from a subdirectory.
+- `TRUSTED_PROXIES`: comma-separated IPs or CIDR blocks of reverse proxies whose `X-Forwarded-Host` / `X-Forwarded-Proto` may be trusted by `Path::siteURL()`; `*` trusts every connection; empty ignores forwarded headers.
 - `DEFAULT_LANGUAGE`: default language for translations.
-- `SYSTEM_TOKEN`: fixed owner-defined token for protected system API routes. `System\Middlewares\SystemI18nAuth` enforces it for `/api-system/i18n`; empty disables that endpoint. Vue pages that fetch i18n directly receive it in browser boot data, so do not use it to protect private user data.
+- `SYSTEM_TOKEN`: fixed owner-defined token for protected system routes. `System\Middlewares\SystemI18nAuth` enforces it for `/api-system/i18n` (empty disables that endpoint) and `System\Middlewares\SystemWebAuth` enforces it for `/web-system` outside development (empty means 404 there). Vue pages that fetch i18n directly receive it in browser boot data, so do not use it to protect private user data.
 - `SYSTEM_HELPERS_AUTOLOAD`: `true` for all system helpers, a specific list such as `['response','view.php']`, or disabled values such as `false`, `0`, `none`, `off`, `no`, or empty.
 - `APP_HELPERS_AUTOLOAD`: `true` for all app helpers, a specific list, or disabled values such as `false`, `0`, `none`, `off`, `no`, or empty.
-- `APP_KEY`: optional project secret. Current framework code uses it only as a fallback signer for the dangerous cleanup nonce when `SYSTEM_TOKEN` is empty, before falling back to a path-derived development value.
+- `APP_KEY`: optional project secret. Current framework code uses it only as a fallback signer for the dangerous cleanup nonce when `SYSTEM_TOKEN` is empty, before falling back to a path-derived development value. Both are read through `Globals::env()`.
 - `VITE_DEV_SERVER`: optional Vue-only development URL. When set, the PHP template loads Vite client and Vue entrypoints from that server instead of `public/build/.vite/manifest.json`.
 - `SESSION_DRIVER`: `files`, `db`, or `none`.
 - `SESSION_DB`: optional named connection for `SESSION_DRIVER=db`; blank uses the default `DB_*` connection.
@@ -281,7 +285,7 @@ It:
 - uses `System\Core\Language::get(...)` to fetch text from `system/languages/doc/*` with `system.doc.*` keys;
 - shows a framework summary;
 - documents helper loading through `SYSTEM_HELPERS_AUTOLOAD` and `APP_HELPERS_AUTOLOAD`;
-- exposes the `Remove and Clean MVC` maintenance button, protected by a short-lived nonce, SweetAlert confirmation, and a direct manual safety `return` that must be removed in `System\Controllers\Maintenance::cleanApp()` before intentional use;
+- exposes the `Remove and Clean MVC` maintenance button, protected by `SystemWebAuth` outside development, a short-lived nonce, a same-origin check that refuses requests without `Origin`/`Referer`, SweetAlert confirmation (pinned version with SRI), and a direct manual safety `return` that must be removed in `System\Controllers\Maintenance::cleanApp()` before intentional use;
 - defines a `$docs` array with classes, methods, examples, and descriptions;
 - renders those entries as HTML `<details>` sections.
 

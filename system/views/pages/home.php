@@ -28,6 +28,7 @@ use System\Core\Language;
 $maintenanceCleanup = is_array($maintenanceCleanup ?? null) ? $maintenanceCleanup : null;
 $cleanupEndpoint = $maintenanceCleanup['endpoint'] ?? null;
 $cleanupNonce = $maintenanceCleanup['nonce'] ?? null;
+$cleanupToken = $maintenanceCleanup['token'] ?? '';
 $cleanupTargets = [
     'app/Bootable/',
     'app/Controllers/',
@@ -104,11 +105,12 @@ $cleanupTexts = [
         data-system-cleanup-trigger
         data-endpoint="<?= htmlspecialchars($cleanupEndpoint) ?>"
         data-nonce="<?= htmlspecialchars($cleanupNonce) ?>"
+        data-token="<?= htmlspecialchars((string) $cleanupToken) ?>"
     >
         <?= Language::get('system.doc.cleanup.button') ?>
     </button>
 </section>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.all.min.js" integrity="sha384-nLoOnA/BDh8A/jxqtckg4DumuCGOBYUnNJLZdQz/zfYNp3wcjGSoWTAzgko06G/2" crossorigin="anonymous"></script>
 <script>
 (() => {
     const button = document.querySelector('[data-system-cleanup-trigger]');
@@ -174,7 +176,8 @@ $cleanupTexts = [
                         method: 'POST',
                         body: formData,
                         headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-System-Token': button.dataset.token || ''
                         }
                     });
                     const payload = await response.json();

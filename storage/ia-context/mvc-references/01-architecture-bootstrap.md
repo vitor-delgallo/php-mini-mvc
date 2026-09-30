@@ -108,7 +108,7 @@ General flow:
    - normal app web request: `app/routes/web.php`.
 13. Dispatch the route through `RouterLoader`.
 14. On `RouteNotFoundException`, return HTML 404.
-15. On other errors, return HTML 500; outside production, show details and write the daily log.
+15. On other errors, return HTML 500 and write the daily log; details are shown only outside production.
 
 ## Recommended Order for Agents
 

@@ -104,8 +104,10 @@ POST /web-system/maintenance/clean-app
 Protection:
 
 - the endpoint only accepts POST;
+- outside development, `SystemWebAuth` requires `SYSTEM_TOKEN` for the whole `/web-system` area;
 - the home page generates a short-lived nonce;
-- nonce signing uses `SYSTEM_TOKEN` when configured, then `APP_KEY` when configured, then a path-derived fallback intended only as a last-resort development value;
+- nonce signing uses `SYSTEM_TOKEN` when configured, then `APP_KEY` when configured (via `Globals::env()`), then a path-derived fallback intended only as a last-resort development value;
+- requests without `Origin` or `Referer` are refused;
 - the SweetAlert confirmation locks the confirm button for 10 seconds.
 - the destructive cleanup call is blocked by a direct manual safety `return` in `System\Controllers\Maintenance::cleanApp()`.
 

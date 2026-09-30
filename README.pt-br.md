@@ -66,7 +66,9 @@ Os principais valores do `.env` são:
 ```dotenv
 APP_ENV=development
 BASE_PATH=/php-mini-mvc
+TRUSTED_PROXIES=
 DEFAULT_LANGUAGE=en
+SYSTEM_TOKEN=
 APP_HELPERS_AUTOLOAD=true
 
 SESSION_DRIVER=none
@@ -95,7 +97,9 @@ Valores importantes:
 
 - `APP_ENV`: `production`, `development` ou `testing`.
 - `BASE_PATH`: use quando a aplicação roda em subdiretório, como `/php-mini-mvc`.
+- `TRUSTED_PROXIES`: proxies reversos (IPs ou blocos CIDR separados por vírgula, ou `*`) cujos cabeçalhos `X-Forwarded-Host` / `X-Forwarded-Proto` o `site_url()` pode confiar. Vazio ignora esses cabeçalhos.
 - `DEFAULT_LANGUAGE`: idioma padrão usado pelo sistema de traduções.
+- `SYSTEM_TOKEN`: protege `/api-system/i18n` e, fora de development, a documentação em `/web-system`. Vazio desativa os dois.
 - `APP_HELPERS_AUTOLOAD`: `true` para carregar todos os helpers da aplicação, ou uma lista como `['auth','format.php']`.
 - `SESSION_DRIVER`: `files`, `db` ou `none`.
 - `SESSION_DB`: conexão nomeada opcional para `SESSION_DRIVER=db`; vazio usa a conexão padrão `DB_*`.
@@ -155,7 +159,9 @@ O bootstrap:
 
 ## Documentação do Sistema e Limpeza
 
-A documentação do framework fica disponível em `/web-system`.
+A documentação do framework fica disponível em `/web-system`. Em development ela é aberta; em qualquer outro ambiente exige o `SYSTEM_TOKEN`, enviado como `X-System-Token`, `Authorization: Bearer <token>` ou `?system_token=<token>`, e responde 404 sem ele.
+
+Requisições `HEAD` são atendidas pelas rotas `GET` correspondentes, e os erros sempre vão para `storage/logs/`; os detalhes só aparecem fora de produção.
 
 A home de documentação inclui a ação `Remove and Clean MVC` para preparar a área da aplicação para um projeto novo. Essa ação é destrutiva, por isso fica bloqueada por um `return` manual de segurança em:
 

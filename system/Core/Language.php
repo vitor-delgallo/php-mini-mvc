@@ -228,8 +228,9 @@ class Language {
         self::$translations = [];
         foreach ($files as $fileInfo) {
             $file = $fileInfo['path'];
-            $json = json_decode(file_get_contents($file), true);
+            $json = json_decode((string) file_get_contents($file), true);
             if (!is_array($json)) {
+                trigger_error('Invalid language file ' . $file . ': ' . json_last_error_msg(), E_USER_WARNING);
                 continue;
             }
 

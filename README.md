@@ -66,7 +66,9 @@ The main `.env` values are:
 ```dotenv
 APP_ENV=development
 BASE_PATH=/php-mini-mvc
+TRUSTED_PROXIES=
 DEFAULT_LANGUAGE=en
+SYSTEM_TOKEN=
 APP_HELPERS_AUTOLOAD=true
 
 SESSION_DRIVER=none
@@ -95,7 +97,9 @@ Important values:
 
 - `APP_ENV`: `production`, `development`, or `testing`.
 - `BASE_PATH`: use this when the app runs from a subdirectory, such as `/php-mini-mvc`.
+- `TRUSTED_PROXIES`: reverse proxies (IPs or CIDR blocks, comma-separated, or `*`) whose `X-Forwarded-Host` / `X-Forwarded-Proto` headers `site_url()` may trust. Empty ignores them.
 - `DEFAULT_LANGUAGE`: default language used by the translation system.
+- `SYSTEM_TOKEN`: protects `/api-system/i18n` and, outside development, the documentation at `/web-system`. Empty disables both.
 - `APP_HELPERS_AUTOLOAD`: `true` to load all app helpers, or a list such as `['auth','format.php']`.
 - `SESSION_DRIVER`: `files`, `db`, or `none`.
 - `SESSION_DB`: optional named connection for `SESSION_DRIVER=db`; blank uses the default `DB_*` connection.
@@ -155,7 +159,9 @@ The bootstrap:
 
 ## System Documentation and Cleanup
 
-The framework documentation is available at `/web-system`.
+The framework documentation is available at `/web-system`. In development it is open; in any other environment it requires `SYSTEM_TOKEN`, sent as `X-System-Token`, `Authorization: Bearer <token>` or `?system_token=<token>`, and answers 404 otherwise.
+
+`HEAD` requests are served by the matching `GET` routes, and errors are always written to `storage/logs/`; details are displayed only outside production.
 
 The documentation home includes the `Remove and Clean MVC` action to prepare the application area for a fresh project. This action is destructive, so it is blocked by a manual safety return inside:
 

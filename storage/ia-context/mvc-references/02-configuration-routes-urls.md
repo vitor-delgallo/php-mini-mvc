@@ -5,6 +5,7 @@
 ```dotenv
 APP_ENV=development
 BASE_PATH=/php-mini-mvc
+TRUSTED_PROXIES=
 DEFAULT_LANGUAGE=en
 SYSTEM_TOKEN=
 SYSTEM_HELPERS_AUTOLOAD=true
@@ -39,8 +40,9 @@ Important rules:
 - `APP_ENV` accepts `production`, `development`, or `testing`.
 - Environment fallback should be treated as `production`.
 - `BASE_PATH` should be used when the app runs from a subdirectory.
+- `TRUSTED_PROXIES` lists the reverse proxies (IPs or CIDR blocks, `*` for all) whose `X-Forwarded-Host` / `X-Forwarded-Proto` headers `Path::siteURL()` may trust. Empty ignores forwarded headers.
 - `DEFAULT_LANGUAGE` defines the default language for translations.
-- `SYSTEM_TOKEN` protects system API routes such as `/api-system/i18n`; leave it empty to disable those routes. `System\Middlewares\SystemI18nAuth` enforces this token for i18n routes. Vue pages that fetch translations directly receive this token in browser boot data, so use it only for framework utility endpoints, not private user data.
+- `SYSTEM_TOKEN` protects system API routes such as `/api-system/i18n` and, outside development, the whole `/web-system` area; leave it empty to disable both. `System\Middlewares\SystemI18nAuth` and `System\Middlewares\SystemWebAuth` enforce it. Vue pages that fetch translations directly receive this token in browser boot data, so use it only for framework utility endpoints, not private user data.
 - `SYSTEM_HELPERS_AUTOLOAD` controls optional helper wrappers from `system/helpers`. It accepts `true`, `1`, `all`, `*`, a list such as `['response','view.php']`, or disabled values such as `false`, `0`, `none`, `off`, `no`, or empty.
 - `APP_HELPERS_AUTOLOAD` controls helpers from `app/helpers` with the same strategy.
 - `APP_KEY` is optional and is currently used by framework code only as a fallback signer for the dangerous cleanup nonce when `SYSTEM_TOKEN` is empty.
@@ -140,6 +142,8 @@ This file is loaded with the system web `/web-system` prefix. Framework-owned we
 
 Declare the route as `/`; the loader also accepts `/web-system/`.
 
+The area is open in development. In any other environment `System\Middlewares\SystemWebAuth` requires `SYSTEM_TOKEN`, sent as `X-System-Token`, `Authorization: Bearer <token>` or, for a browser visit, `?system_token=<token>`; without it every system web route answers 404.
+
 The same system web area owns the dangerous app cleanup endpoint:
 
 ```text
@@ -226,7 +230,9 @@ Do not write fixed absolute paths such as `/assets/...` when the project may run
 
 `BASE_PATH` also applies to route prefixes. For example, `/api`, `/web-system`, and `/api-system` become `/php-mini-mvc/api`, `/php-mini-mvc/web-system`, and `/php-mini-mvc/api-system` when `BASE_PATH=/php-mini-mvc`.
 
-Current host/proxy caution: `Path::siteURL()` builds absolute URLs from request server values and currently reads `HTTP_X_FORWARDED_PROTO` and `HTTP_X_FORWARDED_HOST` when those headers are present. Until trusted-proxy handling is implemented, do not treat generated absolute URLs or redirects as trusted in deployments where clients can spoof forwarded headers.
+Host/proxy note: `Path::siteURL()` builds absolute URLs from request server values. `HTTP_X_FORWARDED_PROTO` and `HTTP_X_FORWARDED_HOST` are used only when `REMOTE_ADDR` matches `TRUSTED_PROXIES`. The `Host` header is still client-controlled, so an application that needs a fixed canonical origin (SEO tags, sitemaps) should build it from its own configuration.
+
+`RouterLoader::dispatch()` serves `HEAD` requests through the matching `GET` route and discards the body, so route files only declare `get()`.
 
 ## Main Path Helpers
 

@@ -21,8 +21,8 @@ storage/logs/YYYY-MM-DD.log
 
 Rules:
 
-- in `production`, errors should not be displayed;
-- in `development` and `testing`, errors may be displayed and logged;
+- in `production`, errors are logged but not displayed;
+- in `development` and `testing`, errors are displayed and logged;
 - do not expose sensitive details in production.
 
 ## Current Points of Attention
@@ -33,7 +33,9 @@ Rules:
 - Sessions must not be used in API routes.
 - Bootables run on every request; do not put heavy logic in them.
 - If the application is in a subdirectory, test all assets and links with `BASE_PATH`.
-- `Path::siteURL()` currently trusts request host/proxy headers enough to use forwarded host/proto values when present. Treat this as a deployment caution until trusted-proxy handling is implemented.
+- `Path::siteURL()` honours forwarded host/proto headers only from `TRUSTED_PROXIES`; the `Host` header itself remains client-controlled, so do not treat generated absolute URLs as a trusted canonical origin unless the application fixes it in its own configuration.
+- `Language` reports an invalid translation JSON with an `E_USER_WARNING` (logged, and displayed outside production) and skips the file; `Language::get()` still returns `null` for its keys.
+- `View::render()` extracts shared and page data with `EXTR_SKIP`: a variable named like a render argument (`page`, `html`, `data`) is ignored rather than overriding it.
 - Session storage handlers are configured by the framework, but hardened cookie flags are not set by `system/includes/session_handlers.php` yet. Configure PHP session cookie settings for auth-sensitive apps.
 - DB session encryption uses the versioned authenticated `v2` format when `SESSION_ENCRYPT_KEY` is filled. Older deterministic AES-CBC encrypted session rows are intentionally not readable and should be cleared after upgrading.
 - The `Remove and Clean MVC` action in `/web-system` is destructive. It deletes contents from explicit app, Vue, language, log, session, and public asset folders, rewrites app routes, and should not be triggered during routine validation unless the user explicitly wants the app skeleton cleaned.

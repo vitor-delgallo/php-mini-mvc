@@ -80,9 +80,10 @@ try {
 
     // Configures error visibility based on the environment
     if (ConfigEnvironment::isProduction()) {
+        // Nothing is displayed, but errors still reach the handlers, which write the daily log
         ini_set('display_errors', '0');
         ini_set('display_startup_errors', '0');
-        error_reporting(0);
+        error_reporting(E_ALL & ~E_DEPRECATED);
     } else {
         ini_set('display_errors', '1');
         ini_set('display_startup_errors', '1');
@@ -132,15 +133,16 @@ try {
     // In non-production environments, show detailed error information
     if (!ConfigEnvironment::isProduction()) {
         $response = Response::html('<h1>' . Language::get("system.http.500.title") . '</h1><pre>'. htmlspecialchars($e) . '</pre>', 500);
-
-        // Also log the error to a daily log file
-        $logName = date('Y-m-d') . ".log";
-        $log = "[" . date('Y-m-d H:i:s') . "] [EXCEPTION] " . $e->getMessage() . " in " .
-            $e->getFile() . ":" . $e->getLine() . "\n";
-        $path = Path::storageLogs() . '/' . $logName;
-
-        file_put_contents($path, $log, FILE_APPEND);
     }
+
+    // Always log the error to the daily log file, in every environment
+    $logDir = Path::storageLogs();
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0755, true);
+    }
+    $log = "[" . date('Y-m-d H:i:s') . "] [EXCEPTION] " . $e->getMessage() . " in " .
+        $e->getFile() . ":" . $e->getLine() . "\n";
+    @file_put_contents($logDir . '/' . date('Y-m-d') . ".log", $log, FILE_APPEND);
 }
 
 // If a response object was generated in the exception handler, emit it to the client

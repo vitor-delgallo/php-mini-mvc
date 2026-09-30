@@ -63,7 +63,7 @@ $url = site_url('users/1');
 
 ## Notes
 
-- Filesystem methods return Windows-style paths in this checkout because the source concatenates with `\\`.
+- Filesystem methods join with `DIRECTORY_SEPARATOR`, so they return native paths on Windows and Linux.
 - URL methods normalize to forward slashes.
 - Use `path_base_public()` for asset URLs when the app runs from a subdirectory.
-- Current `siteURL()` behavior reads forwarded host/proto headers when present. Avoid relying on it as a trusted canonical origin until explicit trusted-proxy handling exists.
+- `siteURL()` reads forwarded host/proto headers only when `REMOTE_ADDR` is listed in `TRUSTED_PROXIES` (see `Path::isTrustedProxy()`). The `Host` header is still client-controlled.

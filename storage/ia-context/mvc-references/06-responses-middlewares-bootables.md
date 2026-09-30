@@ -95,6 +95,12 @@ This middleware owns `SYSTEM_TOKEN` validation for i18n routes:
 
 `System\Controllers\I18n` should not validate tokens directly. It should only handle `prefix`, `lang`, translation loading, and response data.
 
+```php
+System\Middlewares\SystemWebAuth
+```
+
+This middleware guards every system web route (`/web-system`): it passes in development and, elsewhere, requires `SYSTEM_TOKEN` through `X-System-Token`, `Authorization: Bearer <token>` or the `system_token` query parameter, answering HTML 404 otherwise. `SystemWebAuth::providedToken()` exposes the token found in the request so the documentation page can send it back on the cleanup call.
+
 System controller actions and middleware handlers are not helper-backed APIs. Route files should reference their classes directly.
 
 ## System Maintenance Controller
@@ -108,7 +114,7 @@ POST /web-system/maintenance/clean-app
 
 The controller owns the nonce validation, same-origin check, explicit cleanup target list, route reset, and copy of `system/views/templates/template.php` into `app/views/templates/template.php`.
 
-Nonce signing uses `SYSTEM_TOKEN` when configured, then `APP_KEY` when configured, then a path-derived fallback intended only as a last-resort development value.
+Nonce signing uses `SYSTEM_TOKEN` when configured, then `APP_KEY` when configured (both read through `Globals::env()`), then a path-derived fallback intended only as a last-resort development value. The same-origin check refuses requests that carry neither `Origin` nor `Referer`.
 
 The cleanup call is blocked by a direct manual safety `return` inside `System\Controllers\Maintenance::cleanApp()`. Remove that return only when intentionally preparing a fresh project, then add it back or protect the endpoint before exposing the project.
 

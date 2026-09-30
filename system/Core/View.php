@@ -120,10 +120,7 @@ class View {
         ?string $pagesPath = null,
         ?string $templatesPath = null
     ): string {
-        // Merge shared global variables with the local data passed to the view
-        // Then extract them into the local scope (e.g. $data['user'] → $user)
-        extract(array_merge(self::getGlobals(), $data));
-
+        // Resolve the internal paths first, so shared or page data can never redirect an include
         $__viewPagesPath = $pagesPath ?? Path::appViewsPages();
         $__viewTemplatesPath = $templatesPath ?? Path::appViewsTemplates();
         $__viewPage = $page !== null ? self::normalizePhpViewPath($page, 'page') : null;
@@ -134,17 +131,23 @@ class View {
         $__viewTemplate = self::normalizePhpViewPath(ltrim(self::getTemplate(), '/'), 'template', true);
         $__viewTemplatePath = self::resolvePhpViewFile($__viewTemplatesPath, $__viewTemplate, 'template');
 
-        // Keep legacy template variables available without letting render data override internal paths.
+        // Shared globals and local data become variables (e.g. $data['user'] → $user). Names already
+        // in use here are skipped, so the arguments and the $__view* variables above keep their values.
+        extract(array_merge(self::getGlobals(), $data), EXTR_SKIP);
+
+        // Keep legacy template variables available.
         $page = $__viewPage;
         $html = $__viewHtml;
 
-        // Start output buffering to capture the output of the included template
+        // Capture the template output; on failure, drop the partial output before rethrowing
         ob_start();
+        try {
+            include $__viewTemplatePath;
+        } catch (\Throwable $exception) {
+            ob_end_clean();
+            throw $exception;
+        }
 
-        // Include the layout template, which is expected to use the extracted variables
-        include $__viewTemplatePath;
-
-        // Return the rendered HTML as a string
         return ob_get_clean();
     }
 

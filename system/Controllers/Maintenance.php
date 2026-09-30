@@ -3,6 +3,7 @@
 namespace System\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
+use System\Config\Globals;
 use System\Core\Path;
 use System\Core\Response;
 use Throwable;
@@ -295,7 +296,14 @@ class Maintenance
 
     private static function signCleanupPayload(string $payload): string
     {
-        $secret = getenv('SYSTEM_TOKEN') ?: getenv('APP_KEY') ?: (Path::root() . '|' . __FILE__);
+        // Dotenv fills $_ENV, not getenv(), so the secret must come from the framework's env store.
+        $secret = trim((string) (Globals::env('SYSTEM_TOKEN') ?? ''));
+        if ($secret === '') {
+            $secret = trim((string) (Globals::env('APP_KEY') ?? ''));
+        }
+        if ($secret === '') {
+            $secret = Path::root() . '|' . __FILE__; // last-resort development value
+        }
 
         return hash_hmac('sha256', $payload, $secret);
     }
@@ -306,8 +314,9 @@ class Maintenance
         $referer = $_SERVER['HTTP_REFERER'] ?? '';
         $candidate = is_string($origin) && $origin !== '' ? $origin : $referer;
 
+        // No Origin and no Referer: the request did not come from the documentation page, refuse it.
         if (!is_string($candidate) || $candidate === '') {
-            return true;
+            return false;
         }
 
         $candidateParts = parse_url($candidate);
