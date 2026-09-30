@@ -4,10 +4,24 @@
 RewriteEngine On
 
 ###############################################
+# 🔒 Hidden paths (.git, .idea, .vscode…) are never served; .well-known stays reachable (ACME/SSL).
+#    The FilesMatch below only checks the file name, so /.git/config would otherwise be served.
+###############################################
+RewriteRule "(^|/)\.(?!well-known/)" - [R=404,L]
+
+###############################################
 # 🌐 Redirect www to the bare domain (one canonical host for SEO)
 ###############################################
 RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
 RewriteRule ^ %{REQUEST_SCHEME}://%1%{REQUEST_URI} [R=301,L]
+
+###############################################
+# 🔐 Force https (single hop, proxy-aware). You can enable it in production.
+###############################################
+#RewriteCond %{HTTPS} !=on
+#RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+#RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1|\[::1\])(:[0-9]+)?$ [NC]
+#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
 ###############################################
 # 🔒 Block access to hidden files (.env, .git, etc.)
@@ -38,7 +52,8 @@ RewriteRule .* - [L]
 # 📏 Remove trailing slashes from URLs (for cleaner SEO)
 ###############################################
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.+)/$ /$1 [R=301,L]
+RewriteCond %{REQUEST_URI} ^(.+)/$
+RewriteRule ^ %1 [R=301,L]
 
 ###############################################
 # 🔒 Never serve application code, framework, storage, vendor or source files directly
